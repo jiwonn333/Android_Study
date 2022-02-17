@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">MySNSAccount</string>
+    <!--프로젝트에 kakao SDK import하기 -->
+    <string name="kakao_app_key">bdec4dffc749223591bddcb598abc71f</string>
+</resources>
