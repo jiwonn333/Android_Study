@@ -1,4 +1,4 @@
-package com.example.mysnsaccount;
+package com.example.mysnsaccount.SNSLogin;
 
 import android.app.Application;
 import android.content.Context;
@@ -24,19 +24,21 @@ public class GlobalHelper extends Application {
     private static List<String> mGlobalUserLoginInfo = new ArrayList<String>();
 
     //전역변수에 값을 저장하고 반환하는 코드를 위해 추가
-    public static List<String> getGlobalUserLoginInfo(){
+    public static List<String> getGlobalUserLoginInfo() {
         return mGlobalUserLoginInfo;
     }
-    public static void setGlobalUserLoginInfo(List<String> userLoginInfo){
+
+    public static void setGlobalUserLoginInfo(List<String> userLoginInfo) {
         mGlobalUserLoginInfo = userLoginInfo;
     }
 
-    public static GlobalHelper getGlobalApplicationContext(){
-        if(mInstance == null){
+    public static GlobalHelper getGlobalApplicationContext() {
+        if (mInstance == null) {
             throw new IllegalStateException("this application doesn't GlobalAuthHelper");
         }
         return mInstance;
     }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -46,9 +48,9 @@ public class GlobalHelper extends Application {
 
     }
 
-    public class KakaoSDKAdapter extends KakaoAdapter{
+    public class KakaoSDKAdapter extends KakaoAdapter {
         @Override
-        public ISessionConfig getSessionConfig(){
+        public ISessionConfig getSessionConfig() {
             return new ISessionConfig() {
                 @Override
                 public AuthType[] getAuthTypes() {
@@ -77,8 +79,9 @@ public class GlobalHelper extends Application {
                 }
             };
         }
+
         @Override
-        public IApplicationConfig getApplicationConfig(){
+        public IApplicationConfig getApplicationConfig() {
             return new IApplicationConfig() {
                 @Override
                 public Context getApplicationContext() {

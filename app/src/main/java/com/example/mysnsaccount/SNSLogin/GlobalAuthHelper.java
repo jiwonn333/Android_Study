@@ -1,14 +1,9 @@
-package com.example.mysnsaccount;
+package com.example.mysnsaccount.SNSLogin;
 
-import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.kakao.auth.ApiErrorCode;
-import com.kakao.auth.ISessionCallback;
 import com.kakao.auth.Session;
 import com.kakao.network.ErrorResult;
 import com.kakao.usermgmt.UserManagement;

@@ -8,11 +8,15 @@ import android.os.Bundle;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.mysnsaccount.CustomWebView.WebViewActivity;
+import com.example.mysnsaccount.SNSLogin.KakaoLogin;
+import com.example.mysnsaccount.SNSLogin.SecondActivity;
 import com.kakao.auth.Session;
 import com.kakao.usermgmt.LoginButton;
 
@@ -21,36 +25,51 @@ import java.security.NoSuchAlgorithmException;
 
 public class MainActivity extends AppCompatActivity {
 
+    //카카오톡 로그인
     private ImageButton mKakaoLoginBtn;
     private LoginButton mKakaoLoginBtnBasic;
     private KakaoLogin.KakaoSessionCallback sessionCallback;
+    //웹뷰버튼
+    private Button wvbtn;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mKakaoLoginBtn = findViewById(R.id.btn_kakao_login);
         mKakaoLoginBtnBasic = findViewById(R.id.btn_kakao_login_basic);
+        wvbtn = findViewById(R.id.wvbtn);
 
-        //커스텀버튼 ㅡㄹ릭시 카카오톡 로그인화면으로 넘어감 (세션이 있다면 재로그인 없이 즉시 콜백클래스 작동
-        mKakaoLoginBtn.setOnClickListener(new View.OnClickListener(){
+        //웹뷰 버튼 클릭
+        wvbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        //커스텀버튼 클릭시 카카오톡 로그인화면으로 넘어감 (세션이 있다면 재로그인 없이 즉시 콜백클래스 작동
+        mKakaoLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mKakaoLoginBtnBasic.performClick(); //로그인버튼클릭시 자동으로 카카오톡 로그인화면으로 넘어감
             }
         });
 
-        if(!HasKakaoSession()){
+        if (!HasKakaoSession()) {
             sessionCallback = new KakaoLogin.KakaoSessionCallback(getApplicationContext(), MainActivity.this);
             Session.getCurrentSession().addCallback(sessionCallback);
-        } else if (HasKakaoSession()){
-            sessionCallback =  new KakaoLogin.KakaoSessionCallback(getApplicationContext(),MainActivity.this);
+        } else if (HasKakaoSession()) {
+            sessionCallback = new KakaoLogin.KakaoSessionCallback(getApplicationContext(), MainActivity.this);
             Session.getCurrentSession().addCallback(sessionCallback);
             Session.getCurrentSession().checkAndImplicitOpen();
         }
         getHashKey(); //해시키 불러오기
     }
+
     //해시키 구하기
-    private void getHashKey(){
+    private void getHashKey() {
         PackageInfo packageInfo = null;
         try {
             packageInfo = getPackageManager().getPackageInfo(getPackageName(), PackageManager.GET_SIGNATURES);
@@ -58,13 +77,13 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         if (packageInfo == null) Log.e("KeyHash", "KeyHash:null");
-        for (Signature signature : packageInfo.signatures){
+        for (Signature signature : packageInfo.signatures) {
             try {
                 MessageDigest md = MessageDigest.getInstance("SHA");
                 md.update(signature.toByteArray());
                 Log.d("KeyHash", Base64.encodeToString(md.digest(), Base64.DEFAULT));
             } catch (NoSuchAlgorithmException e) {
-                Log.e("KeyHash", "Unable to get MessageDigest. signature="+ signature, e);
+                Log.e("KeyHash", "Unable to get MessageDigest. signature=" + signature, e);
             }
         }
     }
@@ -77,11 +96,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private boolean HasKakaoSession() {
-        if (!Session.getCurrentSession().checkAndImplicitOpen()){
+        if (!Session.getCurrentSession().checkAndImplicitOpen()) {
             return false;
         }
         return true;
     }
+
     public void directToSecondActivity(Boolean result) {
         Intent intent = new Intent(MainActivity.this, SecondActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
