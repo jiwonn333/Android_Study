@@ -39,11 +39,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        if(!HasKakaoSession()){
+        if (!HasKakaoSession()) {
             sessionCallback = new KakaoLogin.KakaoSessionCallback(getApplicationContext(), MainActivity.this);
             Session.getCurrentSession().addCallback(sessionCallback);
-        } else if (HasKakaoSession()){
-            sessionCallback =  new KakaoLogin.KakaoSessionCallback(getApplicationContext(),MainActivity.this);
+        } else if (HasKakaoSession()) {
+            sessionCallback = new KakaoLogin.KakaoSessionCallback(getApplicationContext(), MainActivity.this);
             Session.getCurrentSession().addCallback(sessionCallback);
             Session.getCurrentSession().checkAndImplicitOpen();
         }
