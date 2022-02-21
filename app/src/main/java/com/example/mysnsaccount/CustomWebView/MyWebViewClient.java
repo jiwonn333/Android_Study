@@ -1,6 +1,8 @@
 package com.example.mysnsaccount.CustomWebView;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.webkit.HttpAuthHandler;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -15,7 +17,15 @@ public class MyWebViewClient extends WebViewClient {
     //새로운 URL이 webview에 로드되려 할 경우 컨트롤을 대신할 기회를 줌
     @Override
     public boolean shouldOverrideUrlLoading(WebView view, String url) {
-        view.loadUrl(url);
+        if (url.startsWith("tel:")) {
+            Intent tel = new Intent(Intent.ACTION_DIAL, Uri.parse(url));
+            view.getContext().startActivity(tel);
+        } else if (url.startsWith("mailto:")) {
+            Intent mailto = new Intent(Intent.ACTION_SENDTO, Uri.parse(url));
+            view.getContext().startActivity(mailto);
+        } else {
+            view.loadUrl(url);
+        }
         return true;
     }
 
