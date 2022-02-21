@@ -12,10 +12,10 @@
         android:orientation="vertical">
         <!--웹뷰 버튼-->
         <Button
-            android:text="웹뷰"
             android:id="@+id/wvbtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:text="웹뷰" />
     </LinearLayout>
 
     <!--로그인 버튼 및 자동 로그인 로직 구현-->
@@ -31,7 +31,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.95"/>
+        app:layout_constraintGuide_percent="0.95" />
 
     <LinearLayout
         android:id="@+id/layout_login_btn_group"
@@ -47,9 +47,9 @@
             android:id="@+id/btn_kakao_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
             android:src="@drawable/kakao_login_small"
-            android:layout_gravity="center"
             android:text="카카오 로그인" />
     </LinearLayout>
 

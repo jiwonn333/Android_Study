@@ -21,6 +21,7 @@ public class WebViewActivity extends AppCompatActivity {
         myWebView = findViewById(R.id.webview);
 
         WebViewManager manager = new WebViewManager(WebViewActivity.this, myWebView);
+        manager.setSettings();
         manager.setJavascriptInterface("DKITec");
         manager.loadUrl("file:///android_asset/www/sample.html");
 
