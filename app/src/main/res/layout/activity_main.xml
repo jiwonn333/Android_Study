@@ -9,13 +9,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        tools:ignore="MissingConstraints">
         <!--웹뷰 버튼-->
         <Button
             android:id="@+id/wvbtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="웹뷰" />
+        <!--Api 통신-->
+        <Button
+            android:id="@+id/apibtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="서버통신" />
     </LinearLayout>
 
     <!--로그인 버튼 및 자동 로그인 로직 구현-->

@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mysnsaccount.CustomWebView.WebViewActivity;
+import com.example.mysnsaccount.RetrofitExample.RetrofitActivity;
 import com.example.mysnsaccount.SNSLogin.KakaoLogin;
 import com.example.mysnsaccount.SNSLogin.SecondActivity;
 import com.kakao.auth.Session;
@@ -29,8 +30,9 @@ public class MainActivity extends AppCompatActivity {
     private ImageButton mKakaoLoginBtn;
     private LoginButton mKakaoLoginBtnBasic;
     private KakaoLogin.KakaoSessionCallback sessionCallback;
-    //웹뷰버튼
-    private Button wvbtn;
+    //웹뷰버튼, 서버통신 버튼
+    private Button wvbtn, apibtn;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mKakaoLoginBtn = findViewById(R.id.btn_kakao_login);
         mKakaoLoginBtnBasic = findViewById(R.id.btn_kakao_login_basic);
-        wvbtn = findViewById(R.id.wvbtn);
+        wvbtn = (Button) findViewById(R.id.wvbtn);
+        apibtn = (Button) findViewById(R.id.apibtn);
 
         //웹뷰 버튼 클릭
         wvbtn.setOnClickListener(new View.OnClickListener() {
@@ -46,6 +49,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
                 startActivity(intent);
+            }
+        });
+
+        //서버통신 버튼 클릭
+        apibtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentApi = new Intent(getApplicationContext(), RetrofitActivity.class);
+                startActivity(intentApi);
             }
         });
 
