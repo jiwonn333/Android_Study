@@ -2,6 +2,7 @@ package com.example.mysnsaccount.RetrofitExample;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -12,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.bumptech.glide.Glide;
 import com.example.mysnsaccount.R;
 import com.example.mysnsaccount.util.Constant;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -43,7 +47,6 @@ public class RetrofitActivity extends AppCompatActivity {
 
         getPosts();
     }
-
     private void getPosts() {
         Call<Post> call = jsonPlaceHolderApi.getPost();
         call.enqueue(new Callback<Post>() {
@@ -57,6 +60,7 @@ public class RetrofitActivity extends AppCompatActivity {
                         String url = post.getData().getCustomList().get(0).getImageUrl();
                         Glide.with(context).load(url).into(imageViewResult);
                         Log.d("sjw", "결과 : 성공!");
+                        Log.d("sjw", "CustomList : " + post.getData().getCustomList()); //배열값이 있는지
                         Log.d("sjw", "code : " + post.getCode());
                         Log.d("sjw", "errMsg : " + post.getErrMsg());
                         Log.d("sjw", "data : " + post.getData().getMainTitle());

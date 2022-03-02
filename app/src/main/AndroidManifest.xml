@@ -3,6 +3,10 @@
     package="com.example.mysnsaccount">
     <!--인터넷 사용 권한 설정-->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--휴대폰 정보 가져오기 위한 권한 설정-->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS"/>
 
     <application
         android:name=".SNSLogin.GlobalHelper"
@@ -20,7 +24,8 @@
 
         <activity android:name=".SNSLogin.SecondActivity" />
         <activity android:name=".SNSLogin.KakaoLogin" />
-        <activity android:name=".RetrofitExample.RetrofitActivity"/>
+        <activity android:name=".RetrofitExample.RetrofitActivity" />
+        <activity android:name=".Permissions.PermissionActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -30,7 +35,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <!--새로 생성한 웹 뷰 클래스 등록-->
         <activity android:name=".CustomWebView.WebViewActivity">
             <intent-filter>
