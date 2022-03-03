@@ -25,7 +25,7 @@ import com.example.mysnsaccount.R;
 
 public class PermissionActivity extends AppCompatActivity {
     private static final int PERMISSION_REQUEST_CODE = 22;//권한변수
-    private static final String TAG = "PermissionActivity";
+    private static final String TAG = "sjw";
     private Context context;
 
 
@@ -42,18 +42,21 @@ public class PermissionActivity extends AppCompatActivity {
                     // 휴대폰 정보는 TelephonyManger를 이용
                     TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
-                    //READ_PHONE_NUMBERS와 READ_PRECISE_PHONE_STATE 권한 허가 받았는지 확인
-                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED
-                            && ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                        return;
+                    //안드로이드 버전에 따라권한 허가 받았는지 확인
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
+                    } else {
+                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                            return;
+                        }
                     }
-
                     Log.d(TAG, "음성통화 상태 : [ getCallState ] >>> " + tm.getCallState());
                     Log.d(TAG, "데이터통신 상태 : [ getDataState ] >>> " + tm.getDataState());
                     Log.d(TAG, "통신사 ISO 국가코드 : [ getNetworkCountryIso ] >>> " + tm.getNetworkCountryIso());
                     Log.d(TAG, "통신사 ISO 국가코드 : [ getSimCountryIso ] >>> " + tm.getSimCountryIso());
                     Log.d(TAG, "SIM 카드 상태 : [ getSimState ] >>> " + tm.getSimState());
-
                 }
             }
         });
@@ -85,7 +88,6 @@ public class PermissionActivity extends AppCompatActivity {
         } else {
             mPermissionsGranted = true;
         }
-//        Log.d(TAG, "체크 퍼미션 끝" + mPermissionsGranted);
         return mPermissionsGranted;
     }
 
@@ -94,12 +96,10 @@ public class PermissionActivity extends AppCompatActivity {
         for (String permission : permissions) {
             if (checkCallingOrSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
                 return false;
-//                break;
             }
         }
         return true;
     }
-
 
     private void logic() {
         Toast.makeText(this, "권한 허용", Toast.LENGTH_SHORT).show();
@@ -107,7 +107,8 @@ public class PermissionActivity extends AppCompatActivity {
 
     //권한 요청에 대한 결과 처리
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[],
+                                           int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case PERMISSION_REQUEST_CODE:
