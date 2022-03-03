@@ -1,6 +1,10 @@
-package com.example.mysnsaccount.RetrofitExample;
+package com.example.mysnsaccount.model.SingleThumbnailModel;
 
-public class Post {
+import com.example.mysnsaccount.model.SingleThumbnailModel.Data;
+
+import java.io.Serializable;
+
+public class SingleThumbnailModel implements Serializable {
     private String code;
     private String errMsg;
     private Data data;

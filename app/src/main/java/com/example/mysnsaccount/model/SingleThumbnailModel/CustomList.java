@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.RetrofitExample;
+package com.example.mysnsaccount.model.SingleThumbnailModel;
 
 public class CustomList {
     private String imageUrl;

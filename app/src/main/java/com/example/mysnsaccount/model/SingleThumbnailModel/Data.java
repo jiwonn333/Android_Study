@@ -1,8 +1,9 @@
-package com.example.mysnsaccount.RetrofitExample;
+package com.example.mysnsaccount.model.SingleThumbnailModel;
 
 import java.util.List;
 
 public class Data {
+
     private String mainTitle;
 
     private List<CustomList> customList;

@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mysnsaccount.CustomWebView.WebViewActivity;
 import com.example.mysnsaccount.Permissions.PermissionActivity;
+import com.example.mysnsaccount.Recyclerview.RecyclerviewActivity;
 import com.example.mysnsaccount.RetrofitExample.RetrofitActivity;
 import com.example.mysnsaccount.SNSLogin.KakaoLogin;
 import com.example.mysnsaccount.SNSLogin.SecondActivity;
@@ -32,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private LoginButton mKakaoLoginBtnBasic;
     private KakaoLogin.KakaoSessionCallback sessionCallback;
     //웹뷰버튼, 서버통신 버튼
-    private Button wvbtn, apibtn, perbtn;
+    private Button wvbtn, apibtn, perbtn,recyclerviewbtn;
 
 
     @Override
@@ -44,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         wvbtn = findViewById(R.id.wvbtn);
         apibtn = findViewById(R.id.apibtn);
         perbtn = findViewById(R.id.perbtn);
+        recyclerviewbtn = findViewById(R.id.recyclerviewbtn);
 
         //웹뷰 버튼 클릭
         wvbtn.setOnClickListener(new View.OnClickListener() {
@@ -69,6 +71,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intentPer= new Intent(getApplicationContext(), PermissionActivity.class);
                 startActivity(intentPer);
+            }
+        });
+
+        //리사이클러뷰 버튼 클릭
+        recyclerviewbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentRe= new Intent(getApplicationContext(), RecyclerviewActivity.class);
+                startActivity(intentRe);
             }
         });
 
