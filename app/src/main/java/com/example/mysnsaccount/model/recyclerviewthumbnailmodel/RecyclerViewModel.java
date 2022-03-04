@@ -1,10 +1,10 @@
-package com.example.mysnsaccount.model.SingleThumbnailModel;
+package com.example.mysnsaccount.model.recyclerviewthumbnailmodel;
 
-import java.io.Serializable;
-
-public class SingleThumbnailModel implements Serializable {
+public class RecyclerViewModel {
     private String code;
+
     private String errMsg;
+
     private Data data;
 
     public void setCode(String code) {

@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.RetrofitExample;
+package com.example.mysnsaccount.retrofit;
 
 import static okhttp3.internal.platform.Platform.INFO;
 

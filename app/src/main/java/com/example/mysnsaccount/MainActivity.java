@@ -14,12 +14,12 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.mysnsaccount.CustomWebView.WebViewActivity;
-import com.example.mysnsaccount.Permissions.PermissionActivity;
-import com.example.mysnsaccount.Recyclerview.RecyclerviewActivity;
-import com.example.mysnsaccount.RetrofitExample.RetrofitActivity;
-import com.example.mysnsaccount.SNSLogin.KakaoLogin;
-import com.example.mysnsaccount.SNSLogin.SecondActivity;
+import com.example.mysnsaccount.customwebview.WebViewActivity;
+import com.example.mysnsaccount.permission.PermissionActivity;
+import com.example.mysnsaccount.recyclerview.RecyclerViewActivity;
+import com.example.mysnsaccount.retrofit.RetrofitActivity;
+import com.example.mysnsaccount.snslogin.KakaoLogin;
+import com.example.mysnsaccount.snslogin.SecondActivity;
 import com.kakao.auth.Session;
 import com.kakao.usermgmt.LoginButton;
 
@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private LoginButton mKakaoLoginBtnBasic;
     private KakaoLogin.KakaoSessionCallback sessionCallback;
     //웹뷰버튼, 서버통신 버튼
-    private Button wvbtn, apibtn, perbtn,recyclerviewbtn;
+    private Button wvbtn, apibtn, perbtn, recyclerviewbtn;
 
 
     @Override
@@ -64,12 +64,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intentApi);
             }
         });
-        
+
         //퍼미션 버튼 클릭
         perbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentPer= new Intent(getApplicationContext(), PermissionActivity.class);
+                Intent intentPer = new Intent(getApplicationContext(), PermissionActivity.class);
                 startActivity(intentPer);
             }
         });
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerviewbtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentRe= new Intent(getApplicationContext(), RecyclerviewActivity.class);
+                Intent intentRe = new Intent(getApplicationContext(), RecyclerViewActivity.class);
                 startActivity(intentRe);
             }
         });

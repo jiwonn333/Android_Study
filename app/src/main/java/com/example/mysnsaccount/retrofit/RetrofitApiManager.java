@@ -1,8 +1,9 @@
-package com.example.mysnsaccount.RetrofitExample;
+package com.example.mysnsaccount.retrofit;
 
 import android.annotation.SuppressLint;
 
-import com.example.mysnsaccount.model.SingleThumbnailModel.SingleThumbnailModel;
+import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
+import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
 import com.example.mysnsaccount.util.Constant;
 import com.example.mysnsaccount.util.GLog;
 import com.google.gson.Gson;
@@ -171,14 +172,28 @@ public class RetrofitApiManager {
     }
 
     public void requestSingleThumbnail(RetrofitInterface retrofitInterface) {
-        Build().create(ApiService.class).getSingleThumbnail().enqueue(new Callback<SingleThumbnailModel>() {
+        Build().create(ApiService.class).getRetrofitThumbnail().enqueue(new Callback<RetrofitModel>() {
             @Override
-            public void onResponse(Call<SingleThumbnailModel> call, Response<SingleThumbnailModel> response) {
+            public void onResponse(Call<RetrofitModel> call, Response<RetrofitModel> response) {
                 retrofitInterface.onResponse(response);
             }
 
             @Override
-            public void onFailure(Call<SingleThumbnailModel> call, Throwable t) {
+            public void onFailure(Call<RetrofitModel> call, Throwable t) {
+                retrofitInterface.onFailure(t);
+            }
+        });
+    }
+
+    public void requestRecyclerView(RetrofitInterface retrofitInterface) {
+        Build().create(ApiService.class).getRecyclerViewThumbnail().enqueue(new Callback<RecyclerViewModel>() {
+            @Override
+            public void onResponse(Call<RecyclerViewModel> call, Response<RecyclerViewModel> response) {
+                retrofitInterface.onResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<RecyclerViewModel> call, Throwable t) {
                 retrofitInterface.onFailure(t);
             }
         });

@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.Recyclerview;
+package com.example.mysnsaccount.recyclerview;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,14 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mysnsaccount.R;
-import com.example.mysnsaccount.model.ThumbnailModel.Data;
+import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.Data;
 
 import java.util.ArrayList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemViewHolder> {
     //adapter에 들어갈 list
     private ArrayList<Data> listData = new ArrayList<>();
-
 
 
     @NonNull
@@ -42,7 +41,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
         return listData.size();
     }
 
-    void addItem(Data data){
+    void addItem(Data data) {
         //외부에서 item을 추가시킬 함수
         listData.add(data);
     }
@@ -62,7 +61,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ItemVi
             rating = itemView.findViewById(R.id.rating);
         }
 
-        void onBind(Data data){
+        void onBind(Data data) {
             gameTitle.setText(data.getMainTitle());
 //            rating.setText(data.g);
         }

@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.SNSLogin;
+package com.example.mysnsaccount.snslogin;
 
 import android.app.Application;
 import android.content.Context;

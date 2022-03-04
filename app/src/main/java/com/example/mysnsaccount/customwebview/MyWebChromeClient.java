@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.CustomWebView;
+package com.example.mysnsaccount.customwebview;
 
 import android.os.Message;
 import android.webkit.WebChromeClient;

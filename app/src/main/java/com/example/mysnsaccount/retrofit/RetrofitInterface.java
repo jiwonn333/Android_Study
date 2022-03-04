@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.RetrofitExample;
+package com.example.mysnsaccount.retrofit;
 
 
 import retrofit2.Response;

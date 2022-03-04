@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.CustomWebView;
+package com.example.mysnsaccount.customwebview;
 
 import android.os.Bundle;
 import android.webkit.WebView;

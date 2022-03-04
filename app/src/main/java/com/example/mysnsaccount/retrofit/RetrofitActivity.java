@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.RetrofitExample;
+package com.example.mysnsaccount.retrofit;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -11,9 +11,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.bumptech.glide.Glide;
 import com.example.mysnsaccount.R;
-import com.example.mysnsaccount.model.SingleThumbnailModel.CustomList;
-import com.example.mysnsaccount.model.SingleThumbnailModel.Data;
-import com.example.mysnsaccount.model.SingleThumbnailModel.SingleThumbnailModel;
+import com.example.mysnsaccount.model.retrofitthumbnailmdoel.CustomList;
+import com.example.mysnsaccount.model.retrofitthumbnailmdoel.Data;
+import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
+import com.example.mysnsaccount.util.GLog;
 
 import java.util.List;
 
@@ -38,9 +39,9 @@ public class RetrofitActivity extends AppCompatActivity {
             public void onResponse(Response response) {
                 try {
                     if (response.isSuccessful()) {
-                        SingleThumbnailModel singleThumbnailModel = (SingleThumbnailModel) response.body();
-                        if (singleThumbnailModel != null) {
-                            Data data = singleThumbnailModel.getData();
+                        RetrofitModel retrofitModel = (RetrofitModel) response.body();
+                        if (retrofitModel != null) {
+                            Data data = retrofitModel.getData();
                             if (data != null) {
                                 List<CustomList> customLists = data.getCustomList();
                                 if (customLists != null && !customLists.isEmpty()) {
@@ -48,6 +49,7 @@ public class RetrofitActivity extends AppCompatActivity {
                                     Glide.with(context).load(url).into(imageViewResult);
                                     textViewResult.setText("성공");
                                     Log.d("sjw", "결과 : 성공!");
+                                    GLog.d("결과 : 성공!");
                                 }
                             }
                         }

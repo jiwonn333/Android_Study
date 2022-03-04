@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.model.SingleThumbnailModel;
+package com.example.mysnsaccount.model.retrofitthumbnailmdoel;
 
 import java.util.List;
 

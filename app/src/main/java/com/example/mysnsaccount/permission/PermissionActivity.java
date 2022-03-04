@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.Permissions;
+package com.example.mysnsaccount.permission;
 
 import android.Manifest;
 import android.content.Context;

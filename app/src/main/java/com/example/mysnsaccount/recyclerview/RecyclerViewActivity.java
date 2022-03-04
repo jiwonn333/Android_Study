@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.Recyclerview;
+package com.example.mysnsaccount.recyclerview;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mysnsaccount.R;
 
-public class RecyclerviewActivity extends AppCompatActivity {
+public class RecyclerViewActivity extends AppCompatActivity {
     private RecyclerAdapter adapter;
     private Context context;
 
