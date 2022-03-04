@@ -1,7 +1,5 @@
 package com.example.mysnsaccount.model.SingleThumbnailModel;
 
-import com.example.mysnsaccount.model.SingleThumbnailModel.Data;
-
 import java.io.Serializable;
 
 public class SingleThumbnailModel implements Serializable {

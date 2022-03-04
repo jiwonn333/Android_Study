@@ -26,6 +26,7 @@
         <activity android:name=".SNSLogin.KakaoLogin" />
         <activity android:name=".RetrofitExample.RetrofitActivity" />
         <activity android:name=".Permissions.PermissionActivity"/>
+        <activity android:name=".Recyclerview.RecyclerviewActivity"/>
         <activity
             android:name=".MainActivity"
             android:exported="true">
