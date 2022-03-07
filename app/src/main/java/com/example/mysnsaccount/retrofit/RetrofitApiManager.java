@@ -171,8 +171,8 @@ public class RetrofitApiManager {
 
     }
 
-    public void requestSingleThumbnail(RetrofitInterface retrofitInterface) {
-        Build().create(ApiService.class).getRetrofitThumbnail().enqueue(new Callback<RetrofitModel>() {
+    public void requestRetrofitThumbnail(RetrofitInterface retrofitInterface) {
+        Build().create(RetrofitApiService.class).getRetrofitThumbnail().enqueue(new Callback<RetrofitModel>() {
             @Override
             public void onResponse(Call<RetrofitModel> call, Response<RetrofitModel> response) {
                 retrofitInterface.onResponse(response);
@@ -185,8 +185,8 @@ public class RetrofitApiManager {
         });
     }
 
-    public void requestRecyclerView(RetrofitInterface retrofitInterface) {
-        Build().create(ApiService.class).getRecyclerViewThumbnail().enqueue(new Callback<RecyclerViewModel>() {
+    public void requestRecyclerViewThumbnail(RetrofitInterface retrofitInterface) {
+        Build().create(RetrofitApiService.class).getRecyclerViewThumbnail().enqueue(new Callback<RecyclerViewModel>() {
             @Override
             public void onResponse(Call<RecyclerViewModel> call, Response<RecyclerViewModel> response) {
                 retrofitInterface.onResponse(response);

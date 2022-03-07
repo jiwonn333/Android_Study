@@ -2,4 +2,14 @@
     <string name="app_name">MySNSAccount</string>
     <!--프로젝트에 kakao SDK import하기 -->
     <string name="kakao_app_key">bdec4dffc749223591bddcb598abc71f</string>
+
+    <!--토스트메시지-->
+    <string name="msg_rating_warning">%s세 게임 입니다.</string>
+    <string name="msg_rating_all">전체 이용 게임 입니다.</string>
+    <string name="msg_rating_R_rated">미성년자 이용 불가 게임 입니다.</string>
+
+    <!--텍스트뷰-->
+    <string name="text_rating_warning">%s세 게임</string>
+    <string name="text_rating_all">전체이용가</string>
+
 </resources>

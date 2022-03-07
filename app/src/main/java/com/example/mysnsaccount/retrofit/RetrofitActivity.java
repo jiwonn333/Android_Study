@@ -2,7 +2,6 @@ package com.example.mysnsaccount.retrofit;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +33,7 @@ public class RetrofitActivity extends AppCompatActivity {
         textViewResult = findViewById(R.id.text_view_result);
         imageViewResult = findViewById(R.id.image_view_result);
 
-        RetrofitApiManager.getInstance().requestSingleThumbnail(new RetrofitInterface() {
+        RetrofitApiManager.getInstance().requestRetrofitThumbnail(new RetrofitInterface() {
             @Override
             public void onResponse(Response response) {
                 try {
@@ -48,20 +47,19 @@ public class RetrofitActivity extends AppCompatActivity {
                                     String url = customLists.get(0).getImageUrl();
                                     Glide.with(context).load(url).into(imageViewResult);
                                     textViewResult.setText("성공");
-                                    Log.d("sjw", "결과 : 성공!");
                                     GLog.d("결과 : 성공!");
                                 }
                             }
                         }
                     }
                 } catch (Exception e) {
-                    Log.d("sjw", "null");
+                    GLog.e("결과 : null");
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
-                Log.d("sjw", "결과 : 실패!");
+                GLog.d("결과 : 실패!");
             }
         });
     }

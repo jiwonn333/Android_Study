@@ -1,6 +1,8 @@
 package com.example.mysnsaccount.model.recyclerviewthumbnailmodel;
 
-public class RecyclerViewModel {
+import java.io.Serializable;
+
+public class RecyclerViewModel implements Serializable {
     private String code;
 
     private String errMsg;
