@@ -41,13 +41,13 @@ public class CustomList {
     public String getRatingText(Context context) {
         if (context == null) return "";
 
-        String text_rating_warning = context.getString(R.string.text_rating_warning);
-        String text_rating_all = context.getString(R.string.text_rating_all);
+        String textRatingWarning = context.getString(R.string.text_rating_warning);
+        String textRatingAll = context.getString(R.string.text_rating_all);
 
         if ("all".equals(getRating())) {
-            return text_rating_all;
+            return textRatingAll;
         } else {
-            return String.format(text_rating_warning, getRating());
+            return String.format(textRatingWarning, getRating());
         }
     }
 
@@ -56,20 +56,20 @@ public class CustomList {
     public String getRatingToastMessage(Context context) {
         if (context == null) return "";
 
-        String msg_rating_warning = context.getString(R.string.msg_rating_warning);
-        String msg_rating_all = context.getString(R.string.msg_rating_all);
-        String msg_rating_R_rated = context.getString(R.string.msg_rating_R_rated);
+        String msgRatingWarning = context.getString(R.string.msg_rating_warning);
+        String msgRatingAll = context.getString(R.string.msg_rating_all);
+        String msgRatingR = context.getString(R.string.msg_rating_r_rated);
 
         switch (getRating()) {
             case "12":
             case "15":
-                Toast.makeText(context.getApplicationContext(), String.format(msg_rating_warning, getRating()), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), String.format(msgRatingWarning, getRating()), Toast.LENGTH_SHORT).show();
                 break;
             case "19":
-                Toast.makeText(context.getApplicationContext(), msg_rating_R_rated, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), msgRatingR, Toast.LENGTH_SHORT).show();
                 break;
             case "all":
-                Toast.makeText(context.getApplicationContext(), msg_rating_all, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context.getApplicationContext(), msgRatingAll, Toast.LENGTH_SHORT).show();
                 break;
             default:
                 GLog.d("맞는조건 없음");

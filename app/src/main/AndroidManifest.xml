@@ -37,11 +37,7 @@
             </intent-filter>
         </activity>
         <!--새로 생성한 웹 뷰 클래스 등록-->
-        <activity android:name=".customwebview.WebViewActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+        <activity android:name=".customwebview.WebViewActivity"/>
+
     </application>
 </manifest>

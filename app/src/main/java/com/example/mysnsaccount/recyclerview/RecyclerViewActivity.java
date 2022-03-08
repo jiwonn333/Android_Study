@@ -2,6 +2,8 @@ package com.example.mysnsaccount.recyclerview;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +29,8 @@ public class RecyclerViewActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     RecyclerViewAdapter recyclerViewAdapter;
 
+    TextView textView;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,11 +40,16 @@ public class RecyclerViewActivity extends AppCompatActivity {
 
         dataInfo = new ArrayList<>();
         recyclerView = findViewById(R.id.recycler_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
+        textView = findViewById(R.id.text_view);
+        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)); //가로로 스크롤
         recyclerViewAdapter = new RecyclerViewAdapter(context);
         recyclerView.setAdapter(recyclerViewAdapter);
 
+        recyclerView.setVisibility(View.VISIBLE);
+
         getRoots();
+
+
     }
 
 
@@ -59,20 +68,33 @@ public class RecyclerViewActivity extends AppCompatActivity {
                                     recyclerViewAdapter.addItem(customLists);
                                     recyclerViewAdapter.notifyDataSetChanged();
 
+                                } else {
+                                    setErrorLayout("customLists값이 null 입니다.");
                                 }
+                            } else {
+                                setErrorLayout("data값이 null 입니다.");
                             }
+                        } else {
+                            setErrorLayout("recyclerViewModel값이 null 입니다.");
                         }
+                    } else {
+                        setErrorLayout("통신오류.");
                     }
-
                 } catch (Exception e) {
-                    GLog.e("null");
+                    setErrorLayout(e.toString());
                 }
             }
 
             @Override
             public void onFailure(Throwable t) {
-                GLog.e("결과 : 실패");
+                setErrorLayout("customLists값이 null 입니다.");
             }
         });
+    }
+
+    private void setErrorLayout(String msg) {
+        recyclerView.setVisibility(View.INVISIBLE);
+        textView.setVisibility(View.VISIBLE);
+        textView.setText(msg);
     }
 }
