@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mysnsaccount">
-    <!--인터넷 사용 권한 설정-->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!--휴대폰 정보 가져오기 위한 권한 설정-->
-    <!--    <uses-permission android:name="android.permission.CAMERA"/>-->
+    <!-- 인터넷 사용 권한 설정 -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 휴대폰 정보 가져오기 위한 권한 설정 -->
+    <!-- <uses-permission android:name="android.permission.CAMERA"/> -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
 
     <application
-        android:name=".snslogin.GlobalHelper"
+        android:name=".kakao.GlobalApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -17,7 +16,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MySNSAccount"
-        android:usesCleartextTraffic="true"> <!--일반 http사이트 접근 설정-->
+        android:usesCleartextTraffic="true">
+        <activity
+            android:name=".kakao.SubActivity"
+            android:exported="false" />
+        <!-- 일반 http사이트 접근 설정 -->
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
@@ -35,9 +38,23 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <!--새로 생성한 웹 뷰 클래스 등록-->
-        <activity android:name=".customwebview.WebViewActivity"/>
+        </activity> <!-- 새로 생성한 웹 뷰 클래스 등록 -->
+        <activity android:name=".customwebview.WebViewActivity" />
+        <activity
+            android:name="com.kakao.sdk.auth.AuthCodeHandlerActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.APP_BROWSER" />
+
+                <data
+                    android:host="oauth"
+                    android:scheme="kakaobdec4dffc749223591bddcb598abc71f" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".kakao.LoginMainActivity" />
     </application>
+
 </manifest>

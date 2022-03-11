@@ -35,6 +35,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="recyclerView" />
+
+
     </LinearLayout>
 
     <!--로그인 버튼 및 자동 로그인 로직 구현-->
@@ -62,13 +64,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/hg_main_90">
 
-        <ImageButton
+        <Button
             android:id="@+id/btn_kakao_login"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:src="@drawable/kakao_login_small"
             android:text="카카오 로그인" />
     </LinearLayout>
 
