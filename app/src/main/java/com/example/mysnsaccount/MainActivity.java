@@ -12,14 +12,11 @@ import com.example.mysnsaccount.kakao.LoginMainActivity;
 import com.example.mysnsaccount.permission.PermissionActivity;
 import com.example.mysnsaccount.recyclerview.RecyclerViewActivity;
 import com.example.mysnsaccount.retrofit.RetrofitActivity;
-import com.kakao.usermgmt.LoginButton;
 
 public class MainActivity extends AppCompatActivity {
 
     //카카오톡 로그인
     private Button mKakaoLoginBtn;
-    private LoginButton mKakaoLoginBtnBasic;
-    //    private KakaoLogin.KakaoSessionCallback sessionCallback;
     //웹뷰버튼, 서버통신 버튼
     private Button wvbtn, apibtn, perbtn, recyclerviewbtn;
 
@@ -29,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mKakaoLoginBtn = findViewById(R.id.btn_kakao_login);
-        mKakaoLoginBtnBasic = findViewById(R.id.btn_kakao_login_basic);
         wvbtn = findViewById(R.id.wvbtn);
         apibtn = findViewById(R.id.apibtn);
         perbtn = findViewById(R.id.perbtn);

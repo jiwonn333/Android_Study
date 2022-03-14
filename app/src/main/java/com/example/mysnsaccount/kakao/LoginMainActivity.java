@@ -1,88 +1,78 @@
 package com.example.mysnsaccount.kakao;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
+import android.widget.Button;
 
 import androidx.annotation.Nullable;
 
 import com.example.mysnsaccount.R;
-import com.kakao.auth.ISessionCallback;
-import com.kakao.auth.Session;
-import com.kakao.network.ErrorResult;
-import com.kakao.usermgmt.UserManagement;
-import com.kakao.usermgmt.callback.MeV2ResponseCallback;
-import com.kakao.usermgmt.response.MeV2Response;
-import com.kakao.util.exception.KakaoException;
+import com.example.mysnsaccount.util.GLog;
+import com.kakao.sdk.auth.model.OAuthToken;
+import com.kakao.sdk.common.model.ClientError;
+import com.kakao.sdk.common.model.ClientErrorCause;
+import com.kakao.sdk.user.UserApiClient;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function2;
 
 //카카오 로그인 API 호출 클래스
 public class LoginMainActivity extends Activity {
-    //세션 콜백 구현 (로그인 및 사용자 정보 요청)
-    private ISessionCallback sessionCallback;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kakaologin);
 
-        sessionCallback = new ISessionCallback() {
-            @Override
-            public void onSessionOpened() {
-                // 로그인 요청
-                UserManagement.getInstance().me(new MeV2ResponseCallback() {
-                    @Override
-                    public void onFailure(ErrorResult errorResult) {
-                        // 로그인 실패
-                        Toast.makeText(LoginMainActivity.this, "로그인 도중 오류 발생.", Toast.LENGTH_SHORT).show();
-                    }
+        Context context;
+        context = this;
+        Button btnKakaoLogin = findViewById(R.id.btn_kakao_login);
 
-                    @Override
-                    public void onSessionClosed(ErrorResult errorResult) {
-                        // 세션이 닫힘
-                        Toast.makeText(LoginMainActivity.this, "세션이 닫혔습니다.", Toast.LENGTH_SHORT).show();
-                    }
+        btnKakaoLogin.setOnClickListener(view -> {
+            if (UserApiClient.getInstance().isKakaoTalkLoginAvailable(context)) {
+                UserApiClient.getInstance().loginWithKakaoTalk(context, (oAuthToken, throwable) -> {
+                    if (throwable != null) {
+                        GLog.d("카카오톡으로 로그인 실패");
 
-                    @Override
-                    public void onSuccess(MeV2Response result) {
-                        // 로그인 성공
-                        Intent intent = new Intent(LoginMainActivity.this, SubActivity.class);
-                        intent.putExtra("name", result.getKakaoAccount().getProfile().getNickname());
-                        intent.putExtra("profileImg", result.getKakaoAccount().getProfile().getProfileImageUrl());
-                        startActivity(intent);
+                        if (throwable instanceof ClientError && (((ClientError) throwable).getReason()) == ClientErrorCause.Cancelled) {
+                            return null;
+                        }
 
-                        Toast.makeText(LoginMainActivity.this, "로그인 성공", Toast.LENGTH_SHORT).show();
+                        UserApiClient.getInstance().loginWithKakaoAccount(context, callback);
+                    } else if (oAuthToken != null) {
+                        GLog.d("카카오톡으로 로그인 성공");
+                        userUI();
                     }
+                    return null;
                 });
+            } else {
+                UserApiClient.getInstance().loginWithKakaoAccount(context, callback);
             }
-
-            @Override
-            public void onSessionOpenFailed(KakaoException exception) {
-                Toast.makeText(LoginMainActivity.this, "onSessionOpenFailed", Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        Session.getCurrentSession().addCallback(sessionCallback);
-        Session.getCurrentSession().checkAndImplicitOpen();
-
+        });
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-
-        //세션 콜백 삭제
-        Session.getCurrentSession().removeCallback(sessionCallback);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        //카카오톡,스토리 간편로그인 실행 결과를 받아서 SDK로 전달
-        if (Session.getCurrentSession().handleActivityResult(requestCode, resultCode, data)) {
-            return;
+    private Function2 callback = (Function2<OAuthToken, Throwable, Unit>) (oAuthToken, throwable) -> {
+        if (throwable != null) {
+            GLog.d("카카오계정으로 로그인 실패");
+        } else if (oAuthToken != null) {
+            GLog.d("카카오계정으로 로그인 성공");
+            userUI();
         }
-        super.onActivityResult(requestCode, resultCode, data);
+        return null;
+    };
+
+    private void userUI() {
+        UserApiClient.getInstance().me((user, throwable) -> {
+            Intent intent = new Intent(getApplicationContext(), SubActivity.class);
+            intent.putExtra("name", user.getKakaoAccount().getProfile().getNickname());
+            intent.putExtra("profileURL", user.getKakaoAccount().getProfile().getProfileImageUrl());
+            startActivity(intent);
+            return null;
+        });
     }
+
+
 }

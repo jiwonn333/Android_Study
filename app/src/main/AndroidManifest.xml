@@ -25,8 +25,8 @@
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
 
-        <activity android:name=".snslogin.SecondActivity" />
-        <activity android:name=".snslogin.KakaoLogin" />
+
+        <activity android:name=".kakao.LoginMainActivity" />
         <activity android:name=".retrofit.RetrofitActivity" />
         <activity android:name=".permission.PermissionActivity" />
         <activity android:name=".recyclerview.RecyclerViewActivity" />
@@ -47,14 +47,13 @@
                 <action android:name="android.intent.action.VIEW" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.APP_BROWSER" />
+                <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
                     android:host="oauth"
                     android:scheme="kakaobdec4dffc749223591bddcb598abc71f" />
             </intent-filter>
         </activity>
-        <activity android:name=".kakao.LoginMainActivity" />
     </application>
 
 </manifest>
