@@ -1,7 +1,6 @@
 package com.example.mysnsaccount.recyclerview;
 
 import android.content.Context;
-import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +9,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -75,30 +73,25 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
             imageView = itemView.findViewById(R.id.imageView);
 
             //클릭리스너 설정
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @RequiresApi(api = Build.VERSION_CODES.O)
-                @Override
-                public void onClick(View view) {
+            itemView.setOnClickListener(view -> {
 
-                    int position = getAdapterPosition();
+                int position = getBindingAdapterPosition();
 
-                    GLog.d("adapter position " + position);
-                    if (position != RecyclerView.NO_POSITION) {
-//                         customLists.get(position).getRatingToastMessage(rating.getContext()); //클릭시 토스트메세지 띄우기
-                        // 클릭시 rating값 1씩 증가
-                        //pos = String.valueOf(pos);
-
-                        try {
-                            int item = Integer.parseInt(customLists.get(position).getRating());
-                            item++;
-                            String temp = String.valueOf(item);
-                            customLists.get(position).setRating(temp);
-                            notifyItemChanged(position);
-                        } catch (Exception e) {
-                            GLog.d("e : " + e.getMessage());
-                            if (e instanceof NumberFormatException) {
-                                Toast.makeText(context, "숫자로 변환 안됌", Toast.LENGTH_SHORT).show();
-                            }
+                GLog.d("adapter position " + position);
+                if (position != RecyclerView.NO_POSITION) {
+                    //customLists.get(position).getRatingToastMessage(rating.getContext()); //클릭시 토스트메세지 띄우기
+                    // 클릭시 rating값 1씩 증가
+                    //pos = String.valueOf(pos);
+                    try {
+                        int item = Integer.parseInt(customLists.get(position).getRating());
+                        item++;
+                        String temp = String.valueOf(item);
+                        customLists.get(position).setRating(temp);
+                        notifyItemChanged(position);
+                    } catch (Exception e) {
+                        GLog.d("e : " + e.getMessage());
+                        if (e instanceof NumberFormatException) {
+                            Toast.makeText(context, "숫자로 변환 안됌", Toast.LENGTH_SHORT).show();
                         }
                     }
                 }

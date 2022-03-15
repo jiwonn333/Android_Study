@@ -21,26 +21,18 @@ public class SubActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sub);
 
-        Intent intent = getIntent();
-        String strName, strProfileImg;
-        strName = intent.getStringExtra("name");
-        strProfileImg = intent.getStringExtra("profileURL");
-
         TextView tvName = findViewById(R.id.tv_name);
         ImageView ivProfile = findViewById(R.id.iv_profile);
         Button btnLogout = findViewById(R.id.btn_logout);
         Button btnUnlink = findViewById(R.id.btn_unlink);
 
-        //사용자 정보 기본 요청
-        UserApiClient.getInstance().me((user, throwable) -> {
-            if (throwable != null) {
-                GLog.d("사용자 정보 요청 실패");
-            } else {
-                tvName.setText(strName);
-                Glide.with(SubActivity.this).load(strProfileImg).into(ivProfile);
-            }
-            return null;
-        });
+        Intent intent = getIntent();
+        String strName, strProfileImg;
+        strName = intent.getStringExtra("nickName");
+        strProfileImg = intent.getStringExtra("profileURL");
+
+        tvName.setText(strName);
+        Glide.with(SubActivity.this).load(strProfileImg).into(ivProfile);
 
         //로그아웃
         btnLogout.setOnClickListener(view -> UserApiClient.getInstance().logout(throwable -> {
@@ -50,8 +42,6 @@ public class SubActivity extends AppCompatActivity {
                 GLog.d("로그아웃 성공");
                 Toast.makeText(this, "로그아웃 성공", Toast.LENGTH_SHORT).show();
             }
-            Intent intentback = new Intent(getApplicationContext(), LoginMainActivity.class);
-            startActivity(intentback);
             finish();
             return null;
         }));
@@ -64,8 +54,6 @@ public class SubActivity extends AppCompatActivity {
                 GLog.d("연결 끊기 성공");
                 Toast.makeText(this, "연결 끊기 성공", Toast.LENGTH_SHORT).show();
             }
-            Intent intentback = new Intent(getApplicationContext(), LoginMainActivity.class);
-            startActivity(intentback);
             finish();
             return null;
         }));

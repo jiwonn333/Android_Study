@@ -66,13 +66,17 @@ public class LoginMainActivity extends Activity {
 
     private void userUI() {
         UserApiClient.getInstance().me((user, throwable) -> {
-            Intent intent = new Intent(getApplicationContext(), SubActivity.class);
-            intent.putExtra("name", user.getKakaoAccount().getProfile().getNickname());
-            intent.putExtra("profileURL", user.getKakaoAccount().getProfile().getProfileImageUrl());
-            startActivity(intent);
+            if (throwable != null) {
+                GLog.d("사용자 정보 요청 실패");
+            } else if (user.getKakaoAccount().getProfile().getNickname() != null && user.getKakaoAccount().getProfile().getProfileImageUrl() != null) {
+                Intent intent = new Intent(getApplicationContext(), SubActivity.class);
+                intent.putExtra("nickName", user.getKakaoAccount().getProfile().getNickname());
+                intent.putExtra("profileURL", user.getKakaoAccount().getProfile().getProfileImageUrl());
+                startActivity(intent);
+            } else {
+                GLog.d("profile 정보 값이 null 입니다.");
+            }
             return null;
         });
     }
-
-
 }

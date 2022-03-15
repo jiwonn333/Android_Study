@@ -16,7 +16,6 @@ import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.Data;
 import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
 import com.example.mysnsaccount.retrofit.RetrofitApiManager;
 import com.example.mysnsaccount.retrofit.RetrofitInterface;
-import com.example.mysnsaccount.util.GLog;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,7 +47,6 @@ public class RecyclerViewActivity extends AppCompatActivity {
         recyclerView.setVisibility(View.VISIBLE);
 
         getRoots();
-
 
     }
 
