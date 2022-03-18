@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.kakao;
+package com.example.mysnsaccount.login;
 
 import android.app.Application;
 

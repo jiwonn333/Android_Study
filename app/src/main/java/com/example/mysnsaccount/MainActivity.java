@@ -8,7 +8,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mysnsaccount.customwebview.WebViewActivity;
-import com.example.mysnsaccount.kakao.LoginMainActivity;
+import com.example.mysnsaccount.login.LoginActivity;
 import com.example.mysnsaccount.permission.PermissionActivity;
 import com.example.mysnsaccount.recyclerview.RecyclerViewActivity;
 import com.example.mysnsaccount.retrofit.RetrofitActivity;
@@ -71,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         mKakaoLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intentLogin = new Intent(getApplicationContext(), LoginMainActivity.class);
+                Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
                 startActivity(intentLogin);
             }
         });
