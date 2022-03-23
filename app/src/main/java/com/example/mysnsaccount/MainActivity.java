@@ -8,6 +8,7 @@ import android.widget.Button;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mysnsaccount.customwebview.WebViewActivity;
+import com.example.mysnsaccount.dialogtest.AlertDialogActivity;
 import com.example.mysnsaccount.login.LoginActivity;
 import com.example.mysnsaccount.permission.PermissionActivity;
 import com.example.mysnsaccount.recyclerview.RecyclerViewActivity;
@@ -18,7 +19,7 @@ public class MainActivity extends AppCompatActivity {
     //카카오톡 로그인
     private Button mKakaoLoginBtn;
     //웹뷰버튼, 서버통신 버튼
-    private Button wvbtn, apibtn, perbtn, recyclerviewbtn;
+    private Button wvbtn, apibtn, perbtn, recyclerviewbtn, alertdialogbtn;
 
 
     @Override
@@ -30,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         apibtn = findViewById(R.id.apibtn);
         perbtn = findViewById(R.id.perbtn);
         recyclerviewbtn = findViewById(R.id.recyclerviewbtn);
+        alertdialogbtn = findViewById(R.id.alertdialogbtn);
 
         //웹뷰 버튼 클릭
         wvbtn.setOnClickListener(new View.OnClickListener() {
@@ -64,6 +66,15 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intentRe = new Intent(getApplicationContext(), RecyclerViewActivity.class);
                 startActivity(intentRe);
+            }
+        });
+
+        //alertDialog 버튼 클릭
+        alertdialogbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intentAlert = new Intent(getApplicationContext(), AlertDialogActivity.class);
+                startActivity(intentAlert);
             }
         });
 

@@ -52,6 +52,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".login.LoginSuccessActivity" />
+        <activity android:name=".dialogtest.AlertDialogActivity" />
     </application>
 
 </manifest>

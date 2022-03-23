@@ -36,6 +36,12 @@
             android:layout_height="wrap_content"
             android:text="recyclerView" />
 
+        <Button
+            android:id="@+id/alertdialogbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dialog Test" />
+
 
     </LinearLayout>
 
@@ -70,7 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:text="카카오 로그인" />
+            android:text="로그인" />
     </LinearLayout>
 
     <!--    <LinearLayout-->

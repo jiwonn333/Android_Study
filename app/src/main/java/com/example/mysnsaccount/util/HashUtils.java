@@ -7,12 +7,12 @@ import java.security.MessageDigest;
 public class HashUtils {
 
 
-    public static String getUserPW(String str) {
+    public static String getEncryptData(String data) {
         String hexUserPw = "";
 
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
-            md.update(str.getBytes(StandardCharsets.UTF_8));
+            md.update(data.getBytes(StandardCharsets.UTF_8));
             hexUserPw = String.format("%064x", new BigInteger(1, md.digest()));
             GLog.d("UserPw --> " + hexUserPw);
 

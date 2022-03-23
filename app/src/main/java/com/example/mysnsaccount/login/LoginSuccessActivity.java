@@ -22,8 +22,8 @@ import com.example.mysnsaccount.util.GLog;
 import com.kakao.sdk.user.UserApiClient;
 
 public class LoginSuccessActivity extends AppCompatActivity {
-    TextView tvName, tvId;
-    ImageView ivProfile;
+    TextView kakaoUserName, loginUserName;
+    ImageView kakaoProfile;
     Button btnKakaoLogout, btnLogout, btnUnlink;
     Context context;
     ConstraintLayout kakaoLoginSuccess;
@@ -37,27 +37,27 @@ public class LoginSuccessActivity extends AppCompatActivity {
 
         context = this;
 
-        tvName = findViewById(R.id.tv_name);
-        ivProfile = findViewById(R.id.iv_profile);
+        kakaoUserName = findViewById(R.id.tv_name);
+        kakaoProfile = findViewById(R.id.iv_profile);
         btnKakaoLogout = findViewById(R.id.btn_logout_kakao);
         btnUnlink = findViewById(R.id.btn_unlink_kakao);
 
         kakaoLoginSuccess = findViewById(R.id.kakaoLogin);
         loginSuccess = findViewById(R.id.loginLayout);
 
-        tvId = findViewById(R.id.tv_id);
+        loginUserName = findViewById(R.id.tv_id);
         btnLogout = findViewById(R.id.btn_logout);
 
 
         Intent intent = getIntent();
 
-        String strName = intent.getStringExtra("nickName");
-        String strProfileImg = intent.getStringExtra("profileURL");
-        tvName.setText(strName);
-        Glide.with(LoginSuccessActivity.this).load(strProfileImg).into(ivProfile);
+        String kakaoNickName = intent.getStringExtra("nickName");
+        String kakaoProfileURL = intent.getStringExtra("profileURL");
+        kakaoUserName.setText(kakaoNickName);
+        Glide.with(LoginSuccessActivity.this).load(kakaoProfileURL).into(kakaoProfile);
 
-        String strId = intent.getStringExtra("tvId");
-        tvId.setText(strId);
+        String loginName = intent.getStringExtra("loginName");
+        loginUserName.setText(loginName);
 
         boolean isKakaoLogin = intent.getBooleanExtra("isKakaoLogin", false);
         GLog.d("isKakaoLogin" + isKakaoLogin);

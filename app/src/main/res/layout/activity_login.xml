@@ -28,6 +28,7 @@
             android:layout_width="242dp"
             android:layout_height="wrap_content"
             android:hint="비밀번호 입력하세요"
+            android:inputType="textPassword"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="85dp"
             tools:layout_editor_absoluteY="270" />
@@ -60,7 +61,7 @@
             android:id="@+id/btn_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="로그인"
+            tools:text="로그인"
             tools:ignore="MissingConstraints"
             tools:layout_editor_absoluteX="-26dp"
             tools:layout_editor_absoluteY="373dp" />
@@ -68,10 +69,12 @@
 
     <Button
         android:id="@+id/btn_kakao_login"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="150dp"
-        android:text="카카오톡으로 로그인하기"
+        android:background="@drawable/kakao_login_medium_wide"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:text="카카오톡으로 로그인하기" />
 </androidx.constraintlayout.widget.ConstraintLayout>

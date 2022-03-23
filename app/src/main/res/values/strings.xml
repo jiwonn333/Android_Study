@@ -12,4 +12,11 @@
     <string name="text_rating_warning">%s세 게임</string>
     <string name="text_rating_all">전체이용가</string>
 
+    <!--AlertDialog-->
+    <string-array name="LAN">
+        <item> "Android"</item>
+        <item> "Java"</item>
+        <item> "C/C++"</item>
+    </string-array>
+
 </resources>
