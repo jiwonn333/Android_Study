@@ -3,7 +3,6 @@ package com.example.mysnsaccount.login;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Button;
@@ -14,9 +13,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.example.mysnsaccount.R;
-import com.example.mysnsaccount.util.Constant;
 import com.example.mysnsaccount.util.GLog;
 import com.example.mysnsaccount.util.HashUtils;
+import com.example.mysnsaccount.util.UserPreference;
 import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.common.model.ClientError;
 import com.kakao.sdk.common.model.ClientErrorCause;
@@ -30,10 +29,8 @@ import kotlin.jvm.functions.Function2;
 public class LoginActivity extends Activity {
     Button btnKakaoLogin, btnLogin;
     EditText etUserId, etUserPw;
-    String userId, userPw, getUserId, getUserPw;
+    String userId, userPw, getUserId, getUserPw, kakaoProfileImageUrl, kakaoProfileUserName;
     CheckBox checkSaveId, checkAutoLogin;
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
     Intent intent;
     boolean validation, saveIdCheck, autoLoginCheck;
 
@@ -52,57 +49,27 @@ public class LoginActivity extends Activity {
         checkSaveId = findViewById(R.id.ck_id);
         checkAutoLogin = findViewById(R.id.ck_autologin);
 
-        pref = getSharedPreferences("loginPref", MODE_PRIVATE);
-        editor = pref.edit();
+        userId = UserPreference.getUesrId(context);
+        userPw = UserPreference.getUesrPassword(context);
 
-        userId = pref.getString(Constant.PREF_KEY_USER_ID, "");
-        userPw = pref.getString(Constant.PREF_KEY_USER_PW, "");
-
-        saveIdCheck = pref.getBoolean("saveIdCheck", checkSaveId.isChecked());
-        autoLoginCheck = pref.getBoolean("autoLoginCheck", checkAutoLogin.isChecked());
-
-//        etUserId.setText(saveIdCheck ? userId : "");
-//        checkSaveId.setChecked(saveIdCheck);
-//
-
-//        if (checkSaveId.isChecked()) {
-//            etUserId.setText(userId);
-//            checkSaveId.setChecked(true);
-//        } else {
-//            etUserId.setText("");
-//            etUserPw.setText("");
-//
-//        }
-
+        saveIdCheck = UserPreference.getSaveIdCheck(context);
+        autoLoginCheck = UserPreference.getAutoLoginCheck(context);
 
         // 아이디 저장 체크박스가 체크되어있으면 실행, 아니면 false
+        checkSaveId.setChecked(saveIdCheck);
         if (saveIdCheck) {
             etUserId.setText(userId);
-            checkSaveId.setChecked(true);
         } else {
             etUserId.setText("");
             etUserPw.setText("");
-            GLog.d("아이디 저장 안됨");
         }
 
         //자동로그인 체크박스 체크되어있으면 바로 로그인 실행
+        checkAutoLogin.setChecked(autoLoginCheck);
         if (autoLoginCheck) {
-            checkAutoLogin.setChecked(true);
-            if (!TextUtils.isEmpty(userId) && !TextUtils.isEmpty(userPw)) {
-                if (TextUtils.equals(Constant.PREF_USER_ID, userId) && TextUtils.equals(Constant.PREF_USER_PW, userPw)) {
-                    Toast.makeText(context, "자동 로그인 성공", Toast.LENGTH_SHORT).show();
-                    intent = new Intent(getApplicationContext(), LoginSuccessActivity.class);
-                    intent.putExtra("loginName", userId);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    loginCheckValidation(userId, userPw);
-                    GLog.d("자동로그인 실패");
-                    GLog.d("autoLoginCheck : " + autoLoginCheck);
-                }
-            } else {
-                loginCheckValidation(userId, userPw);
-                GLog.d("자동로그인 실패");
+            if (loginCheckValidation(userId, userPw)) {
+                Toast.makeText(context, "자동 로그인 성공", Toast.LENGTH_SHORT).show();
+                startIntent(false);
             }
         }
 
@@ -118,23 +85,16 @@ public class LoginActivity extends Activity {
             validation = loginCheckValidation(getUserId, getUserPw);
 
             if (validation) {
-                editor.putString(Constant.PREF_KEY_USER_ID, getUserId);
-                editor.putString(Constant.PREF_KEY_USER_PW, getUserPw);
-                editor.putBoolean("saveIdCheck", checkSaveId.isChecked());
-                editor.putBoolean("autoLoginCheck", checkAutoLogin.isChecked());
+                UserPreference.setUserId(context, getUserId);
+                UserPreference.setUserPassword(context, getUserPw);
+                UserPreference.setSaveIdCheck(context, checkSaveId.isChecked());
+                UserPreference.setAutoLoginCheck(context, checkAutoLogin.isChecked());
 
-                editor.commit();
-
+                userId = getUserId;
+                startIntent(false);
                 Toast.makeText(context, "로그인 성공", Toast.LENGTH_SHORT).show();
-                intent = new Intent(getApplicationContext(), LoginSuccessActivity.class);
-                intent.putExtra("isKakaoLogin", false);
-                intent.putExtra("loginName", getUserId);
-                startActivity(intent);
-                finish();
-
             } else {
-                GLog.d("validation" + validation);
-                Toast.makeText(context, "로그인 실패!!!", Toast.LENGTH_SHORT).show();
+                GLog.d("validation : " + validation);
             }
         });
 
@@ -184,12 +144,9 @@ public class LoginActivity extends Activity {
                 if (account != null) {
                     Profile profile = account.getProfile();
                     if (profile != null) {
-                        intent = new Intent(getApplicationContext(), LoginSuccessActivity.class);
-                        intent.putExtra("nickName", profile.getNickname());
-                        intent.putExtra("profileURL", profile.getProfileImageUrl());
-                        intent.putExtra("isKakaoLogin", true);
-                        startActivity(intent);
-                        finish();
+                        kakaoProfileImageUrl = profile.getProfileImageUrl();
+                        kakaoProfileUserName = profile.getNickname();
+                        startIntent(true);
                     } else {
                         GLog.d("profile이 null값 입니다.");
                     }
@@ -216,17 +173,27 @@ public class LoginActivity extends Activity {
             return false;
         }
 
-        if (!TextUtils.equals(Constant.PREF_USER_ID, userId)) {
+        if (!TextUtils.equals(UserPreference.PREF_USER_ID, userId)) {
             Toast.makeText(context, "아이디가 틀림", Toast.LENGTH_SHORT).show();
             return false;
         }
 
-        if (!TextUtils.equals(Constant.PREF_USER_PW, userPw)) {
+        if (!TextUtils.equals(UserPreference.PREF_USER_PW, userPw)) {
             Toast.makeText(context, "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
             return false;
         }
 
         return true;
+    }
+
+    private void startIntent(boolean isKakaoLogin) {
+        intent = new Intent(getApplicationContext(), LoginSuccessActivity.class);
+        intent.putExtra("isKakaoLogin", isKakaoLogin);
+        intent.putExtra("kakaoLoginUserName", kakaoProfileUserName);
+        intent.putExtra("profileURL", kakaoProfileImageUrl);
+        intent.putExtra("loginName", userId);
+        startActivity(intent);
+        finish();
     }
 
 }

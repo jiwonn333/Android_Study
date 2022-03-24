@@ -1,10 +1,8 @@
 package com.example.mysnsaccount.login;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +17,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.bumptech.glide.Glide;
 import com.example.mysnsaccount.R;
 import com.example.mysnsaccount.util.GLog;
+import com.example.mysnsaccount.util.UserPreference;
 import com.kakao.sdk.user.UserApiClient;
 
 public class LoginSuccessActivity extends AppCompatActivity {
@@ -37,38 +36,29 @@ public class LoginSuccessActivity extends AppCompatActivity {
 
         context = this;
 
+        kakaoLoginSuccess = findViewById(R.id.kakaoLogin);
         kakaoUserName = findViewById(R.id.tv_name);
         kakaoProfile = findViewById(R.id.iv_profile);
         btnKakaoLogout = findViewById(R.id.btn_logout_kakao);
         btnUnlink = findViewById(R.id.btn_unlink_kakao);
 
-        kakaoLoginSuccess = findViewById(R.id.kakaoLogin);
         loginSuccess = findViewById(R.id.loginLayout);
-
         loginUserName = findViewById(R.id.tv_id);
         btnLogout = findViewById(R.id.btn_logout);
 
-
         Intent intent = getIntent();
-
-        String kakaoNickName = intent.getStringExtra("nickName");
+        String kakaoLoginUserName = intent.getStringExtra("kakaoLoginUserName");
         String kakaoProfileURL = intent.getStringExtra("profileURL");
-        kakaoUserName.setText(kakaoNickName);
-        Glide.with(LoginSuccessActivity.this).load(kakaoProfileURL).into(kakaoProfile);
-
         String loginName = intent.getStringExtra("loginName");
-        loginUserName.setText(loginName);
-
         boolean isKakaoLogin = intent.getBooleanExtra("isKakaoLogin", false);
-        GLog.d("isKakaoLogin" + isKakaoLogin);
-
 
         if (isKakaoLogin) {
             kakaoLoginSuccess.setVisibility(View.VISIBLE);
-
+            kakaoUserName.setText(kakaoLoginUserName);
+            Glide.with(LoginSuccessActivity.this).load(kakaoProfileURL).into(kakaoProfile);
         } else {
             loginSuccess.setVisibility(View.VISIBLE);
-
+            loginUserName.setText(loginName);
         }
 
 
@@ -100,10 +90,7 @@ public class LoginSuccessActivity extends AppCompatActivity {
 
         // 로그아웃 하면 자동로그인 x
         btnLogout.setOnClickListener(view -> {
-            SharedPreferences pref = context.getSharedPreferences("loginPref", Activity.MODE_PRIVATE);
-            SharedPreferences.Editor prefEdit = pref.edit();
-            prefEdit.clear();
-            prefEdit.commit();
+            UserPreference.setClear(context);
             finish();
             Toast.makeText(context, "로그아웃 성공", Toast.LENGTH_SHORT).show();
         });
