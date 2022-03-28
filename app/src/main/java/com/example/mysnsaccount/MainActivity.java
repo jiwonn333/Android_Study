@@ -1,9 +1,11 @@
 package com.example.mysnsaccount;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -17,11 +19,12 @@ import com.example.mysnsaccount.retrofit.RetrofitActivity;
 public class MainActivity extends AppCompatActivity {
 
     //카카오톡 로그인
-    private Button mKakaoLoginBtn;
+    Button mKakaoLoginBtn;
     //웹뷰버튼, 서버통신 버튼
-    private Button wvbtn, apibtn, perbtn, recyclerviewbtn, alertdialogbtn;
+    Button wvbtn, apibtn, perbtn, recyclerviewbtn, alertdialogbtn;
+    ImageView startLogin, startWebView, startRetrofit, startPer, startRecycler, startDialog;
 
-
+    @SuppressLint("WrongViewCast")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,8 +36,16 @@ public class MainActivity extends AppCompatActivity {
         recyclerviewbtn = findViewById(R.id.recyclerviewbtn);
         alertdialogbtn = findViewById(R.id.alertdialogbtn);
 
+
+        startLogin = findViewById(R.id.icon_login);
+        startWebView = findViewById(R.id.icon_webview);
+        startRetrofit = findViewById(R.id.icon_api);
+        startPer = findViewById(R.id.icon_per);
+        startRecycler = findViewById(R.id.icon_recycler);
+        startDialog = findViewById(R.id.icon_dialog);
+
         //웹뷰 버튼 클릭
-        wvbtn.setOnClickListener(new View.OnClickListener() {
+        startWebView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), WebViewActivity.class);
@@ -43,7 +54,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //서버통신 버튼 클릭
-        apibtn.setOnClickListener(new View.OnClickListener() {
+        startRetrofit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intentApi = new Intent(getApplicationContext(), RetrofitActivity.class);
@@ -52,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //퍼미션 버튼 클릭
-        perbtn.setOnClickListener(new View.OnClickListener() {
+        startPer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intentPer = new Intent(getApplicationContext(), PermissionActivity.class);
@@ -61,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //리사이클러뷰 버튼 클릭
-        recyclerviewbtn.setOnClickListener(new View.OnClickListener() {
+        startRecycler.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intentRe = new Intent(getApplicationContext(), RecyclerViewActivity.class);
@@ -70,7 +81,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //alertDialog 버튼 클릭
-        alertdialogbtn.setOnClickListener(new View.OnClickListener() {
+        startDialog.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intentAlert = new Intent(getApplicationContext(), AlertDialogActivity.class);
@@ -78,13 +89,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //커스텀버튼 클릭시 카카오톡 로그인화면으로 넘어감 (세션이 있다면 재로그인 없이 즉시 콜백클래스 작동
-        mKakaoLoginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
-                startActivity(intentLogin);
-            }
+
+        //로그인페이지 이동
+        startLogin.setOnClickListener(view -> {
+            Intent intentLogin = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intentLogin);
         });
     }
 }

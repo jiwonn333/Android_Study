@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <Button
+            android:id="@+id/wvbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="웹뷰" />
+
+        <Button
+            android:id="@+id/apibtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="서버통신" />
+        <!--runtime permission-->
+        <Button
+            android:id="@+id/perbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="권한 허가" />
+        <!--recyclerView-->
+        <Button
+            android:id="@+id/recyclerviewbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="recyclerView" />
+
+        <Button
+            android:id="@+id/alertdialogbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dialog Test" />
+
+
+    </LinearLayout>
+
+
+    <!--로그인 버튼 및 자동 로그인 로직 구현-->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/hg_main_90"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.90" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/hg_main_95"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95" />
+
+    <LinearLayout
+        android:id="@+id/layout_login_btn_group"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toTopOf="@+id/hg_main_95"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/hg_main_90">
+
+
+        <Button
+            android:id="@+id/btn_kakao_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="로그인" />
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.example.mysnsaccount.dialogtest;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -11,12 +12,13 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mysnsaccount.R;
+import com.example.mysnsaccount.util.GLog;
 
 import java.util.ArrayList;
 
 public class AlertDialogActivity extends AppCompatActivity {
-    Button alertDialog, btnDialog, listDialog, checkBoxDialog, raidoDialog, customDialog;
-
+    Button alertDialog, btnDialog, listDialog, checkBoxDialog, raidoDialog, customAlertDialog;
+    Button customDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -28,7 +30,8 @@ public class AlertDialogActivity extends AppCompatActivity {
         listDialog = findViewById(R.id.btn3);
         checkBoxDialog = findViewById(R.id.btn4);
         raidoDialog = findViewById(R.id.btn5);
-        customDialog = findViewById(R.id.btn6);
+        customAlertDialog = findViewById(R.id.btn6);
+        customDialog = findViewById(R.id.btn7);
 
 
         // 첫번째 버튼 (다이얼로그 사용하여 팝업창 띄우기)
@@ -48,7 +51,7 @@ public class AlertDialogActivity extends AppCompatActivity {
                     })
                     .setNegativeButton("아니요", (dialogInterface, i) -> Toast.makeText(AlertDialogActivity.this, "종료하지 않습니다.", Toast.LENGTH_SHORT).show())
                     .setNeutralButton("취소", (dialogInterface, i) -> Toast.makeText(AlertDialogActivity.this, "취소했습니다.", Toast.LENGTH_SHORT).show())
-                    .create().show();
+                    .show();
         });
 
 
@@ -59,7 +62,7 @@ public class AlertDialogActivity extends AppCompatActivity {
                     .setItems(R.array.LAN, (dialogInterface, position) -> {
                         String[] items = getResources().getStringArray(R.array.LAN);
                         Toast.makeText(AlertDialogActivity.this, items[position], Toast.LENGTH_SHORT).show();
-                    }).create().show();
+                    }).show();
         });
 
 
@@ -83,7 +86,7 @@ public class AlertDialogActivity extends AppCompatActivity {
                     selectedItemsString += selectedItems.get(i) + " ";
                 }
                 Toast.makeText(AlertDialogActivity.this, selectedItemsString + "가 선택되었습니다.", Toast.LENGTH_SHORT).show();
-            }).create().show();
+            }).show();
         });
 
 
@@ -99,12 +102,12 @@ public class AlertDialogActivity extends AppCompatActivity {
                         selectedItems.clear();
                         selectedItems.add(items[position]);
                     }).setPositiveButton("OK", (dialogInterface, i) -> Toast.makeText(AlertDialogActivity.this, "선택된 항목 : " + selectedItems.get(0), Toast.LENGTH_SHORT).show())
-                    .setNegativeButton("CANCLE", (dialogInterface, i) -> Toast.makeText(AlertDialogActivity.this, "선택이 취소되었습니다.", Toast.LENGTH_SHORT).show()).create().show();
+                    .setNegativeButton("CANCLE", (dialogInterface, i) -> Toast.makeText(AlertDialogActivity.this, "선택이 취소되었습니다.", Toast.LENGTH_SHORT).show()).show();
         });
 
 
         // 여섯번째 버튼 (커스텀 다이얼로그)
-        customDialog.setOnClickListener(view -> {
+        customAlertDialog.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             View customView = getLayoutInflater().inflate(R.layout.activity_customdialog, null);
             final EditText etName = (EditText) customView.findViewById(R.id.edit_view_name);
@@ -117,9 +120,27 @@ public class AlertDialogActivity extends AppCompatActivity {
                 String nickName = "별명 : " + etNickName.getText().toString();
 
                 Toast.makeText(AlertDialogActivity.this, name + "\n" + nickName, Toast.LENGTH_SHORT).show();
-            }).create().show();
+            }).show();
         });
 
+        // 일곱번째 버튼 (Dialog상속 커스텀 다이얼로그)
+        customDialog.setOnClickListener(view -> {
+            OptionCodeTypeDialog dialog = new OptionCodeTypeDialog(AlertDialogActivity.this, new CustomDialogClickListener() {
+                @Override
+                public void onPositiveClick() {
+                    GLog.d("저장 Click");
+                }
+
+                @Override
+                public void onNegativeClick() {
+                    GLog.d("취소 Click");
+                }
+            });
+            dialog.setCancelable(true);
+            dialog.setCanceledOnTouchOutside(true); // 다이얼로그 밖에 터치했을 때 꺼짐
+            dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
+            dialog.show();
+        });
 
     }
 }

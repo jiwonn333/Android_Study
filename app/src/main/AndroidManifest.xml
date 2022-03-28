@@ -23,10 +23,6 @@
             android:value="@string/kakao_app_key" />
 
 
-        <activity android:name=".login.LoginActivity" />
-        <activity android:name=".retrofit.RetrofitActivity" />
-        <activity android:name=".permission.PermissionActivity" />
-        <activity android:name=".recyclerview.RecyclerViewActivity" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -51,8 +47,14 @@
                     android:scheme="kakaobdec4dffc749223591bddcb598abc71f" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".login.LoginActivity" />
+        <activity android:name=".retrofit.RetrofitActivity" />
+        <activity android:name=".permission.PermissionActivity" />
+        <activity android:name=".recyclerview.RecyclerViewActivity" />
         <activity android:name=".login.LoginSuccessActivity" />
         <activity android:name=".dialogtest.AlertDialogActivity" />
+
     </application>
 
 </manifest>

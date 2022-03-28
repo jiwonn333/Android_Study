@@ -45,7 +45,13 @@
             android:id="@+id/btn6"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="커스텀 다이얼로그" />
+            android:text="AlertDialog 상속 커스텀 다이얼로그" />
+
+        <Button
+            android:id="@+id/btn7"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Dialog 상속 커스텀 다이얼로그" />
 
     </LinearLayout>
 
