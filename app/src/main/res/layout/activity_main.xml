@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ImageView
+        android:id="@+id/login_image_view"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintBottom_toTopOf="@id/main_recycler_view"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/login_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:text=""
+        app:layout_constraintBottom_toBottomOf="@id/login_image_view"
+        app:layout_constraintStart_toEndOf="@id/login_image_view"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/icon_login"
@@ -13,123 +30,24 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_login_24" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/tv_login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="로그인"
         app:layout_constraintEnd_toEndOf="@+id/icon_login"
         app:layout_constraintStart_toStartOf="@+id/icon_login"
         app:layout_constraintTop_toBottomOf="@+id/icon_login" />
 
 
-    <ImageView
-        android:id="@+id/icon_webview"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/icon_api"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login"
-        app:srcCompat="@drawable/ic_baseline_web_24"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/tv_webview"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="웹뷰"
-        app:layout_constraintEnd_toEndOf="@+id/icon_webview"
-        app:layout_constraintStart_toStartOf="@+id/icon_webview"
-        app:layout_constraintTop_toBottomOf="@+id/icon_webview"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/icon_api"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/icon_per"
-        app:layout_constraintStart_toEndOf="@+id/icon_webview"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login"
-        app:srcCompat="@drawable/ic_baseline_broadcast_on_home_24"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/tv_api"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="서버통신"
-        app:layout_constraintEnd_toEndOf="@+id/icon_api"
-        app:layout_constraintStart_toStartOf="@+id/icon_api"
-        app:layout_constraintTop_toBottomOf="@+id/icon_api"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/icon_per"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/icon_recycler"
-        app:layout_constraintStart_toEndOf="@+id/icon_api"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login"
-        app:srcCompat="@drawable/ic_baseline_security_24"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/tv_per"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="권한 허가"
-        app:layout_constraintEnd_toEndOf="@+id/icon_per"
-        app:layout_constraintStart_toStartOf="@+id/icon_per"
-        app:layout_constraintTop_toBottomOf="@+id/icon_per"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/icon_recycler"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/icon_dialog"
-        app:layout_constraintStart_toEndOf="@+id/icon_per"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login"
-        app:srcCompat="@drawable/ic_baseline_cached_24"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/tv_recycler"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Recycler"
-        app:layout_constraintEnd_toEndOf="@+id/icon_recycler"
-        app:layout_constraintStart_toStartOf="@+id/icon_recycler"
-        app:layout_constraintTop_toBottomOf="@+id/icon_recycler"
-        tools:ignore="MissingConstraints" />
-
-    <ImageView
-        android:id="@+id/icon_dialog"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/main_recycler_view"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/icon_recycler"
-        app:layout_constraintTop_toBottomOf="@+id/tv_login"
-        app:srcCompat="@drawable/ic_baseline_alert_24"
-        tools:ignore="MissingConstraints" />
-
-    <TextView
-        android:id="@+id/tv_dialog"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Dialog"
-        app:layout_constraintEnd_toEndOf="@+id/icon_dialog"
-        app:layout_constraintStart_toStartOf="@+id/icon_dialog"
-        app:layout_constraintTop_toBottomOf="@+id/icon_dialog"
-        tools:ignore="MissingConstraints" />
-
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_login" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

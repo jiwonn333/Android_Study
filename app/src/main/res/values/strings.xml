@@ -19,4 +19,9 @@
         <item> "C/C++"</item>
     </string-array>
 
+    <string-array name="LOGOUT">
+        <item> "로그아웃"</item>
+        <item> "탈퇴하기"</item>
+    </string-array>
+
 </resources>

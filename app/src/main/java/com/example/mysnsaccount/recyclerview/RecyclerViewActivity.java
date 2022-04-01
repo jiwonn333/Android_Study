@@ -40,7 +40,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         dataInfo = new ArrayList<>();
         recyclerView = findViewById(R.id.recycler_view);
         textView = findViewById(R.id.text_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)); //가로로 스크롤
+        recyclerView.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false));
         recyclerViewAdapter = new RecyclerViewAdapter(context);
         recyclerView.setAdapter(recyclerViewAdapter);
 

@@ -7,9 +7,9 @@
     tools:context=".login.LoginSuccessActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/kakaoLogin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/kakaoLogin"
         android:visibility="gone">
 
         <ImageView
@@ -40,8 +40,8 @@
             android:layout_height="wrap_content"
             android:text="로그아웃"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button

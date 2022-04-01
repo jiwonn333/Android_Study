@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
@@ -32,34 +31,31 @@ public class PermissionActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_permission);
+        setContentView(R.layout.activity_main);
         Button button = findViewById(R.id.perbtn);
         context = this;
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (checkPermission()) {
-                    // 휴대폰 정보는 TelephonyManger를 이용
-                    TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
 
-                    //안드로이드 버전에 따라권한 허가 받았는지 확인
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED) {
-                            return;
-                        }
-                    } else {
-                        if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
-                            return;
-                        }
-                    }
-                    Log.d(TAG, "음성통화 상태 : [ getCallState ] >>> " + tm.getCallState());
-                    Log.d(TAG, "데이터통신 상태 : [ getDataState ] >>> " + tm.getDataState());
-                    Log.d(TAG, "통신사 ISO 국가코드 : [ getNetworkCountryIso ] >>> " + tm.getNetworkCountryIso());
-                    Log.d(TAG, "통신사 ISO 국가코드 : [ getSimCountryIso ] >>> " + tm.getSimCountryIso());
-                    Log.d(TAG, "SIM 카드 상태 : [ getSimState ] >>> " + tm.getSimState());
+        if (checkPermission()) {
+            // 휴대폰 정보는 TelephonyManger를 이용
+            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+
+            //안드로이드 버전에 따라권한 허가 받았는지 확인
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_NUMBERS) != PackageManager.PERMISSION_GRANTED) {
+                    return;
+                }
+            } else {
+                if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    return;
                 }
             }
-        });
+            Log.d(TAG, "음성통화 상태 : [ getCallState ] >>> " + tm.getCallState());
+            Log.d(TAG, "데이터통신 상태 : [ getDataState ] >>> " + tm.getDataState());
+            Log.d(TAG, "통신사 ISO 국가코드 : [ getNetworkCountryIso ] >>> " + tm.getNetworkCountryIso());
+            Log.d(TAG, "통신사 ISO 국가코드 : [ getSimCountryIso ] >>> " + tm.getSimCountryIso());
+            Log.d(TAG, "SIM 카드 상태 : [ getSimState ] >>> " + tm.getSimState());
+        }
+
     }
 
     boolean checkPermission() {
@@ -129,6 +125,7 @@ public class PermissionActivity extends AppCompatActivity {
                                     Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
                                     startActivity(intent);
                                     dialog.cancel();
+                                    finish();
                                 }
                             });
                     //취소
@@ -136,6 +133,7 @@ public class PermissionActivity extends AppCompatActivity {
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.cancel();
+                                    finish();
                                 }
                             });
                     alertDialog.show();
