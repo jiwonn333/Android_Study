@@ -96,22 +96,6 @@ public class UserPreference {
         editor.commit();
     }
 
-    public static boolean getLoginSuccess(Context context) {
-        SharedPreferences pref = getPreferences(context);
-        SharedPreferences.Editor editor = pref.edit();
-
-        boolean getLoginSuccess = pref.getBoolean("loginSuccess", DEFAULT_VALUE_BOOLEAN);
-        return getLoginSuccess;
-    }
-
-    public static void setLoginSuccess(Context context, boolean loginSuccess) {
-        SharedPreferences pref = getPreferences(context);
-        SharedPreferences.Editor editor = pref.edit();
-
-        editor.putBoolean("loginSuccess", loginSuccess);
-        editor.commit();
-    }
-
     public static boolean getKakaoLoginSuccess(Context context) {
         SharedPreferences pref = getPreferences(context);
         SharedPreferences.Editor editor = pref.edit();

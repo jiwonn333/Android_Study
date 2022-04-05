@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.example.mysnsaccount.MainActivity;
 import com.example.mysnsaccount.R;
 import com.example.mysnsaccount.util.GLog;
 import com.example.mysnsaccount.util.HashUtils;
@@ -21,8 +20,6 @@ import com.kakao.sdk.auth.model.OAuthToken;
 import com.kakao.sdk.common.model.ClientError;
 import com.kakao.sdk.common.model.ClientErrorCause;
 import com.kakao.sdk.user.UserApiClient;
-import com.kakao.sdk.user.model.Account;
-import com.kakao.sdk.user.model.Profile;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
@@ -30,11 +27,11 @@ import kotlin.jvm.functions.Function2;
 public class LoginActivity extends Activity {
     Button btnKakaoLogin, btnLogin;
     EditText etUserId, etUserPw;
-    String userId, userPw, getUserId, getUserPw, kakaoProfileImageUrl, kakaoProfileUserName;
+    String userId, userPw, getUserId, getUserPw;
     CheckBox checkSaveId, checkAutoLogin;
     Intent intent;
     boolean validation, saveIdCheck, autoLoginCheck;
-    boolean loginSuccess;
+    boolean iskakaoLogin;
     Context context = this;
 
 
@@ -55,8 +52,8 @@ public class LoginActivity extends Activity {
 
         saveIdCheck = UserPreference.getSaveIdCheck(context);
         autoLoginCheck = UserPreference.getAutoLoginCheck(context);
+        iskakaoLogin = UserPreference.getKakaoLoginSuccess(context);
 
-        loginSuccess = UserPreference.getLoginSuccess(context);
 
         // 아이디 저장 체크박스가 체크되어있으면 실행, 아니면 false
         checkSaveId.setChecked(saveIdCheck);
@@ -92,7 +89,7 @@ public class LoginActivity extends Activity {
                 UserPreference.setUserPassword(context, getUserPw);
                 UserPreference.setSaveIdCheck(context, checkSaveId.isChecked());
                 UserPreference.setAutoLoginCheck(context, checkAutoLogin.isChecked());
-                UserPreference.setLoginSuccess(context, true);
+                UserPreference.setKakaoLoginSuccess(context, false);
                 userId = getUserId;
                 startIntent();
                 Toast.makeText(context, "로그인 성공", Toast.LENGTH_SHORT).show();
@@ -116,7 +113,7 @@ public class LoginActivity extends Activity {
                     } else if (oAuthToken != null) {
                         GLog.d("카카오톡으로 로그인 성공");
 
-                        startKakaoLoginActivity();
+                        startIntent();
 
                     }
                     return null;
@@ -133,38 +130,10 @@ public class LoginActivity extends Activity {
             GLog.d("카카오계정으로 로그인 실패");
         } else if (oAuthToken != null) {
             GLog.d("카카오계정으로 로그인 성공");
-            startKakaoLoginActivity();
+            startIntent();
         }
         return null;
     };
-
-    private void startKakaoLoginActivity() {
-        UserApiClient.getInstance().me((user, throwable) -> {
-            if (throwable != null) {
-                GLog.d("사용자 정보 요청 실패");
-            } else if (user != null) {
-                Account account = user.getKakaoAccount();
-                if (account != null) {
-                    Profile profile = account.getProfile();
-                    if (profile != null) {
-                        kakaoProfileImageUrl = profile.getProfileImageUrl();
-                        kakaoProfileUserName = profile.getNickname();
-                        UserPreference.setKakaoUserName(context, kakaoProfileUserName);
-                        UserPreference.setKakaoUserUrl(context, kakaoProfileImageUrl);
-                        UserPreference.setKakaoLoginSuccess(context, true);
-                        startIntent();
-                    } else {
-                        GLog.d("profile이 null값 입니다.");
-                    }
-                } else {
-                    GLog.d("account가 null값 입니다.");
-                }
-            } else {
-                GLog.d("user가 null값 입니다.");
-            }
-            return null;
-        });
-    }
 
 
     private boolean loginCheckValidation(String userId, String userPw) {
@@ -193,10 +162,11 @@ public class LoginActivity extends Activity {
     }
 
     private void startIntent() {
-        intent = new Intent(context, MainActivity.class);
-        startActivity(intent);
+        intent = new Intent();
+        setResult(RESULT_OK, intent);
         finish();
     }
+
 
 }
 
