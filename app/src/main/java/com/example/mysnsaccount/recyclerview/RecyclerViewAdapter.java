@@ -54,7 +54,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
 
     @Override
     public int getItemCount() {
-        GLog.d();
+//        GLog.d();
         if (customLists != null && !customLists.isEmpty())
             return customLists.size();
 

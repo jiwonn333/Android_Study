@@ -16,6 +16,8 @@ import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.Data;
 import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
 import com.example.mysnsaccount.retrofit.RetrofitApiManager;
 import com.example.mysnsaccount.retrofit.RetrofitInterface;
+import com.example.mysnsaccount.util.GLog;
+import com.example.mysnsaccount.wearable.WearableResponse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -86,6 +88,31 @@ public class RecyclerViewActivity extends AppCompatActivity {
             @Override
             public void onFailure(Throwable t) {
                 setErrorLayout("customLists값이 null 입니다.");
+            }
+        });
+
+        RetrofitApiManager.getInstance().requestWearableCall(new RetrofitInterface() {
+            @Override
+            public void onResponse(Response response) {
+                GLog.d("response : " + response);
+                if (response.isSuccessful()) {
+                    WearableResponse wearableResponse = (WearableResponse) response.body();
+                    GLog.d("wearableResponse : " + wearableResponse);
+                    if (wearableResponse != null) {
+                        GLog.d("wearableResponse.getError() : " + wearableResponse.getError());
+                        GLog.d("wearableResponse.getPhone() : " + wearableResponse.getPhone());
+                        GLog.d("wearableResponse.getWearable() : " + wearableResponse.getWearable());
+                    } else {
+                        GLog.d("wearableResponse is null");
+                    }
+                } else {
+                    GLog.e("Response is not Successful~!");
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                GLog.e("onFailure : " + t.toString());
             }
         });
     }

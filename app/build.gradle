@@ -51,8 +51,14 @@ dependencies {
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
     //retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+
     //recyclerview
     implementation "androidx.recyclerview:recyclerview:1.2.1"
 
+    //XmlParser
+    implementation 'com.tickaroo.tikxml:annotation:0.8.13'
+    implementation 'com.tickaroo.tikxml:core:0.8.13'
+    implementation 'com.tickaroo.tikxml:retrofit-converter:0.8.13'
 
+    annotationProcessor 'com.tickaroo.tikxml:processor:0.8.13'
 }

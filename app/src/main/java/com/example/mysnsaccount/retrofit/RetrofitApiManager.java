@@ -6,8 +6,11 @@ import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewMod
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
 import com.example.mysnsaccount.util.Constant;
 import com.example.mysnsaccount.util.GLog;
+import com.example.mysnsaccount.wearable.WearableResponse;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.tickaroo.tikxml.TikXml;
+import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +57,20 @@ public class RetrofitApiManager {
                 .client(getUnsafeOkHttpClient().build()) //OkHttp 사용해서 로그 보기
                 .baseUrl(Constant.BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create(gson)) //Gson 처리시
+                .build();
+    }
+
+    public static Retrofit WearableCallBuild() {
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        return new Retrofit.Builder()
+                .client(getUnsafeOkHttpClient().build()) //OkHttp 사용해서 로그 보기
+                .baseUrl(Constant.WEARABLE_URL)
+//                .addConverterFactory(GsonConverterFactory.create(gson)) //Gson 처리시
+                .addConverterFactory(TikXmlConverterFactory.create(new TikXml.Builder().exceptionOnUnreadXml(false).build()))       // XML 응답 처리시
                 .build();
     }
 
@@ -194,6 +211,20 @@ public class RetrofitApiManager {
 
             @Override
             public void onFailure(Call<RecyclerViewModel> call, Throwable t) {
+                retrofitInterface.onFailure(t);
+            }
+        });
+    }
+
+    public void requestWearableCall(RetrofitInterface retrofitInterface) {
+        WearableCallBuild().create(RetrofitApiService.class).getWearableCall("checkstatus", "01029172715", "01029172717").enqueue(new Callback<WearableResponse>() {
+            @Override
+            public void onResponse(Call<WearableResponse> call, Response<WearableResponse> response) {
+                retrofitInterface.onResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<WearableResponse> call, Throwable t) {
                 retrofitInterface.onFailure(t);
             }
         });
