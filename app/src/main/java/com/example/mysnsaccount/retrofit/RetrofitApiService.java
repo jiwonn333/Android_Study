@@ -4,8 +4,6 @@ import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewMod
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
 import com.example.mysnsaccount.wearable.WearableResponse;
 
-import okhttp3.Response;
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Query;

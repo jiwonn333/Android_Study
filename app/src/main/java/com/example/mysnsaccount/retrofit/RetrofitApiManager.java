@@ -217,7 +217,7 @@ public class RetrofitApiManager {
     }
 
     public void requestWearableCall(RetrofitInterface retrofitInterface) {
-        WearableCallBuild().create(RetrofitApiService.class).getWearableCall("checkstatus", "01029172715", "01029172717").enqueue(new Callback<WearableResponse>() {
+        WearableCallBuild().create(RetrofitApiService.class).getWearableCall("checkstatus", "01029172714", "01032162104").enqueue(new Callback<WearableResponse>() {
             @Override
             public void onResponse(Call<WearableResponse> call, Response<WearableResponse> response) {
                 retrofitInterface.onResponse(response);
