@@ -112,7 +112,7 @@ public class LoginActivity extends Activity {
                         UserApiClient.getInstance().loginWithKakaoAccount(context, callback);
                     } else if (oAuthToken != null) {
                         GLog.d("카카오톡으로 로그인 성공");
-
+                        UserPreference.setKakaoLoginSuccess(context, true);
                         startIntent();
 
                     }
@@ -129,8 +129,10 @@ public class LoginActivity extends Activity {
         if (throwable != null) {
             GLog.d("카카오계정으로 로그인 실패");
         } else if (oAuthToken != null) {
-            GLog.d("카카오계정으로 로그인 성공");
+
+            UserPreference.setKakaoLoginSuccess(context, true);
             startIntent();
+            GLog.d("카카오계정으로 로그인 성공");
         }
         return null;
     };

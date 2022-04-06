@@ -113,6 +113,7 @@ public class MainActivity extends Activity {
                                     if (throwable != null) {
                                         GLog.d("로그아웃 실패");
                                     } else {
+                                        UserPreference.setKakaoLoginSuccess(context, false);
                                         setLoginUi();
                                         Toast.makeText(context, "로그아웃 성공", Toast.LENGTH_SHORT).show();
                                     }
@@ -136,7 +137,7 @@ public class MainActivity extends Activity {
                                 GLog.d("선택한 값이 없음");
                                 break;
                         }
-                    }).setNegativeButton("CANCLE", (dialogInterface, i) -> {
+                    }).setNegativeButton("CANCEL", (dialogInterface, i) -> {
 
                     }).show();
                 } else {
@@ -157,7 +158,6 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == Constant.REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                UserPreference.setKakaoLoginSuccess(context, true);
                 setLoginUserInfo();
             } else {
                 GLog.d("주고받기 오류");
@@ -175,6 +175,7 @@ public class MainActivity extends Activity {
 
     private void setLoginUserInfo() {
         iskakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
+        GLog.d("iskakaologinSuccess :" + iskakaoLoginSuccess);
         if (iskakaoLoginSuccess) {
             UserApiClient.getInstance().me((user, throwable) -> {
                 if (throwable != null) {
@@ -184,7 +185,6 @@ public class MainActivity extends Activity {
                     if (account != null) {
                         Profile profile = account.getProfile();
                         if (profile != null) {
-
                             loginName.setText(user.getKakaoAccount().getProfile().getNickname());
                             Glide.with(context).load(user.getKakaoAccount().getProfile().getThumbnailImageUrl()).into(loginProfile);
                         } else {
