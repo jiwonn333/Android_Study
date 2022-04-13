@@ -2,28 +2,24 @@ package com.example.mysnsaccount.permission;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.mysnsaccount.R;
+import com.example.mysnsaccount.util.Constant;
+import com.example.mysnsaccount.util.GLog;
 
 public class PermissionActivity extends AppCompatActivity {
-    private static final int PERMISSION_REQUEST_CODE = 22;//권한변수
+    //private static final int PERMISSION_REQUEST_CODE = 22;//권한변수
     private static final String TAG = "sjw";
     private Context context;
 
@@ -32,7 +28,6 @@ public class PermissionActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button button = findViewById(R.id.perbtn);
         context = this;
 
         if (checkPermission()) {
@@ -45,15 +40,15 @@ public class PermissionActivity extends AppCompatActivity {
                     return;
                 }
             } else {
+                GLog.d("음성통화 상태 : [ getCallState ] >>> " + tm.getCallState());
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
                     return;
                 }
             }
-            Log.d(TAG, "음성통화 상태 : [ getCallState ] >>> " + tm.getCallState());
-            Log.d(TAG, "데이터통신 상태 : [ getDataState ] >>> " + tm.getDataState());
-            Log.d(TAG, "통신사 ISO 국가코드 : [ getNetworkCountryIso ] >>> " + tm.getNetworkCountryIso());
-            Log.d(TAG, "통신사 ISO 국가코드 : [ getSimCountryIso ] >>> " + tm.getSimCountryIso());
-            Log.d(TAG, "SIM 카드 상태 : [ getSimState ] >>> " + tm.getSimState());
+            GLog.d("데이터통신 상태 : [ getDataState ] >>> " + tm.getDataState());
+            GLog.d("통신사 ISO 국가코드 : [ getNetworkCountryIso ] >>> " + tm.getNetworkCountryIso());
+            GLog.d("통신사 ISO 국가코드 : [ getSimCountryIso ] >>> " + tm.getSimCountryIso());
+            GLog.d("SIM 카드 상태 : [ getSimState ] >>> " + tm.getSimState());
         }
 
     }
@@ -79,7 +74,7 @@ public class PermissionActivity extends AppCompatActivity {
             //필수 권한 중 한 개라도 없는 경우
             if (!mPermissionsGranted) {
                 //권한을 요청한다.
-                ActivityCompat.requestPermissions(PermissionActivity.this, mRequiredPermissions, PERMISSION_REQUEST_CODE);
+                ActivityCompat.requestPermissions(PermissionActivity.this, mRequiredPermissions, Constant.PERMISSION_REQUEST_CODE);
             }
         } else {
             mPermissionsGranted = true;
@@ -108,35 +103,12 @@ public class PermissionActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
+            case Constant.PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     /*권한이 있는경우 실행할 코드....*/
                     logic();
                 } else {
-                    // 하나라도 거부한다면.
-                    AlertDialog.Builder alertDialog = new AlertDialog.Builder(this);
-                    alertDialog.setTitle("앱 권한");
-                    alertDialog.setMessage("해당 앱의 원할한 기능을 이용하시려면 애플리케이션 정보>권한> 에서 모든 권한을 허용해 주십시오");
-
-                    // 권한설정 클릭시 이벤트 발생
-                    alertDialog.setPositiveButton("권한설정",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    Intent intent = new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
-                                    startActivity(intent);
-                                    dialog.cancel();
-                                    finish();
-                                }
-                            });
-                    //취소
-                    alertDialog.setNegativeButton("취소",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                    finish();
-                                }
-                            });
-                    alertDialog.show();
+                    //setPermissionDialog();
                 }
                 break;
         }

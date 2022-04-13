@@ -1,10 +1,13 @@
 package com.example.mysnsaccount.dialogtest;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -17,21 +20,25 @@ import com.example.mysnsaccount.util.GLog;
 import java.util.ArrayList;
 
 public class AlertDialogActivity extends AppCompatActivity {
-    Button alertDialog, btnDialog, listDialog, checkBoxDialog, raidoDialog, customAlertDialog;
+    Button alertDialog, btnDialog, listDialog, checkBoxDialog, radioDialog, customAlertDialog;
     Button customDialog;
+    EditText editText;
+    String inputDialogText;
+    Context context;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alertdialog);
-
+        this.context = context;
         alertDialog = findViewById(R.id.btn1);
         btnDialog = findViewById(R.id.btn2);
         listDialog = findViewById(R.id.btn3);
         checkBoxDialog = findViewById(R.id.btn4);
-        raidoDialog = findViewById(R.id.btn5);
+        radioDialog = findViewById(R.id.btn5);
         customAlertDialog = findViewById(R.id.btn6);
         customDialog = findViewById(R.id.btn7);
+        editText = findViewById(R.id.dialog_edit_text);
 
 
         // 첫번째 버튼 (다이얼로그 사용하여 팝업창 띄우기)
@@ -91,7 +98,7 @@ public class AlertDialogActivity extends AppCompatActivity {
 
 
         // 다섯번째 버튼 (라디오버튼 추가 / 단일선택목록)
-        raidoDialog.setOnClickListener(view -> {
+        radioDialog.setOnClickListener(view -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             final ArrayList<String> selectedItems = new ArrayList<String>();
             final String[] items = getResources().getStringArray(R.array.LAN);
@@ -125,7 +132,20 @@ public class AlertDialogActivity extends AppCompatActivity {
 
         // 일곱번째 버튼 (Dialog상속 커스텀 다이얼로그)
         customDialog.setOnClickListener(view -> {
-            OptionCodeTypeDialog dialog = new OptionCodeTypeDialog(AlertDialogActivity.this, new CustomDialogClickListener() {
+
+
+            OptionCodeTypeDialog dialog = new OptionCodeTypeDialog(context, new CustomDialogClickListener() {
+
+                public void setDialogText() {
+                    if (!TextUtils.isEmpty(editText.getText().toString())) {
+
+                        inputDialogText = editText.getText().toString();
+                        GLog.d("inputDialogText : " + inputDialogText);
+                        TextView dialogTextView = customDialog.findViewById(R.id.dialog_text);
+                        dialogTextView.setText(inputDialogText);
+                    }
+                }
+
                 @Override
                 public void onPositiveClick() {
                     GLog.d("저장 Click");

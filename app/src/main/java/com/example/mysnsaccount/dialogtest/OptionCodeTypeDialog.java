@@ -14,6 +14,8 @@ public class OptionCodeTypeDialog extends Dialog {
     private Context context;
     private CustomDialogClickListener customDialogClickListener;
     TextView tvTitle, tvNegative, tvPositive;
+    TextView dialogTextView;
+
 
     public OptionCodeTypeDialog(@NonNull Context context, CustomDialogClickListener customDialogClickListener) {
         super(context);
@@ -21,15 +23,17 @@ public class OptionCodeTypeDialog extends Dialog {
         this.customDialogClickListener = customDialogClickListener;
     }
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.option_codetype_dialog);
 
         tvTitle = findViewById(R.id.dialog_title);
-        tvNegative = findViewById(R.id.dialog_negativ);
+        tvNegative = findViewById(R.id.dialog_negative);
         tvPositive = findViewById(R.id.dialog_positive);
+
+        dialogTextView = findViewById(R.id.dialog_text);
+
 
         tvPositive.setOnClickListener(view -> {
             this.customDialogClickListener.onPositiveClick();

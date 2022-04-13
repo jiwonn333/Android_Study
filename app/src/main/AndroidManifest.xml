@@ -2,10 +2,17 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mysnsaccount">
     <!-- 인터넷 사용 권한 설정 -->
-    <uses-permission android:name="android.permission.INTERNET" /> <!-- 휴대폰 정보 가져오기 위한 권한 설정 -->
-    <!-- <uses-permission android:name="android.permission.CAMERA"/> -->
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission
+        android:name="android.permission.READ_PHONE_STATE"
+        android:maxSdkVersion="29" />
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
 
     <application
         android:name=".login.GlobalApplication"

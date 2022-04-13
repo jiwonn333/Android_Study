@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mysnsaccount.R;
 import com.example.mysnsaccount.customwebview.WebViewActivity;
 import com.example.mysnsaccount.dialogtest.AlertDialogActivity;
-import com.example.mysnsaccount.permission.PermissionActivity;
 import com.example.mysnsaccount.recyclerview.RecyclerViewActivity;
 import com.example.mysnsaccount.retrofit.RetrofitActivity;
 import com.example.mysnsaccount.util.GLog;
@@ -26,7 +25,21 @@ import java.util.List;
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder> {
     Context context;
     private List<RecyclerViewItem> itemLists; // 어댑터에 들어갈 리스트
-    Intent intent;
+
+    public void addItem(ArrayList<RecyclerViewItem> itemLists) {
+        this.itemLists = itemLists;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position);
+    }
+
+    private OnItemClickListener itemClickListener = null;
+
+    //OnItemClickListener 리스너 객체 참조를 어댑터에 전달하는 메소드
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.itemClickListener = listener;
+    }
 
     //메인 액티비티와 연결
     public RecyclerViewAdapter(Context context, List<RecyclerViewItem> itemLists) {
@@ -89,32 +102,32 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 }
             });
         }
-    }
 
-    public void addItem(ArrayList<RecyclerViewItem> itemList) {
-        itemLists = itemList;
-    }
 
-    public void startActivity(int position) {
-        switch (position) {
-            case 0:
-                context.startActivity(new Intent(context, WebViewActivity.class));
-                break;
-            case 1:
-                context.startActivity(new Intent(context, RetrofitActivity.class));
-                break;
-            case 2:
-                context.startActivity(new Intent(context, PermissionActivity.class));
-                break;
-            case 3:
-                context.startActivity(new Intent(context, RecyclerViewActivity.class));
-                break;
-            case 4:
-                context.startActivity(new Intent(context, AlertDialogActivity.class));
-                break;
-            default:
-                GLog.d("모두 해당 안됨");
-                break;
+        public void startActivity(int position) {
+            switch (position) {
+                case 0:
+                    context.startActivity(new Intent(context, WebViewActivity.class));
+                    break;
+                case 1:
+                    context.startActivity(new Intent(context, RetrofitActivity.class));
+                    break;
+                case 2:
+                case 5:
+                    if (itemClickListener != null) {
+                        itemClickListener.onItemClick(itemView, position);
+                    }
+                    break;
+                case 3:
+                    context.startActivity(new Intent(context, RecyclerViewActivity.class));
+                    break;
+                case 4:
+                    context.startActivity(new Intent(context, AlertDialogActivity.class));
+                    break;
+                default:
+                    GLog.d("모두 해당 안됨");
+                    break;
+            }
         }
     }
 }

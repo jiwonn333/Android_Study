@@ -17,6 +17,7 @@ import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewMod
 import com.example.mysnsaccount.retrofit.RetrofitApiManager;
 import com.example.mysnsaccount.retrofit.RetrofitInterface;
 import com.example.mysnsaccount.util.GLog;
+import com.example.mysnsaccount.wearable.OnenumberResponse;
 import com.example.mysnsaccount.wearable.WearableResponse;
 
 import java.util.ArrayList;
@@ -100,8 +101,8 @@ public class RecyclerViewActivity extends AppCompatActivity {
                     GLog.d("wearableResponse : " + wearableResponse);
                     if (wearableResponse != null) {
                         GLog.d("wearableResponse.getError() : " + wearableResponse.getError());
-                        GLog.d("wearableResponse.getPhone() : " + wearableResponse.getPhone());
-                        GLog.d("wearableResponse.getWearable() : " + wearableResponse.getWearable());
+                        GLog.d("wearableResponse.getRegistered() : " + wearableResponse.getRegistered());
+                        GLog.d("wearableResponse.getOther_push_status() : " + wearableResponse.getOther_push_status());
                     } else {
                         GLog.d("wearableResponse is null");
                     }
@@ -115,6 +116,33 @@ public class RecyclerViewActivity extends AppCompatActivity {
                 GLog.e("onFailure : " + t.toString());
             }
         });
+
+
+        RetrofitApiManager.getInstance().requestOnenumberCall(new RetrofitInterface() {
+            @Override
+            public void onResponse(Response response) {
+                GLog.d("response : " + response);
+                if (response.isSuccessful()) {
+                    OnenumberResponse onenumberResponse = (OnenumberResponse) response.body();
+                    GLog.d("onenumberResponse : " + onenumberResponse);
+                    if (onenumberResponse != null) {
+                        GLog.d("onenumberResponse.getError() : " + onenumberResponse.getError());
+                        GLog.d("onenumberResponse.getCfu_available() : " + onenumberResponse.getCfu_available());
+                        GLog.d("onenumberResponse.getOne_available() : " + onenumberResponse.getOne_available());
+                    } else {
+                        GLog.d("onenumberResponse is null");
+                    }
+                } else {
+                    GLog.e("Response is not Successful~!");
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                GLog.e("onFailure : " + t.toString());
+            }
+        });
+
     }
 
     private void setErrorLayout(String msg) {

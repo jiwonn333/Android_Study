@@ -2,6 +2,7 @@ package com.example.mysnsaccount.retrofit;
 
 import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
+import com.example.mysnsaccount.wearable.OnenumberResponse;
 import com.example.mysnsaccount.wearable.WearableResponse;
 
 import retrofit2.Call;
@@ -20,6 +21,12 @@ public interface RetrofitApiService {
     @GET("wearabledevice")
     Call<WearableResponse> getWearableCall(@Query("operation") String operation,
                                            @Query("msisdn") String msisdn,
-                                           @Query("dev_msisdn") String dev_msisdn);
+                                           @Query("push_svr_type") String push_svr_type,
+                                           @Query("reg_id") String reg_id,
+                                           @Query("app_id") String app_id);
 
+    @GET("onenumber")
+    Call<OnenumberResponse> getOnenumberCall(@Query("operation") String operation,
+                                             @Query("msisdn") String msisdn,
+                                             @Query("dev_msisdn") String dev_msisdn);
 }
