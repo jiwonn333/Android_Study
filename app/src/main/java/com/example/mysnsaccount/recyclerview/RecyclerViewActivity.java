@@ -89,6 +89,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
             }
         });
 
+
 //        RetrofitApiManager.getInstance().requestWearableCall(new RetrofitInterface() {
 //            @Override
 //            public void onResponse(Response response) {

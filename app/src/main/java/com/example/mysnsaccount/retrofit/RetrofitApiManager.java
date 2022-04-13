@@ -4,12 +4,11 @@ import android.annotation.SuppressLint;
 
 import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
+import com.example.mysnsaccount.userinfo.UserInfoResponse;
 import com.example.mysnsaccount.util.Constant;
 import com.example.mysnsaccount.util.GLog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.tickaroo.tikxml.TikXml;
-import com.tickaroo.tikxml.retrofit.TikXmlConverterFactory;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,7 +58,7 @@ public class RetrofitApiManager {
                 .build();
     }
 
-    public static Retrofit WearableCallBuild() {
+    public static Retrofit UserInfoBuild() {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -67,11 +66,24 @@ public class RetrofitApiManager {
 
         return new Retrofit.Builder()
                 .client(getUnsafeOkHttpClient().build()) //OkHttp 사용해서 로그 보기
-                .baseUrl(Constant.WEARABLE_URL)
-//                .addConverterFactory(GsonConverterFactory.create(gson)) //Gson 처리시
-                .addConverterFactory(TikXmlConverterFactory.create(new TikXml.Builder().exceptionOnUnreadXml(false).build()))       // XML 응답 처리시
+                .baseUrl(Constant.USER_INFO_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson)) //Gson 처리시
                 .build();
     }
+
+//    public static Retrofit WearableCallBuild() {
+//
+//        Gson gson = new GsonBuilder()
+//                .setLenient()
+//                .create();
+//
+//        return new Retrofit.Builder()
+//                .client(getUnsafeOkHttpClient().build()) //OkHttp 사용해서 로그 보기
+//                .baseUrl(Constant.WEARABLE_URL)
+////                .addConverterFactory(GsonConverterFactory.create(gson)) //Gson 처리시
+//                .addConverterFactory(TikXmlConverterFactory.create(new TikXml.Builder().exceptionOnUnreadXml(false).build()))       // XML 응답 처리시
+//                .build();
+//    }
 
     // 안전하지 않음으로 HTTPS를 통과합니다.
     public static OkHttpClient.Builder getUnsafeOkHttpClient() {
@@ -210,6 +222,20 @@ public class RetrofitApiManager {
 
             @Override
             public void onFailure(Call<RecyclerViewModel> call, Throwable t) {
+                retrofitInterface.onFailure(t);
+            }
+        });
+    }
+
+    public void requestUserInfoCall(RetrofitInterface retrofitInterface) {
+        UserInfoBuild().create(RetrofitApiService.class).getUserInfoCall("1").enqueue(new Callback<UserInfoResponse>() {
+            @Override
+            public void onResponse(Call<UserInfoResponse> call, Response<UserInfoResponse> response) {
+                retrofitInterface.onResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<UserInfoResponse> call, Throwable t) {
                 retrofitInterface.onFailure(t);
             }
         });
