@@ -15,6 +15,7 @@ public class OptionCodeTypeDialog extends Dialog {
     private CustomDialogClickListener customDialogClickListener;
     TextView tvTitle, tvNegative, tvPositive;
     TextView dialogTextView;
+    String tempText;
 
 
     public OptionCodeTypeDialog(@NonNull Context context, CustomDialogClickListener customDialogClickListener) {
@@ -23,11 +24,11 @@ public class OptionCodeTypeDialog extends Dialog {
         this.customDialogClickListener = customDialogClickListener;
     }
 
-    public OptionCodeTypeDialog(@NonNull Context context, CustomDialogClickListener customDialogClickListener, TextView dialogTextView) {
+    public OptionCodeTypeDialog(@NonNull Context context, CustomDialogClickListener customDialogClickListener, String dialogTextView) {
         super(context);
         this.context = context;
         this.customDialogClickListener = customDialogClickListener;
-        this.dialogTextView = dialogTextView;
+        tempText = dialogTextView;
     }
 
 
@@ -41,6 +42,8 @@ public class OptionCodeTypeDialog extends Dialog {
         tvPositive = findViewById(R.id.dialog_positive);
 
         dialogTextView = findViewById(R.id.dialog_text);
+        dialogTextView.setText(tempText);
+
 
         tvPositive.setOnClickListener(view -> {
             this.customDialogClickListener.onPositiveClick();

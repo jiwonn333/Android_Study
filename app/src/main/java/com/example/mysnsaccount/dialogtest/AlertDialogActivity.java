@@ -29,7 +29,7 @@ public class AlertDialogActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alertdialog);
-        this.context = context;
+        this.context = AlertDialogActivity.this;
         alertDialog = findViewById(R.id.btn1);
         btnDialog = findViewById(R.id.btn2);
         listDialog = findViewById(R.id.btn3);
@@ -149,13 +149,11 @@ public class AlertDialogActivity extends AppCompatActivity {
                 public void onNegativeClick() {
                     GLog.d("취소 Click");
                 }
-            });
-            dialog.dialogTextView.setText(inputDialogText);
+            }, inputDialogText);
             dialog.setCancelable(true);
             dialog.setCanceledOnTouchOutside(true); // 다이얼로그 밖에 터치했을 때 꺼짐
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
             dialog.show();
-
         });
 
     }
