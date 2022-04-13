@@ -23,6 +23,14 @@ public class OptionCodeTypeDialog extends Dialog {
         this.customDialogClickListener = customDialogClickListener;
     }
 
+    public OptionCodeTypeDialog(@NonNull Context context, CustomDialogClickListener customDialogClickListener, TextView dialogTextView) {
+        super(context);
+        this.context = context;
+        this.customDialogClickListener = customDialogClickListener;
+        this.dialogTextView = dialogTextView;
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,7 +41,6 @@ public class OptionCodeTypeDialog extends Dialog {
         tvPositive = findViewById(R.id.dialog_positive);
 
         dialogTextView = findViewById(R.id.dialog_text);
-
 
         tvPositive.setOnClickListener(view -> {
             this.customDialogClickListener.onPositiveClick();

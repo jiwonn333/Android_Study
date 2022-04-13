@@ -29,4 +29,5 @@ public interface RetrofitApiService {
     Call<OnenumberResponse> getOnenumberCall(@Query("operation") String operation,
                                              @Query("msisdn") String msisdn,
                                              @Query("dev_msisdn") String dev_msisdn);
+
 }

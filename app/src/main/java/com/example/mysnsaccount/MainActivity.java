@@ -112,6 +112,7 @@ public class MainActivity extends Activity {
                 } else {
                     Toast.makeText(this, "카메라를 실행합니다", Toast.LENGTH_LONG).show();
                     callCamera();
+
                 }
             }
         });
@@ -306,14 +307,15 @@ public class MainActivity extends Activity {
         switch (requestCode) {
             case Constant.PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "권한이 허가되어 있습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "권한이 허가되었습니다.", Toast.LENGTH_SHORT).show();
                 } else {
                     setPermissionDialog("전화 권한");
                 }
                 break;
             case Constant.PERMISSIONS_REQUEST_CAMERA:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "권한이 허가되어 있습니다.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "권한이 허가되었습니다..", Toast.LENGTH_SHORT).show();
+                    callCamera();
                 } else {
                     setPermissionDialog("카메라 권한");
                 }

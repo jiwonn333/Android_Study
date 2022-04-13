@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -133,18 +132,13 @@ public class AlertDialogActivity extends AppCompatActivity {
         // 일곱번째 버튼 (Dialog상속 커스텀 다이얼로그)
         customDialog.setOnClickListener(view -> {
 
+            if (!TextUtils.isEmpty(editText.getText().toString())) {
+                inputDialogText = editText.getText().toString();
+                GLog.d("inputDialogText : " + inputDialogText);
+            }
 
             OptionCodeTypeDialog dialog = new OptionCodeTypeDialog(context, new CustomDialogClickListener() {
 
-                public void setDialogText() {
-                    if (!TextUtils.isEmpty(editText.getText().toString())) {
-
-                        inputDialogText = editText.getText().toString();
-                        GLog.d("inputDialogText : " + inputDialogText);
-                        TextView dialogTextView = customDialog.findViewById(R.id.dialog_text);
-                        dialogTextView.setText(inputDialogText);
-                    }
-                }
 
                 @Override
                 public void onPositiveClick() {
@@ -156,10 +150,12 @@ public class AlertDialogActivity extends AppCompatActivity {
                     GLog.d("취소 Click");
                 }
             });
+            dialog.dialogTextView.setText(inputDialogText);
             dialog.setCancelable(true);
             dialog.setCanceledOnTouchOutside(true); // 다이얼로그 밖에 터치했을 때 꺼짐
             dialog.getWindow().setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.MATCH_PARENT);
             dialog.show();
+
         });
 
     }
