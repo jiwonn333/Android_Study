@@ -13,6 +13,9 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 
 import com.example.mysnsaccount.R;
+import com.example.mysnsaccount.dkiapi.DkiUserResponse;
+import com.example.mysnsaccount.retrofit.RetrofitApiManager;
+import com.example.mysnsaccount.retrofit.RetrofitInterface;
 import com.example.mysnsaccount.util.GLog;
 import com.example.mysnsaccount.util.HashUtils;
 import com.example.mysnsaccount.util.UserPreference;
@@ -23,8 +26,10 @@ import com.kakao.sdk.user.UserApiClient;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function2;
+import retrofit2.Response;
 
 public class LoginActivity extends Activity {
+    private static final boolean REQUEST_GET = false;
     Button btnKakaoLogin, btnLogin;
     EditText etUserId, etUserPw;
     String userId, userPw, getUserId, getUserPw;
@@ -85,18 +90,73 @@ public class LoginActivity extends Activity {
             validation = loginCheckValidation(getUserId, getUserPw);
 
             if (validation) {
-                UserPreference.setUserId(context, getUserId);
-                UserPreference.setUserPassword(context, getUserPw);
-                UserPreference.setSaveIdCheck(context, checkSaveId.isChecked());
-                UserPreference.setAutoLoginCheck(context, checkAutoLogin.isChecked());
-                UserPreference.setKakaoLoginSuccess(context, false);
-                userId = getUserId;
-                startIntent();
-                Toast.makeText(context, "로그인 성공", Toast.LENGTH_SHORT).show();
+                if (REQUEST_GET) {
+                    //GET방식
+                    RetrofitApiManager.getInstance().requestDkiUserCall(getUserId, getUserPw, new RetrofitInterface() {
+                        @Override
+                        public void onResponse(Response response) {
+                            GLog.d("response : " + response);
+                            if (response.isSuccessful()) {
+                                DkiUserResponse dkiUserResponse = (DkiUserResponse) response.body();
+                                if (dkiUserResponse != null) {
+                                    if (dkiUserResponse.isResult()) {
+                                        UserPreference.setUserId(context, getUserId);
+                                        UserPreference.setUserPassword(context, getUserPw);
+                                        UserPreference.setSaveIdCheck(context, checkSaveId.isChecked());
+                                        UserPreference.setAutoLoginCheck(context, checkAutoLogin.isChecked());
+                                        UserPreference.setKakaoLoginSuccess(context, false);
+                                        userId = getUserId;
+                                        startIntent();
+                                    }
+                                } else {
+                                    GLog.d("dkiUserResponse is null");
+                                }
+                            } else {
+                                GLog.d("dkiUserResponse is not successful");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            GLog.d("dkiUserResponse :" + t.toString());
+                        }
+                    });
+                } else {
+                    //POST방식
+                    RetrofitApiManager.getInstance().requestDkiUserDataCall(getUserId, getUserPw, new RetrofitInterface() {
+                        @Override
+                        public void onResponse(Response response) {
+                            if (response.isSuccessful()) {
+                                DkiUserResponse dkiUserData = (DkiUserResponse) response.body();
+                                if (dkiUserData != null) {
+                                    if (dkiUserData.isResult()) {
+                                        UserPreference.setUserId(context, getUserId);
+                                        UserPreference.setUserPassword(context, getUserPw);
+                                        UserPreference.setSaveIdCheck(context, checkSaveId.isChecked());
+                                        UserPreference.setAutoLoginCheck(context, checkAutoLogin.isChecked());
+                                        UserPreference.setKakaoLoginSuccess(context, false);
+                                        userId = getUserId;
+                                        startIntent();
+                                    }
+                                } else {
+                                    GLog.d("서버 통신 원활하지 않습니다.");
+                                }
+                            } else {
+                                GLog.d("dkiUserResponse is not successful");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Throwable t) {
+                            GLog.d("dkiUserResponse :" + t.toString());
+                        }
+                    });
+                }
             } else {
                 GLog.d("validation : " + validation);
             }
         });
+
 
         //카카오톡으로 로그인하기 버튼 클릭 시
         btnKakaoLogin.setOnClickListener(view -> {
@@ -150,15 +210,15 @@ public class LoginActivity extends Activity {
             return false;
         }
 
-        if (!TextUtils.equals(UserPreference.PREF_USER_ID, userId)) {
-            Toast.makeText(context, "아이디가 틀림", Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        if (!TextUtils.equals(UserPreference.PREF_USER_PW, userPw)) {
-            Toast.makeText(context, "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
-            return false;
-        }
+//        if (!TextUtils.equals(UserPreference.PREF_USER_ID, userId)) {
+//            Toast.makeText(context, "아이디가 틀림", Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
+//
+//        if (!TextUtils.equals(UserPreference.PREF_USER_PW, userPw)) {
+//            Toast.makeText(context, "비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();
+//            return false;
+//        }
 
         return true;
     }

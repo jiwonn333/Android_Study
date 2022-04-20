@@ -1,12 +1,16 @@
 package com.example.mysnsaccount.retrofit;
 
+import com.example.mysnsaccount.dkiapi.DkiUserResponse;
 import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
 import com.example.mysnsaccount.userinfo.UserInfoResponse;
 
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.GET;
+import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface RetrofitApiService {
     //GET 방식으로 요청하고 baseURL 뒤에 붙을 주소 지정--retrofit
@@ -19,6 +23,14 @@ public interface RetrofitApiService {
 
     @GET("user/{id}")
     Call<UserInfoResponse> getUserInfoCall(@Path(value = "id") String id);
+
+    @GET("login")
+    Call<DkiUserResponse> getDkiUserCall(@Query("id") String id,
+                                         @Query("pw") String pw);
+
+
+    @POST("login")
+    Call<DkiUserResponse> getDkiUserDataCall(@Body String jsonBody);
 
 //    @GET("wearabledevice")
 //    Call<WearableResponse> getWearableCall(@Query("operfation") String operation,

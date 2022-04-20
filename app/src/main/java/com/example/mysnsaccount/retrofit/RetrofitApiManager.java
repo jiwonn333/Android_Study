@@ -1,9 +1,12 @@
 package com.example.mysnsaccount.retrofit;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 
+import com.example.mysnsaccount.dkiapi.DkiUserResponse;
 import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
+import com.example.mysnsaccount.retrofit.model.RequestLoginModel;
 import com.example.mysnsaccount.userinfo.UserInfoResponse;
 import com.example.mysnsaccount.util.Constant;
 import com.example.mysnsaccount.util.GLog;
@@ -36,6 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitApiManager {
     private final static int RETROFIT_TIME_OUT = 10;
     private static RetrofitApiManager instance;
+    Context context;
 
     public static RetrofitApiManager getInstance() {
         if (instance == null) {
@@ -59,6 +63,19 @@ public class RetrofitApiManager {
     }
 
     public static Retrofit UserInfoBuild() {
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        return new Retrofit.Builder()
+                .client(getUnsafeOkHttpClient().build()) //OkHttp 사용해서 로그 보기
+                .baseUrl(Constant.USER_INFO_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson)) //Gson 처리시
+                .build();
+    }
+
+    public static Retrofit DkiUserBuild() {
 
         Gson gson = new GsonBuilder()
                 .setLenient()
@@ -236,6 +253,38 @@ public class RetrofitApiManager {
 
             @Override
             public void onFailure(Call<UserInfoResponse> call, Throwable t) {
+                retrofitInterface.onFailure(t);
+            }
+        });
+    }
+
+    public void requestDkiUserCall(String id, String pw, RetrofitInterface retrofitInterface) {
+        DkiUserBuild().create(RetrofitApiService.class).getDkiUserCall(id, pw).enqueue(new Callback<DkiUserResponse>() {
+            @Override
+            public void onResponse(Call<DkiUserResponse> call, Response<DkiUserResponse> response) {
+                retrofitInterface.onResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<DkiUserResponse> call, Throwable t) {
+                retrofitInterface.onFailure(t);
+            }
+        });
+    }
+
+    public void requestDkiUserDataCall(String id, String pw, RetrofitInterface retrofitInterface) {
+        RequestLoginModel body = new RequestLoginModel(id, pw);
+        GLog.d("body : " + body);
+        String jsonBody = new Gson().toJson(body);
+        GLog.d("jsonBody : " + jsonBody);
+        DkiUserBuild().create(RetrofitApiService.class).getDkiUserDataCall(jsonBody).enqueue(new Callback<DkiUserResponse>() {
+            @Override
+            public void onResponse(Call<DkiUserResponse> call, Response<DkiUserResponse> response) {
+                retrofitInterface.onResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<DkiUserResponse> call, Throwable t) {
                 retrofitInterface.onFailure(t);
             }
         });
