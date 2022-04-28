@@ -62,6 +62,7 @@ public class MainActivity extends Activity {
         add(new RecyclerViewItem(R.drawable.ic_baseline_cached_24, "RecyclerView"));
         add(new RecyclerViewItem(R.drawable.ic_baseline_alert_24, "Dialog"));
         add(new RecyclerViewItem(R.drawable.baseline_photo_camera_white_24, "Camera"));
+        add(new RecyclerViewItem(R.drawable.decode, "Encryption"));
     }};
 
     @SuppressLint("WrongViewCast")
@@ -72,6 +73,7 @@ public class MainActivity extends Activity {
 
         context = this;
 
+
         // RecyclerView 화면 아이콘 표시
         recyclerView = findViewById(R.id.main_recycler_view);
         recyclerViewAdapter = new RecyclerViewAdapter(context, itemLists);
@@ -80,6 +82,7 @@ public class MainActivity extends Activity {
         recyclerView.setAdapter(recyclerViewAdapter);
         recyclerViewAdapter.addItem(itemLists);
         recyclerViewAdapter.notifyDataSetChanged();
+
 
         recyclerViewAdapter.setOnItemClickListener((view, position) -> {
             if (TextUtils.equals(itemLists.get(position).getTitle(), "Permission")) {

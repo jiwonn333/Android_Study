@@ -24,4 +24,11 @@
         <item> "탈퇴하기"</item>
     </string-array>
 
+    <string-array name="encrypt_array">
+        <item>Base64</item>
+        <item>AES128/256</item>
+        <item>RSA</item>
+        <item>SHA-256</item>
+    </string-array>
+
 </resources>

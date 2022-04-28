@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mysnsaccount.R;
 import com.example.mysnsaccount.customwebview.WebViewActivity;
 import com.example.mysnsaccount.dialogtest.AlertDialogActivity;
+import com.example.mysnsaccount.encryption.EncryptionActivity;
 import com.example.mysnsaccount.recyclerview.RecyclerViewActivity;
 import com.example.mysnsaccount.retrofit.RetrofitActivity;
 import com.example.mysnsaccount.util.GLog;
@@ -123,6 +124,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     break;
                 case 4:
                     context.startActivity(new Intent(context, AlertDialogActivity.class));
+                    break;
+                case 6:
+                    context.startActivity(new Intent(context, EncryptionActivity.class));
                     break;
                 default:
                     GLog.d("모두 해당 안됨");

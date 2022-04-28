@@ -1,7 +1,6 @@
 package com.example.mysnsaccount.retrofit;
 
 import android.annotation.SuppressLint;
-import android.content.Context;
 
 import com.example.mysnsaccount.dkiapi.DkiUserResponse;
 import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
@@ -39,7 +38,6 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class RetrofitApiManager {
     private final static int RETROFIT_TIME_OUT = 10;
     private static RetrofitApiManager instance;
-    Context context;
 
     public static RetrofitApiManager getInstance() {
         if (instance == null) {

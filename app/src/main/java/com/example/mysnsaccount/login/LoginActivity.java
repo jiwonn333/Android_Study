@@ -84,7 +84,7 @@ public class LoginActivity extends Activity {
             getUserPw = etUserPw.getText().toString();
 
             if (!TextUtils.isEmpty(getUserPw)) {
-                getUserPw = HashUtils.getEncryptData(getUserPw);
+                getUserPw = HashUtils.getSHA256Encrypt(getUserPw);
             }
 
             validation = loginCheckValidation(getUserId, getUserPw);
