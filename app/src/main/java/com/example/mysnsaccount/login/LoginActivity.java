@@ -38,6 +38,8 @@ public class LoginActivity extends Activity {
     boolean validation, saveIdCheck, autoLoginCheck;
     boolean iskakaoLogin;
     Context context = this;
+    String loginUserName;
+    String loginUserPhone;
 
 
     @Override
@@ -99,7 +101,7 @@ public class LoginActivity extends Activity {
                             if (response.isSuccessful()) {
                                 DkiUserResponse dkiUserResponse = (DkiUserResponse) response.body();
                                 if (dkiUserResponse != null) {
-                                    if (dkiUserResponse.isResult()) {
+                                    if (dkiUserResponse.getResultInfo().getResult()) {
                                         UserPreference.setUserId(context, getUserId);
                                         UserPreference.setUserPassword(context, getUserPw);
                                         UserPreference.setSaveIdCheck(context, checkSaveId.isChecked());
@@ -108,6 +110,7 @@ public class LoginActivity extends Activity {
                                         userId = getUserId;
                                         startIntent();
                                     }
+                                    Toast.makeText(context, dkiUserResponse.getResultInfo().getErrorMsg(), Toast.LENGTH_SHORT).show();
                                 } else {
                                     GLog.d("dkiUserResponse is null");
                                 }
@@ -129,15 +132,21 @@ public class LoginActivity extends Activity {
                             if (response.isSuccessful()) {
                                 DkiUserResponse dkiUserData = (DkiUserResponse) response.body();
                                 if (dkiUserData != null) {
-                                    if (dkiUserData.isResult()) {
+                                    if (dkiUserData.getResultInfo().getResult()) {
                                         UserPreference.setUserId(context, getUserId);
                                         UserPreference.setUserPassword(context, getUserPw);
                                         UserPreference.setSaveIdCheck(context, checkSaveId.isChecked());
                                         UserPreference.setAutoLoginCheck(context, checkAutoLogin.isChecked());
                                         UserPreference.setKakaoLoginSuccess(context, false);
                                         userId = getUserId;
+                                        loginUserName = dkiUserData.getUserInfo().getName();
+                                        loginUserPhone = dkiUserData.getUserInfo().getPhone();
+//                                        intent.putExtra("userName", dkiUserData.getUserInfo().getName());
+//                                        intent.putExtra("userPhone", dkiUserData.getUserInfo().getPhone());
                                         startIntent();
+
                                     }
+                                    Toast.makeText(context, dkiUserData.getResultInfo().getErrorMsg(), Toast.LENGTH_SHORT).show();
                                 } else {
                                     GLog.d("서버 통신 원활하지 않습니다.");
                                 }
@@ -225,6 +234,8 @@ public class LoginActivity extends Activity {
 
     private void startIntent() {
         intent = new Intent();
+        intent.putExtra("userName", loginUserName);
+        intent.putExtra("userPhone", loginUserPhone);
         setResult(RESULT_OK, intent);
         finish();
     }

@@ -273,9 +273,9 @@ public class RetrofitApiManager {
     public void requestDkiUserDataCall(String id, String pw, RetrofitInterface retrofitInterface) {
         RequestLoginModel body = new RequestLoginModel(id, pw);
         GLog.d("body : " + body);
-        String jsonBody = new Gson().toJson(body);
-        GLog.d("jsonBody : " + jsonBody);
-        DkiUserBuild().create(RetrofitApiService.class).getDkiUserDataCall(jsonBody).enqueue(new Callback<DkiUserResponse>() {
+//        String jsonBody = new Gson().toJson(body);
+//        GLog.d("jsonBody : " + jsonBody);
+        DkiUserBuild().create(RetrofitApiService.class).getDkiUserDataCall(body).enqueue(new Callback<DkiUserResponse>() {
             @Override
             public void onResponse(Call<DkiUserResponse> call, Response<DkiUserResponse> response) {
                 retrofitInterface.onResponse(response);

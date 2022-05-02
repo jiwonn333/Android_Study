@@ -16,6 +16,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import com.example.mysnsaccount.R;
+import com.example.mysnsaccount.util.AESEncType;
 import com.example.mysnsaccount.util.GLog;
 import com.example.mysnsaccount.util.HashUtils;
 
@@ -45,8 +46,7 @@ public class EncryptionActivity extends Activity implements AdapterView.OnItemSe
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.encrypt_array, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
 
-        HashUtils hashUtils = new HashUtils();
-        KeyPair keyPair = hashUtils.genRSAKeyPair();
+        KeyPair keyPair = HashUtils.genRSAKeyPair();
         PublicKey publicKey = keyPair.getPublic();
         PrivateKey privateKey = keyPair.getPrivate();
 
@@ -56,16 +56,22 @@ public class EncryptionActivity extends Activity implements AdapterView.OnItemSe
             GLog.d("selectItem :" + selectItem);
             switch (selectItem) {
                 case 0:
-                    encryptTextView.setText(hashUtils.getBase64Encrypt(encryptText));
+                    encryptTextView.setText(HashUtils.getBase64Encrypt(encryptText));
                     break;
                 case 1:
-                    encryptTextView.setText(hashUtils.getAESEncrypt(encryptText));
+                    encryptTextView.setText(HashUtils.getAESEncrypt(encryptText, AESEncType.AES_128));
                     break;
                 case 2:
-                    encryptTextView.setText(hashUtils.getRSAEncrypt(encryptText, publicKey));
+                    encryptTextView.setText(HashUtils.getAESEncrypt(encryptText, AESEncType.AES_192));
                     break;
                 case 3:
-                    encryptTextView.setText(hashUtils.getSHA256Encrypt(encryptText));
+                    encryptTextView.setText(HashUtils.getAESEncrypt(encryptText, AESEncType.AES_256));
+                    break;
+                case 4:
+                    encryptTextView.setText(HashUtils.getRSAEncrypt(encryptText, publicKey));
+                    break;
+                case 5:
+                    encryptTextView.setText(HashUtils.getSHA256Encrypt(encryptText));
                     break;
                 default:
                     GLog.d("해당없음");
@@ -79,15 +85,21 @@ public class EncryptionActivity extends Activity implements AdapterView.OnItemSe
             String decryptText = encryptTextView.getText().toString();
             switch (selectItem) {
                 case 0:
-                    encryptTextView.setText(hashUtils.getBase64Decrypt(decryptText));
+                    encryptTextView.setText(HashUtils.getBase64Decrypt(decryptText));
                     break;
                 case 1:
-                    encryptTextView.setText(hashUtils.getAESDecrypt(decryptText));
+                    encryptTextView.setText(HashUtils.getAESDecrypt(decryptText, AESEncType.AES_128));
                     break;
                 case 2:
-                    encryptTextView.setText(hashUtils.getRSADecrypt(decryptText, privateKey));
+                    encryptTextView.setText(HashUtils.getAESDecrypt(decryptText, AESEncType.AES_192));
                     break;
                 case 3:
+                    encryptTextView.setText(HashUtils.getAESDecrypt(decryptText, AESEncType.AES_256));
+                    break;
+                case 4:
+                    encryptTextView.setText(HashUtils.getRSADecrypt(decryptText, privateKey));
+                    break;
+                case 5:
                     Toast.makeText(this, "복호화 불가능", Toast.LENGTH_SHORT).show();
                     break;
                 default:

@@ -53,6 +53,10 @@ public class MainActivity extends Activity {
     boolean isAutoChecked;
     Group loginSuccessUi;
     ConstraintLayout loginTextView;
+    TextView loginUserName;
+    TextView loginUserPhone;
+    String name;
+    String phone;
 
 
     ArrayList<RecyclerViewItem> itemLists = new ArrayList<RecyclerViewItem>() {{
@@ -129,6 +133,9 @@ public class MainActivity extends Activity {
         loginName = findViewById(R.id.login_name_text_view);
         iskakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
         isAutoChecked = UserPreference.getAutoLoginCheck(context);
+        loginUserName = findViewById(R.id.user_name);
+        loginUserPhone = findViewById(R.id.user_phone);
+
 
         if (iskakaoLoginSuccess || isAutoChecked) {
             setLoginUserInfo();
@@ -207,7 +214,10 @@ public class MainActivity extends Activity {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == Constant.REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
+                name = intent.getStringExtra("userName");
+                phone = intent.getStringExtra("userPhone");
                 setLoginUserInfo();
+
             } else {
                 GLog.d("주고받기 오류");
             }
@@ -253,6 +263,8 @@ public class MainActivity extends Activity {
                 loginName.setText(userName);
             }
             loginProfile.setImageResource(R.drawable.login_success);
+            loginUserName.setText(name);
+            loginUserPhone.setText(phone);
         }
         loginSuccessUi.setVisibility(View.VISIBLE);
         loginTextView.setVisibility(View.INVISIBLE);

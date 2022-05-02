@@ -3,6 +3,7 @@ package com.example.mysnsaccount.retrofit;
 import com.example.mysnsaccount.dkiapi.DkiUserResponse;
 import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
+import com.example.mysnsaccount.retrofit.model.RequestLoginModel;
 import com.example.mysnsaccount.userinfo.UserInfoResponse;
 
 import retrofit2.Call;
@@ -31,6 +32,9 @@ public interface RetrofitApiService {
 
     @POST("login")
     Call<DkiUserResponse> getDkiUserDataCall(@Body String jsonBody);
+
+    @POST("login")
+    Call<DkiUserResponse> getDkiUserDataCall(@Body RequestLoginModel loginModel);
 
 //    @GET("wearabledevice")
 //    Call<WearableResponse> getWearableCall(@Query("operfation") String operation,

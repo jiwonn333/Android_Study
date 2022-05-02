@@ -27,6 +27,8 @@ public class LoginSuccessActivity extends AppCompatActivity {
     Context context;
     ConstraintLayout kakaoLoginSuccess;
     LinearLayout loginSuccess;
+    TextView userName;
+    TextView userPhone;
 
     @SuppressLint("WrongViewCast")
     @Override
@@ -46,11 +48,15 @@ public class LoginSuccessActivity extends AppCompatActivity {
         loginUserName = findViewById(R.id.tv_id);
         btnLogout = findViewById(R.id.btn_logout);
 
+        userName = findViewById(R.id.user_name);
+        userPhone = findViewById(R.id.user_phone);
+
         Intent intent = getIntent();
         String kakaoLoginUserName = intent.getStringExtra("kakaoLoginUserName");
         String kakaoProfileURL = intent.getStringExtra("profileURL");
         String loginName = intent.getStringExtra("loginName");
         boolean isKakaoLogin = intent.getBooleanExtra("isKakaoLogin", false);
+
 
         if (isKakaoLogin) {
             kakaoLoginSuccess.setVisibility(View.VISIBLE);

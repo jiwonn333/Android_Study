@@ -26,7 +26,9 @@
 
     <string-array name="encrypt_array">
         <item>Base64</item>
-        <item>AES128/256</item>
+        <item>AES128</item>
+        <item>AES192</item>
+        <item>AES256</item>
         <item>RSA</item>
         <item>SHA-256</item>
     </string-array>

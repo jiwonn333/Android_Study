@@ -23,7 +23,9 @@ public class HashUtils {
     //AES
     public static String Alg = "AES/CBC/PKCS5Padding";
     public static String PK = "01234567890123456789012345678901"; //32byte
-    public static String IV = PK.substring(0, 16); //16byte
+    public static String IV128 = PK.substring(0, 16); //16byte
+    public static String IV192 = PK.substring(0, 24);
+    public static String IV256 = PK.substring(0, 32);
 
     //RSA
     public static final int KEY_SIZE = 1024;
@@ -54,26 +56,44 @@ public class HashUtils {
         return new String(Base64.decode(data, 0));
     }
 
-    public String getAESEncrypt(String data) {
-        try {
-            Cipher cipher = Cipher.getInstance(Alg);
-            SecretKeySpec keySpec = new SecretKeySpec(IV.getBytes(), "AES");
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParameterSpec);
 
+    public static String getAESEncrypt(String data, AESEncType encType) {
+        try {
+            byte[] secretKeySpec = IV128.getBytes();
+
+            if (encType == AESEncType.AES_192) {
+                secretKeySpec = IV192.getBytes();
+            } else if (encType == AESEncType.AES_256) {
+                secretKeySpec = IV256.getBytes();
+            }
+
+            Cipher cipher = Cipher.getInstance(Alg);
+            SecretKeySpec keySpec = new SecretKeySpec(secretKeySpec, "AES");
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(IV128.getBytes(StandardCharsets.UTF_8));
+            cipher.init(Cipher.ENCRYPT_MODE, keySpec, ivParameterSpec);
             byte[] encrypted = cipher.doFinal(data.getBytes("UTF-8"));
             return Base64.encodeToString(encrypted, 0);
         } catch (Exception e) {
+            GLog.e("exception : " + e.getMessage());
             e.printStackTrace();
         }
         return data;
     }
 
-    public String getAESDecrypt(String data) {
+    public static String getAESDecrypt(String data, AESEncType encType) {
         try {
+            byte[] secretKeySpec = IV128.getBytes();
+
+            if (encType == AESEncType.AES_192) {
+                secretKeySpec = IV192.getBytes();
+            } else if (encType == AESEncType.AES_256) {
+                secretKeySpec = IV256.getBytes();
+            }
+
             Cipher cipher = Cipher.getInstance(Alg);
-            SecretKeySpec keySpec = new SecretKeySpec(IV.getBytes(), "AES");
-            IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
+            SecretKeySpec keySpec = new SecretKeySpec(secretKeySpec, "AES");
+            IvParameterSpec ivParameterSpec = new IvParameterSpec(IV128.getBytes(StandardCharsets.UTF_8
+            ));
             cipher.init(Cipher.DECRYPT_MODE, keySpec, ivParameterSpec);
             byte[] decodeBytes = Base64.decode(data, 0);
             byte[] decrypted = cipher.doFinal(decodeBytes);
@@ -85,7 +105,7 @@ public class HashUtils {
     }
 
     //RSA
-    public KeyPair genRSAKeyPair() {
+    public static KeyPair genRSAKeyPair() {
         try {
             SecureRandom secureRandom = new SecureRandom();
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
@@ -101,7 +121,7 @@ public class HashUtils {
 
     // public key로 RSA 암호화 수행
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public String getRSAEncrypt(String data, PublicKey publicKey) {
+    public static String getRSAEncrypt(String data, PublicKey publicKey) {
         String encryptedData;
         try {
             Cipher cipher = Cipher.getInstance("RSA");
@@ -117,14 +137,14 @@ public class HashUtils {
 
     //private key 로 RSA 복호화 수행
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public String getRSADecrypt(String encryptedData, PrivateKey privateKey) {
+    public static String getRSADecrypt(String encryptedData, PrivateKey privateKey) {
         String decryptedData;
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             byte[] byteEncrypted = Base64.decode(encryptedData.getBytes(), 0);
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
             byte[] bytePlain = cipher.doFinal(byteEncrypted);
-            decryptedData = new String(bytePlain, "utf-8");
+            decryptedData = new String(bytePlain, "UTF-8");
             return decryptedData;
         } catch (Exception e) {
             e.printStackTrace();

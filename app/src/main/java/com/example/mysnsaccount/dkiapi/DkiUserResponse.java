@@ -1,58 +1,109 @@
 package com.example.mysnsaccount.dkiapi;
 
+import com.google.gson.annotations.SerializedName;
+
 public class DkiUserResponse {
-    private boolean result;
-    private String ErrorCode;
-    private String ErrorMsg;
-    private String id;
-    private String userName;
-    private String phoneNum;
+    @SerializedName("resultInfo")
+    private ResultInfo resultInfo;
 
-    public boolean isResult() {
-        return result;
+    @SerializedName("userInfo")
+    private UserInfo userInfo;
+
+    public ResultInfo getResultInfo() {
+        return resultInfo;
     }
 
-    public String getErrorCode() {
-        return ErrorCode;
+    public void setResultInfo(ResultInfo resultInfo) {
+        this.resultInfo = resultInfo;
     }
 
-    public String getErrorMsg() {
-        return ErrorMsg;
+    public UserInfo getUserInfo() {
+        return userInfo;
     }
 
-    public String getId() {
-        return id;
+    public void setUserInfo(UserInfo userInfo) {
+        this.userInfo = userInfo;
     }
 
-    public String getUserName() {
-        return userName;
+    public class ResultInfo {
+        private boolean result;
+
+        private String errorCode;
+
+        private String errorMsg;
+
+        public void setResult(boolean result) {
+            this.result = result;
+        }
+
+        public boolean getResult() {
+            return this.result;
+        }
+
+        public void setErrorCode(String errorCode) {
+            this.errorCode = errorCode;
+        }
+
+        public String getErrorCode() {
+            return this.errorCode;
+        }
+
+        public void setErrorMsg(String errorMsg) {
+            this.errorMsg = errorMsg;
+        }
+
+        public String getErrorMsg() {
+            return this.errorMsg;
+        }
     }
 
-    public String getPhoneNum() {
-        return phoneNum;
+    public class UserInfo {
+        private int num;
+        private String id;
+        private String pw;
+        private String name;
+        private String phone;
+
+        public int getNum() {
+            return num;
+        }
+
+        public void setNum(int num) {
+            this.num = num;
+        }
+
+        public String getId() {
+            return id;
+        }
+
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getPw() {
+            return pw;
+        }
+
+        public void setPw(String pw) {
+            this.pw = pw;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getPhone() {
+            return phone;
+        }
+
+        public void setPhone(String phone) {
+            this.phone = phone;
+        }
     }
 
-    public void setResult(boolean result) {
-        this.result = result;
-    }
 
-    public void setErrorCode(String errorCode) {
-        ErrorCode = errorCode;
-    }
-
-    public void setErrorMsg(String errorMsg) {
-        ErrorMsg = errorMsg;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setPhoneNum(String phoneNum) {
-        this.phoneNum = phoneNum;
-    }
 }
