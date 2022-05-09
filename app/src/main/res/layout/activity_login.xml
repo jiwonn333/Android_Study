@@ -59,17 +59,16 @@
 
         <Button
             android:id="@+id/btn_login"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:text="로그인"
-            tools:ignore="MissingConstraints"
-            tools:layout_editor_absoluteX="-26dp"
-            tools:layout_editor_absoluteY="373dp" />
+            tools:ignore="MissingConstraints" />
+
     </LinearLayout>
 
     <Button
         android:id="@+id/btn_kakao_login"
-        android:layout_width="wrap_content"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="150dp"
         android:background="@drawable/kakao_login_medium_wide"

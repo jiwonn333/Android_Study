@@ -2,7 +2,7 @@ package com.example.mysnsaccount.dkiapi;
 
 import com.google.gson.annotations.SerializedName;
 
-public class DkiUserResponse {
+public class LoginResponse {
     @SerializedName("resultInfo")
     private ResultInfo resultInfo;
 

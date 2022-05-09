@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -27,9 +28,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.example.mysnsaccount.dkiapi.IdDeleteResponse;
+import com.example.mysnsaccount.dkiapi.LoginResponse;
+import com.example.mysnsaccount.login.JoinActivity;
 import com.example.mysnsaccount.login.LoginActivity;
+import com.example.mysnsaccount.login.UpdateActivity;
 import com.example.mysnsaccount.model.recycerviewicon.RecyclerViewAdapter;
 import com.example.mysnsaccount.model.recycerviewicon.RecyclerViewItem;
+import com.example.mysnsaccount.retrofit.RetrofitApiManager;
+import com.example.mysnsaccount.retrofit.RetrofitInterface;
+import com.example.mysnsaccount.retrofit.model.DeleteModel;
 import com.example.mysnsaccount.util.Constant;
 import com.example.mysnsaccount.util.GLog;
 import com.example.mysnsaccount.util.UserPreference;
@@ -39,6 +47,8 @@ import com.kakao.sdk.user.model.Profile;
 
 import java.util.ArrayList;
 
+import retrofit2.Response;
+
 public class MainActivity extends Activity {
 
     Context context;
@@ -47,7 +57,9 @@ public class MainActivity extends Activity {
     GridLayoutManager gridLayoutManager;
     TextView loginName;
     ImageView loginImage, loginProfile;
+    ImageView joinImage;
     TextView loginText;
+    TextView joinText;
     Intent intent;
     boolean iskakaoLoginSuccess;
     boolean isAutoChecked;
@@ -57,6 +69,9 @@ public class MainActivity extends Activity {
     TextView loginUserPhone;
     String name;
     String phone;
+    String userId;
+
+    ImageView updateImage;
 
 
     ArrayList<RecyclerViewItem> itemLists = new ArrayList<RecyclerViewItem>() {{
@@ -126,7 +141,9 @@ public class MainActivity extends Activity {
 
         //로그인 아이콘,텍스트 설정
         loginImage = findViewById(R.id.icon_login);
+        joinImage = findViewById(R.id.icon_join);
         loginText = findViewById(R.id.tv_login);
+        joinText = findViewById(R.id.tv_join);
         loginSuccessUi = findViewById(R.id.login_success_group);
         loginTextView = findViewById(R.id.login_text);
         loginProfile = findViewById(R.id.login_image_view);
@@ -135,102 +152,67 @@ public class MainActivity extends Activity {
         isAutoChecked = UserPreference.getAutoLoginCheck(context);
         loginUserName = findViewById(R.id.user_name);
         loginUserPhone = findViewById(R.id.user_phone);
+        updateImage = findViewById(R.id.icon_update);
 
 
         if (iskakaoLoginSuccess || isAutoChecked) {
             setLoginUserInfo();
         } else {
-            setLoginUi();
+            setShowLoginUi(false);
         }
+
+        //join 클릭
+        joinImage.setOnClickListener(view -> {
+            intent = new Intent(context, JoinActivity.class);
+            startActivityForResult(intent, Constant.REQUEST_JOIN_CODE);
+        });
+
+        //update 클릭
+        updateImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                intent = new Intent(context, UpdateActivity.class);
+                startActivityForResult(intent, Constant.REQUEST_LOGIN_CODE);
+            }
+        });
 
 
         //로그인 아이콘 클릭시
         loginImage.setOnClickListener(view -> {
             if (TextUtils.equals(loginText.getText(), "Login")) {
                 intent = new Intent(context, LoginActivity.class);
-                startActivityForResult(intent, Constant.REQUEST_CODE);
+                startActivityForResult(intent, Constant.REQUEST_LOGIN_CODE);
 
             } else if (TextUtils.equals(loginText.getText(), "Logout")) {
-                if (iskakaoLoginSuccess) {
-                    //팝업창 선택 (로그아웃, 탈퇴하기)
-                    final ArrayList<String> selectedItems = new ArrayList<String>();
-                    final String[] items = getResources().getStringArray(R.array.LOGOUT);
-                    selectedItems.add(items[0]);
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("로그아웃/탈퇴")
-                            .setSingleChoiceItems(R.array.LOGOUT, 0, (dialogInterface, position) -> {
-                                selectedItems.clear();
-                                selectedItems.add(items[position]);
-                            }).setPositiveButton("OK", (dialogInterface, position) -> {
-                        switch (selectedItems.get(0)) {
-                            case "로그아웃":
-                                UserApiClient.getInstance().logout(throwable -> {
-                                    if (throwable != null) {
-                                        GLog.d("로그아웃 실패");
-                                    } else {
-                                        UserPreference.setKakaoLoginSuccess(context, false);
-                                        setLoginUi();
-                                        Toast.makeText(context, "로그아웃 성공", Toast.LENGTH_SHORT).show();
-                                    }
-                                    return null;
-                                });
-                                break;
-
-                            case "탈퇴하기":
-                                UserApiClient.getInstance().unlink(throwable -> {
-                                    if (throwable != null) {
-                                        GLog.d("연결 끊기 실패");
-                                    } else {
-                                        UserPreference.setKakaoLoginSuccess(context, false);
-                                        setLoginUi();
-                                        Toast.makeText(context, "연결 끊기 성공", Toast.LENGTH_SHORT).show();
-                                    }
-                                    return null;
-                                });
-                                break;
-                            default:
-                                GLog.d("선택한 값이 없음");
-                                break;
-                        }
-                    }).setNegativeButton("CANCEL", (dialogInterface, i) -> {
-
-                    }).show();
-                } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                    builder.setTitle("로그아웃").setMessage("로그아웃 하면 정보가 삭제됩니다.").setPositiveButton("확인", (dialogInterface, i) -> {
-                        UserPreference.setClear(context);
-                        setLoginUi();
-                        Toast.makeText(context, "로그아웃", Toast.LENGTH_SHORT).show();
-                    }).setNeutralButton("취소", (dialogInterface, i) -> Toast.makeText(context, "취소했습니다.", Toast.LENGTH_SHORT).show()).show();
-                }
+                logout();
             }
         });
+
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
-        if (requestCode == Constant.REQUEST_CODE) {
+        if (requestCode == Constant.REQUEST_LOGIN_CODE) {
             if (resultCode == RESULT_OK) {
+                userId = intent.getStringExtra("userId");
                 name = intent.getStringExtra("userName");
                 phone = intent.getStringExtra("userPhone");
-                setLoginUserInfo();
-
+                setShowLoginUi(true);
             } else {
                 GLog.d("주고받기 오류");
             }
+        } else if (requestCode == Constant.REQUEST_JOIN_CODE) {
+            if (resultCode == RESULT_OK) {
+                intent = new Intent(context, LoginActivity.class);
+                startActivityForResult(intent, Constant.REQUEST_LOGIN_CODE);
+//                finish();
+            }
+        } else {
+            GLog.d("회원가입 오류");
         }
     }
-
-    private void setLoginUi() {
-        loginImage.setImageResource(R.drawable.ic_baseline_login_24);
-        loginText.setText("Login");
-        loginTextView.setVisibility(View.VISIBLE);
-        loginSuccessUi.setVisibility(View.INVISIBLE);
-    }
-
 
     private void setLoginUserInfo() {
         iskakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
@@ -246,6 +228,7 @@ public class MainActivity extends Activity {
                         if (profile != null) {
                             loginName.setText(user.getKakaoAccount().getProfile().getNickname());
                             Glide.with(context).load(user.getKakaoAccount().getProfile().getThumbnailImageUrl()).into(loginProfile);
+                            setShowLoginUi(true);
                         } else {
                             GLog.d("profile이 null값 입니다.");
                         }
@@ -258,20 +241,54 @@ public class MainActivity extends Activity {
                 return null;
             });
         } else {
-            String userName = UserPreference.getUserId(context);
-            if (!TextUtils.isEmpty(userName)) {
-                loginName.setText(userName);
-            }
-            loginProfile.setImageResource(R.drawable.login_success);
-            loginUserName.setText(name);
-            loginUserPhone.setText(phone);
+            userId = UserPreference.getUserId(context);
+            String userPw = UserPreference.getUserPassword(context);
+            RetrofitApiManager.getInstance().requestLoginDataCall(userId, userPw, new RetrofitInterface() {
+                @Override
+                public void onResponse(Response response) {
+                    if (response.isSuccessful()) {
+                        LoginResponse dkiUserData = (LoginResponse) response.body();
+                        if (dkiUserData != null) {
+                            if (dkiUserData.getResultInfo().getResult()) {
+                                if (!TextUtils.isEmpty(userId)) {
+                                    name = dkiUserData.getUserInfo().getName();
+                                    phone = dkiUserData.getUserInfo().getPhone();
+                                }
+                                loginProfile.setImageResource(R.drawable.login_success);
+                                setShowLoginUi(true);
+                            }
+                            Toast.makeText(context, dkiUserData.getResultInfo().getErrorMsg(), Toast.LENGTH_SHORT).show();
+                        } else {
+                            GLog.d("서버 통신 원활하지 않습니다.");
+                        }
+                    } else {
+                        GLog.d("dkiUserResponse is not successful");
+                    }
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    GLog.d("dkiUserResponse :" + t.toString());
+                }
+            });
+
         }
-        loginSuccessUi.setVisibility(View.VISIBLE);
-        loginTextView.setVisibility(View.INVISIBLE);
-        loginImage.setImageResource(R.drawable.logout);
-        loginText.setText("Logout");
     }
 
+    private void setShowLoginUi(boolean isLogin) {
+        loginSuccessUi.setVisibility(isLogin ? View.VISIBLE : View.INVISIBLE);
+        loginTextView.setVisibility(isLogin ? View.INVISIBLE : View.VISIBLE);
+        loginImage.setImageResource(isLogin ? R.drawable.logout : R.drawable.ic_baseline_login_24);
+        joinImage.setImageResource(isLogin ? View.GONE : R.drawable.ic_baseline_login_24);
+        updateImage.setVisibility(isLogin ? View.VISIBLE : View.GONE);
+        updateImage.setImageResource(isLogin ? R.drawable.update : View.GONE);
+        loginProfile.setImageResource(isLogin ? R.drawable.login_success : View.INVISIBLE);
+        loginText.setText(isLogin ? "Logout" : "Login");
+        joinText.setText(isLogin ? "Update" : "Join");
+        loginUserName.setText(name);
+        loginUserPhone.setText(phone);
+        loginName.setText(userId);
+    }
 
     boolean checkPermission() {
         //위험 권한을 모두 승인했는지 여부
@@ -367,6 +384,93 @@ public class MainActivity extends Activity {
         }
     }
 
+
+    private void logout() {
+        //팝업창 선택 (로그아웃, 탈퇴하기)
+        userId = UserPreference.getUserId(context);
+
+        final ArrayList<String> selectedItems = new ArrayList<String>();
+        final String[] items = getResources().getStringArray(R.array.LOGOUT);
+        selectedItems.add(items[0]);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle("로그아웃/탈퇴")
+                .setSingleChoiceItems(R.array.LOGOUT, 0, (dialogInterface, position) -> {
+                    selectedItems.clear();
+                    selectedItems.add(items[position]);
+                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int position) {
+                switch (selectedItems.get(0)) {
+                    case "로그아웃":
+                        if (iskakaoLoginSuccess) {
+                            UserApiClient.getInstance().logout(throwable -> {
+                                if (throwable != null) {
+                                    GLog.d("로그아웃 실패");
+                                } else {
+                                    UserPreference.setKakaoLoginSuccess(context, false);
+                                    setShowLoginUi(false);
+                                    Toast.makeText(context, "로그아웃 성공", Toast.LENGTH_SHORT).show();
+                                }
+                                return null;
+                            });
+                        } else {
+                            UserPreference.setClear(context);
+                            setShowLoginUi(false);
+                            Toast.makeText(context, "로그아웃", Toast.LENGTH_SHORT).show();
+                        }
+                        break;
+                    case "탈퇴하기":
+                        if (iskakaoLoginSuccess) {
+                            UserApiClient.getInstance().unlink(throwable -> {
+                                if (throwable != null) {
+                                    GLog.d("연결 끊기 실패");
+                                } else {
+                                    UserPreference.setKakaoLoginSuccess(context, false);
+                                    setShowLoginUi(false);
+                                    Toast.makeText(context, "연결 끊기 성공", Toast.LENGTH_SHORT).show();
+                                }
+                                return null;
+                            });
+                        } else {
+                            //통신태우기??
+                            DeleteModel model = new DeleteModel(userId);
+                            RetrofitApiManager.getInstance().requestDeleteData(model, new RetrofitInterface() {
+                                @Override
+                                public void onResponse(Response response) {
+                                    if (response.isSuccessful()) {
+                                        IdDeleteResponse idDeleteResponse = (IdDeleteResponse) response.body();
+                                        if (idDeleteResponse != null) {
+                                            String errMsg = idDeleteResponse.getResultInfo().getErrorMsg();
+                                            if (idDeleteResponse.getResultInfo().isResult()) {
+                                                setShowLoginUi(false);
+                                                Toast.makeText(context, errMsg, Toast.LENGTH_SHORT).show();
+                                                GLog.d("errMsg : " + errMsg);
+                                            } else {
+                                                GLog.e("errMsg : " + errMsg);
+                                            }
+                                        } else {
+                                            GLog.e("userInfoDelete is null");
+                                        }
+                                    } else {
+                                        GLog.e("response is not Success");
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Throwable t) {
+                                    GLog.d("idCheckResponse :" + t.toString());
+                                }
+                            });
+                        }
+                        break;
+                    default:
+                        GLog.d("선택한 값이 없음");
+                        break;
+                }
+            }
+        }).setNegativeButton("CANCEL", (dialogInterface, i) -> {
+        }).show();
+    }
+
 }
-
-

@@ -55,6 +55,8 @@
         </activity>
 
         <activity android:name=".login.LoginActivity" />
+        <activity android:name=".login.JoinActivity" />
+        <activity android:name=".login.UpdateActivity" />
         <activity android:name=".retrofit.RetrofitActivity" />
         <activity android:name=".permission.PermissionActivity" />
         <activity android:name=".recyclerview.RecyclerViewActivity" />

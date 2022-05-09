@@ -3,7 +3,9 @@ package com.example.mysnsaccount.util;
 public class Constant {
     public static final String BRIDGE_DKI_TEC = "DKITec";
     public static final String BASE_URL = "https://jsonkeeper.com/b/";
-    public static final int REQUEST_CODE = 101;
+    public static final int REQUEST_LOGIN_CODE = 101;
+    public static final int REQUEST_JOIN_CODE = 102;
+    public static final int REQUEST_UPDATE_CODE = 103;
     public static final int PERMISSION_REQUEST_CODE = 22;
     public static final int PERMISSIONS_REQUEST_CAMERA = 1001;
     public static final String USER_INFO_URL = "http://10.112.58.128:8080/";
