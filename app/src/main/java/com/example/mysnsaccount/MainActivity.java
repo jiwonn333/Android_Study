@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -28,16 +27,16 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.mysnsaccount.dkiapi.IdDeleteResponse;
+import com.example.mysnsaccount.dkiapi.CommonResponse;
 import com.example.mysnsaccount.dkiapi.LoginResponse;
-import com.example.mysnsaccount.login.JoinActivity;
 import com.example.mysnsaccount.login.LoginActivity;
 import com.example.mysnsaccount.login.UpdateActivity;
 import com.example.mysnsaccount.model.recycerviewicon.RecyclerViewAdapter;
 import com.example.mysnsaccount.model.recycerviewicon.RecyclerViewItem;
 import com.example.mysnsaccount.retrofit.RetrofitApiManager;
 import com.example.mysnsaccount.retrofit.RetrofitInterface;
-import com.example.mysnsaccount.retrofit.model.DeleteModel;
+import com.example.mysnsaccount.retrofit.model.CommonRequest;
+import com.example.mysnsaccount.util.AppUtil;
 import com.example.mysnsaccount.util.Constant;
 import com.example.mysnsaccount.util.GLog;
 import com.example.mysnsaccount.util.UserPreference;
@@ -51,30 +50,31 @@ import retrofit2.Response;
 
 public class MainActivity extends Activity {
 
-    Context context;
-    RecyclerView recyclerView;
-    RecyclerViewAdapter recyclerViewAdapter;
-    GridLayoutManager gridLayoutManager;
-    TextView loginName;
-    ImageView loginImage, loginProfile;
-    ImageView joinImage;
-    TextView loginText;
-    TextView joinText;
-    Intent intent;
-    boolean iskakaoLoginSuccess;
-    boolean isAutoChecked;
-    Group loginSuccessUi;
-    ConstraintLayout loginTextView;
-    TextView loginUserName;
-    TextView loginUserPhone;
-    String name;
-    String phone;
-    String userId;
+    private Context context;
+    private RecyclerView recyclerView;
+    private RecyclerViewAdapter recyclerViewAdapter;
+    private GridLayoutManager gridLayoutManager;
+    private ConstraintLayout constraintLayout;
+    private ImageView ivUserProfile;
+    private TextView tvUserId;
+    private TextView tvUserName;
+    private TextView tvUserPhone;
+    private ImageView ivLogin;
+    private ImageView ivLogout;
 
-    ImageView updateImage;
+    private Intent intent;
+    private boolean isKakaoLoginSuccess;
+    private Group loginProfileGroup;
+    private Group loginInfoGroup;
+    private Group loginBtnGroup;
+    private Group logoutBtnGroup;
+    private String userName;
+    private String userPhone;
+    private String userId;
+    private String userPw;
+    private String userProfileUrl;
 
-
-    ArrayList<RecyclerViewItem> itemLists = new ArrayList<RecyclerViewItem>() {{
+    private ArrayList<RecyclerViewItem> itemLists = new ArrayList<RecyclerViewItem>() {{
         add(new RecyclerViewItem(R.drawable.ic_baseline_web_24, "WebView"));
         add(new RecyclerViewItem(R.drawable.ic_baseline_broadcast_on_home_24, "Retrofit"));
         add(new RecyclerViewItem(R.drawable.ic_baseline_security_24, "Permission"));
@@ -89,9 +89,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         context = this;
-
 
         // RecyclerView 화면 아이콘 표시
         recyclerView = findViewById(R.id.main_recycler_view);
@@ -124,70 +122,70 @@ public class MainActivity extends Activity {
                         GLog.d("통신사 ISO 국가코드 : [ getSimCountryIso ] >>> " + tm.getSimCountryIso());
                         GLog.d("SIM 카드 상태 : [ getSimState ] >>> " + tm.getSimState());
                     }
-                    Toast.makeText(this, "권한 허용됨", Toast.LENGTH_SHORT).show();
+                    AppUtil.showToast(context, "권한 허용됨");
                 }
             } else if (TextUtils.equals(itemLists.get(position).getTitle(), "Camera")) {
                 if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                     //권한이 없는 경우 requestPermissions() 메서드 호출하여 권한 요청
                     ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.CAMERA}, Constant.PERMISSIONS_REQUEST_CAMERA);
-                    return;
                 } else {
-                    Toast.makeText(this, "카메라를 실행합니다", Toast.LENGTH_LONG).show();
+                    AppUtil.showToast(context, "카메라를 실행합니다");
                     callCamera();
-
                 }
             }
         });
 
         //로그인 아이콘,텍스트 설정
-        loginImage = findViewById(R.id.icon_login);
-        joinImage = findViewById(R.id.icon_join);
-        loginText = findViewById(R.id.tv_login);
-        joinText = findViewById(R.id.tv_join);
-        loginSuccessUi = findViewById(R.id.login_success_group);
-        loginTextView = findViewById(R.id.login_text);
-        loginProfile = findViewById(R.id.login_image_view);
-        loginName = findViewById(R.id.login_name_text_view);
-        iskakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
-        isAutoChecked = UserPreference.getAutoLoginCheck(context);
-        loginUserName = findViewById(R.id.user_name);
-        loginUserPhone = findViewById(R.id.user_phone);
-        updateImage = findViewById(R.id.icon_update);
+        ivUserProfile = findViewById(R.id.login_image_view);
+        ivLogin = findViewById(R.id.icon_login);
+        ivLogout = findViewById(R.id.icon_logout);
+        loginProfileGroup = findViewById(R.id.login_group);
+        loginInfoGroup = findViewById(R.id.login_default_group);
+        loginBtnGroup = findViewById(R.id.login_btn_group);
+        logoutBtnGroup = findViewById(R.id.logout_btn_group);
+        constraintLayout = findViewById(R.id.login_text);
+        tvUserId = findViewById(R.id.login_name_text_view);
+        tvUserName = findViewById(R.id.user_name);
+        tvUserPhone = findViewById(R.id.user_phone);
+        ImageView ivUpdate = findViewById(R.id.icon_update);
+
+        isKakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
+        boolean isAutoChecked = UserPreference.getAutoLoginCheck(context);
 
 
-        if (iskakaoLoginSuccess || isAutoChecked) {
+        if (isKakaoLoginSuccess || isAutoChecked) {
             setLoginUserInfo();
         } else {
-            setShowLoginUi(false);
+            setShowLoginUi(Constant.LOGIN_DEFAULT);
         }
 
-        //join 클릭
-        joinImage.setOnClickListener(view -> {
-            intent = new Intent(context, JoinActivity.class);
-            startActivityForResult(intent, Constant.REQUEST_JOIN_CODE);
-        });
-
         //update 클릭
-        updateImage.setOnClickListener(new View.OnClickListener() {
+        ivUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 intent = new Intent(context, UpdateActivity.class);
+                intent.putExtra("userId", userId);
+                intent.putExtra("userName", userName);
+                intent.putExtra("userPhone", userPhone);
                 startActivityForResult(intent, Constant.REQUEST_LOGIN_CODE);
             }
         });
 
 
-        //로그인 아이콘 클릭시
-        loginImage.setOnClickListener(view -> {
-            if (TextUtils.equals(loginText.getText(), "Login")) {
+        ivLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 intent = new Intent(context, LoginActivity.class);
                 startActivityForResult(intent, Constant.REQUEST_LOGIN_CODE);
+            }
+        });
 
-            } else if (TextUtils.equals(loginText.getText(), "Logout")) {
+        ivLogout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
                 logout();
             }
         });
-
     }
 
 
@@ -195,11 +193,16 @@ public class MainActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
         if (requestCode == Constant.REQUEST_LOGIN_CODE) {
+            isKakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
             if (resultCode == RESULT_OK) {
-                userId = intent.getStringExtra("userId");
-                name = intent.getStringExtra("userName");
-                phone = intent.getStringExtra("userPhone");
-                setShowLoginUi(true);
+                if (!isKakaoLoginSuccess) {
+                    userId = intent.getStringExtra("userId");
+                    userName = intent.getStringExtra("userName");
+                    userPhone = intent.getStringExtra("userPhone");
+                    setShowLoginUi(Constant.LOGIN);
+                } else {
+                    setLoginUserInfo();
+                }
             } else {
                 GLog.d("주고받기 오류");
             }
@@ -207,7 +210,6 @@ public class MainActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 intent = new Intent(context, LoginActivity.class);
                 startActivityForResult(intent, Constant.REQUEST_LOGIN_CODE);
-//                finish();
             }
         } else {
             GLog.d("회원가입 오류");
@@ -215,9 +217,8 @@ public class MainActivity extends Activity {
     }
 
     private void setLoginUserInfo() {
-        iskakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
-        GLog.d("iskakaologinSuccess :" + iskakaoLoginSuccess);
-        if (iskakaoLoginSuccess) {
+        isKakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
+        if (isKakaoLoginSuccess) {
             UserApiClient.getInstance().me((user, throwable) -> {
                 if (throwable != null) {
                     GLog.d("사용자 정보 요청 실패");
@@ -226,9 +227,9 @@ public class MainActivity extends Activity {
                     if (account != null) {
                         Profile profile = account.getProfile();
                         if (profile != null) {
-                            loginName.setText(user.getKakaoAccount().getProfile().getNickname());
-                            Glide.with(context).load(user.getKakaoAccount().getProfile().getThumbnailImageUrl()).into(loginProfile);
-                            setShowLoginUi(true);
+                            userId = user.getKakaoAccount().getProfile().getNickname();
+                            userProfileUrl = user.getKakaoAccount().getProfile().getProfileImageUrl();
+                            setShowLoginUi(Constant.KAKAO_LOGIN);
                         } else {
                             GLog.d("profile이 null값 입니다.");
                         }
@@ -241,53 +242,44 @@ public class MainActivity extends Activity {
                 return null;
             });
         } else {
-            userId = UserPreference.getUserId(context);
-            String userPw = UserPreference.getUserPassword(context);
-            RetrofitApiManager.getInstance().requestLoginDataCall(userId, userPw, new RetrofitInterface() {
-                @Override
-                public void onResponse(Response response) {
-                    if (response.isSuccessful()) {
-                        LoginResponse dkiUserData = (LoginResponse) response.body();
-                        if (dkiUserData != null) {
-                            if (dkiUserData.getResultInfo().getResult()) {
-                                if (!TextUtils.isEmpty(userId)) {
-                                    name = dkiUserData.getUserInfo().getName();
-                                    phone = dkiUserData.getUserInfo().getPhone();
-                                }
-                                loginProfile.setImageResource(R.drawable.login_success);
-                                setShowLoginUi(true);
-                            }
-                            Toast.makeText(context, dkiUserData.getResultInfo().getErrorMsg(), Toast.LENGTH_SHORT).show();
-                        } else {
-                            GLog.d("서버 통신 원활하지 않습니다.");
-                        }
-                    } else {
-                        GLog.d("dkiUserResponse is not successful");
-                    }
-                }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    GLog.d("dkiUserResponse :" + t.toString());
-                }
-            });
-
+            requestLoginUserInfo();
         }
     }
 
-    private void setShowLoginUi(boolean isLogin) {
-        loginSuccessUi.setVisibility(isLogin ? View.VISIBLE : View.INVISIBLE);
-        loginTextView.setVisibility(isLogin ? View.INVISIBLE : View.VISIBLE);
-        loginImage.setImageResource(isLogin ? R.drawable.logout : R.drawable.ic_baseline_login_24);
-        joinImage.setImageResource(isLogin ? View.GONE : R.drawable.ic_baseline_login_24);
-        updateImage.setVisibility(isLogin ? View.VISIBLE : View.GONE);
-        updateImage.setImageResource(isLogin ? R.drawable.update : View.GONE);
-        loginProfile.setImageResource(isLogin ? R.drawable.login_success : View.INVISIBLE);
-        loginText.setText(isLogin ? "Logout" : "Login");
-        joinText.setText(isLogin ? "Update" : "Join");
-        loginUserName.setText(name);
-        loginUserPhone.setText(phone);
-        loginName.setText(userId);
+
+    private void setShowLoginUi(int loginType) {
+        loginProfileGroup.setVisibility(View.INVISIBLE);
+        loginBtnGroup.setVisibility(View.INVISIBLE);
+        constraintLayout.setVisibility(View.GONE);
+        logoutBtnGroup.setVisibility(View.VISIBLE);
+
+        switch (loginType) {
+            case Constant.LOGIN_DEFAULT:
+                loginInfoGroup.setVisibility(View.INVISIBLE);
+                loginBtnGroup.setVisibility(View.VISIBLE);
+                logoutBtnGroup.setVisibility(View.GONE);
+                constraintLayout.setVisibility(View.VISIBLE);
+                break;
+
+            case Constant.LOGIN:
+                loginProfileGroup.setVisibility(View.VISIBLE);
+                loginInfoGroup.setVisibility(View.VISIBLE);
+                ivUserProfile.setImageResource(R.drawable.login_success);
+                tvUserName.setText(userName);
+                tvUserPhone.setText(userPhone);
+                tvUserId.setText(userId);
+                break;
+
+            case Constant.KAKAO_LOGIN:
+                loginProfileGroup.setVisibility(View.VISIBLE);
+                loginInfoGroup.setVisibility(View.GONE);
+                Glide.with(context).load(userProfileUrl).into(ivUserProfile);
+                tvUserId.setText(userId);
+                break;
+            default:
+                break;
+        }
+
     }
 
     boolean checkPermission() {
@@ -339,14 +331,14 @@ public class MainActivity extends Activity {
         switch (requestCode) {
             case Constant.PERMISSION_REQUEST_CODE:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "권한이 허가되었습니다.", Toast.LENGTH_SHORT).show();
+                    AppUtil.showToast(context, "권한이 허가되었습니다.");
                 } else {
                     setPermissionDialog("전화 권한");
                 }
                 break;
             case Constant.PERMISSIONS_REQUEST_CAMERA:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "권한이 허가되었습니다..", Toast.LENGTH_SHORT).show();
+                    AppUtil.showToast(context, "권한이 허가되었습니다.");
                     callCamera();
                 } else {
                     setPermissionDialog("카메라 권한");
@@ -387,7 +379,6 @@ public class MainActivity extends Activity {
 
     private void logout() {
         //팝업창 선택 (로그아웃, 탈퇴하기)
-        userId = UserPreference.getUserId(context);
 
         final ArrayList<String> selectedItems = new ArrayList<String>();
         final String[] items = getResources().getStringArray(R.array.LOGOUT);
@@ -399,78 +390,118 @@ public class MainActivity extends Activity {
                     selectedItems.clear();
                     selectedItems.add(items[position]);
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int position) {
-                switch (selectedItems.get(0)) {
-                    case "로그아웃":
-                        if (iskakaoLoginSuccess) {
-                            UserApiClient.getInstance().logout(throwable -> {
-                                if (throwable != null) {
-                                    GLog.d("로그아웃 실패");
-                                } else {
-                                    UserPreference.setKakaoLoginSuccess(context, false);
-                                    setShowLoginUi(false);
-                                    Toast.makeText(context, "로그아웃 성공", Toast.LENGTH_SHORT).show();
-                                }
-                                return null;
-                            });
-                        } else {
-                            UserPreference.setClear(context);
-                            setShowLoginUi(false);
-                            Toast.makeText(context, "로그아웃", Toast.LENGTH_SHORT).show();
-                        }
-                        break;
-                    case "탈퇴하기":
-                        if (iskakaoLoginSuccess) {
-                            UserApiClient.getInstance().unlink(throwable -> {
-                                if (throwable != null) {
-                                    GLog.d("연결 끊기 실패");
-                                } else {
-                                    UserPreference.setKakaoLoginSuccess(context, false);
-                                    setShowLoginUi(false);
-                                    Toast.makeText(context, "연결 끊기 성공", Toast.LENGTH_SHORT).show();
-                                }
-                                return null;
-                            });
-                        } else {
-                            //통신태우기??
-                            DeleteModel model = new DeleteModel(userId);
-                            RetrofitApiManager.getInstance().requestDeleteData(model, new RetrofitInterface() {
-                                @Override
-                                public void onResponse(Response response) {
-                                    if (response.isSuccessful()) {
-                                        IdDeleteResponse idDeleteResponse = (IdDeleteResponse) response.body();
-                                        if (idDeleteResponse != null) {
-                                            String errMsg = idDeleteResponse.getResultInfo().getErrorMsg();
-                                            if (idDeleteResponse.getResultInfo().isResult()) {
-                                                setShowLoginUi(false);
-                                                Toast.makeText(context, errMsg, Toast.LENGTH_SHORT).show();
-                                                GLog.d("errMsg : " + errMsg);
-                                            } else {
-                                                GLog.e("errMsg : " + errMsg);
-                                            }
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int position) {
+                        switch (selectedItems.get(0)) {
+                            case "로그아웃":
+                                if (isKakaoLoginSuccess) {
+                                    UserApiClient.getInstance().logout(throwable -> {
+                                        if (throwable != null) {
+                                            GLog.d("로그아웃 실패");
                                         } else {
-                                            GLog.e("userInfoDelete is null");
+                                            UserPreference.setKakaoLoginSuccess(context, false);
+                                            setShowLoginUi(Constant.LOGIN_DEFAULT);
+                                            AppUtil.showToast(context, getString(R.string.msg_logout_success));
                                         }
-                                    } else {
-                                        GLog.e("response is not Success");
-                                    }
+                                        return null;
+                                    });
+                                } else {
+                                    UserPreference.setClear(context);
+                                    setShowLoginUi(Constant.LOGIN_DEFAULT);
+                                    AppUtil.showToast(context, getString(R.string.msg_logout_success));
                                 }
-
-                                @Override
-                                public void onFailure(Throwable t) {
-                                    GLog.d("idCheckResponse :" + t.toString());
+                                break;
+                            case "탈퇴하기":
+                                if (isKakaoLoginSuccess) {
+                                    UserApiClient.getInstance().unlink(throwable -> {
+                                        if (throwable != null) {
+                                            GLog.d("연결 끊기 실패");
+                                        } else {
+                                            UserPreference.setKakaoLoginSuccess(context, false);
+                                            setShowLoginUi(Constant.LOGIN_DEFAULT);
+                                            AppUtil.showToast(context, getString(R.string.msg_unlink_success));
+                                        }
+                                        return null;
+                                    });
+                                } else {
+                                    requestDeleteUserInfo();
                                 }
-                            });
+                                break;
+                            default:
+                                GLog.d("선택한 값이 없음");
+                                break;
                         }
-                        break;
-                    default:
-                        GLog.d("선택한 값이 없음");
-                        break;
-                }
-            }
-        }).setNegativeButton("CANCEL", (dialogInterface, i) -> {
-        }).show();
+                    }
+                }).setNegativeButton("CANCEL", (dialogInterface, i) -> {
+                }).show();
     }
 
+    private void requestDeleteUserInfo() {
+        CommonRequest model = new CommonRequest();
+        userId = UserPreference.getUserId(context);
+        model.setId(userId);
+        RetrofitApiManager.getInstance().requestDeleteUserInfo(model, new RetrofitInterface() {
+            @Override
+            public void onResponse(Response response) {
+                if (response.isSuccessful()) {
+                    CommonResponse commonResponse = (CommonResponse) response.body();
+                    if (commonResponse != null) {
+                        String errMsg = commonResponse.getResultInfo().getErrorMsg();
+                        if (commonResponse.getResultInfo().isResult()) {
+                            setShowLoginUi(Constant.LOGIN_DEFAULT);
+                            UserPreference.setClear(context);
+                            AppUtil.showToast(context, errMsg);
+                        } else {
+                            GLog.e("errMsg : " + errMsg);
+                        }
+                    } else {
+                        GLog.e("userInfoDelete is null");
+                    }
+                } else {
+                    GLog.e("response is not Success");
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                GLog.d("idCheckResponse :" + t.toString());
+            }
+        });
+    }
+
+    private void requestLoginUserInfo() {
+        // 자동로그인 체크 되어있을 때 실행
+        userId = UserPreference.getUserId(context);
+        userPw = UserPreference.getUserPassword(context);
+        CommonRequest model = new CommonRequest();
+        model.setId(userId);
+        model.setPw(userPw);
+        RetrofitApiManager.getInstance().requestLoginUserInfo(model, new RetrofitInterface() {
+            @Override
+            public void onResponse(Response response) {
+                if (response.isSuccessful()) {
+                    LoginResponse loginResponse = (LoginResponse) response.body();
+                    if (loginResponse != null) {
+                        if (loginResponse.getResultInfo().isResult()) {
+                            if (!TextUtils.isEmpty(userId)) {
+                                userName = loginResponse.getUserInfo().getName();
+                                userPhone = loginResponse.getUserInfo().getPhone();
+                            }
+                            setShowLoginUi(Constant.LOGIN);
+                        }
+                        AppUtil.showToast(context, loginResponse.getResultInfo().getErrorMsg());
+                    } else {
+                        GLog.d("서버 통신 원활하지 않습니다.");
+                    }
+                } else {
+                    GLog.d("dkiUserResponse is not successful");
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                GLog.d("dkiUserResponse :" + t.toString());
+            }
+        });
+    }
 }

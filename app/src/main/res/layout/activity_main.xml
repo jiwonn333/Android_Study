@@ -14,11 +14,33 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <androidx.constraintlayout.widget.Group
-            android:id="@+id/login_success_group"
+            android:id="@+id/login_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="invisible"
-            app:constraint_referenced_ids="login_image_view, login_name_text_view, user_name, user_phone" />
+            app:constraint_referenced_ids="login_image_view, login_name_text_view" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/login_default_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:constraint_referenced_ids="user_name, user_phone, icon_update, tv_update" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/login_btn_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:constraint_referenced_ids="icon_login, tv_login" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/logout_btn_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="icon_logout, tv_logout" />
+
 
         <ImageView
             android:id="@+id/login_image_view"
@@ -38,6 +60,7 @@
             app:layout_constraintStart_toStartOf="@id/login_image_view"
             app:layout_constraintTop_toBottomOf="@id/login_image_view" />
 
+
         <TextView
             android:id="@+id/user_name"
             android:layout_width="wrap_content"
@@ -56,40 +79,34 @@
             app:layout_constraintStart_toEndOf="@id/login_image_view"
             app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
-        <ImageView
-            android:id="@+id/icon_join"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="15dp"
-            app:layout_constraintBottom_toTopOf="@id/tv_login"
-            app:layout_constraintEnd_toStartOf="@id/tv_login"
-            app:layout_constraintTop_toTopOf="parent" />
 
         <ImageView
             android:id="@+id/icon_update"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginRight="15dp"
-            android:visibility="gone"
+            android:src="@drawable/update"
             app:layout_constraintBottom_toTopOf="@id/tv_login"
             app:layout_constraintEnd_toStartOf="@id/tv_login"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/tv_join"
+            android:id="@+id/tv_update"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Join"
+            android:text="Update"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/icon_join"
-            app:layout_constraintStart_toStartOf="@id/icon_join"
-            app:layout_constraintTop_toBottomOf="@id/icon_join" />
+            app:layout_constraintEnd_toEndOf="@id/icon_update"
+            app:layout_constraintStart_toStartOf="@id/icon_update"
+            app:layout_constraintTop_toBottomOf="@id/icon_update" />
+
 
         <ImageView
             android:id="@+id/icon_login"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginRight="15dp"
+            android:src="@drawable/logout"
             app:layout_constraintBottom_toTopOf="@id/tv_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -99,6 +116,26 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Login"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/icon_login"
+            app:layout_constraintStart_toStartOf="@id/icon_login"
+            app:layout_constraintTop_toBottomOf="@id/icon_login" />
+
+        <ImageView
+            android:id="@+id/icon_logout"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="15dp"
+            android:src="@drawable/ic_baseline_login_24"
+            app:layout_constraintBottom_toTopOf="@id/tv_login"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/tv_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Logout"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/icon_login"
             app:layout_constraintStart_toStartOf="@id/icon_login"

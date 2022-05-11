@@ -11,40 +11,38 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 
 import com.example.mysnsaccount.R;
-import com.example.mysnsaccount.dkiapi.IdCheckResponse;
-import com.example.mysnsaccount.dkiapi.JoinResponse;
+import com.example.mysnsaccount.dkiapi.CommonResponse;
 import com.example.mysnsaccount.retrofit.RetrofitApiManager;
 import com.example.mysnsaccount.retrofit.RetrofitInterface;
-import com.example.mysnsaccount.retrofit.model.IdCheckModel;
-import com.example.mysnsaccount.retrofit.model.JoinModel;
+import com.example.mysnsaccount.retrofit.model.CommonRequest;
+import com.example.mysnsaccount.util.AppUtil;
 import com.example.mysnsaccount.util.GLog;
 import com.example.mysnsaccount.util.HashUtils;
 
 import retrofit2.Response;
 
 public class JoinActivity extends Activity {
-    EditText id;
-    EditText pw;
-    EditText pwOk;
-    EditText name;
-    EditText phone;
-    Button idCheck;
-    boolean isIdCheck;
-    Button pwCheck;
-    Button submit;
-    Intent intent;
-    Context context;
-    String userId;
-    String userPw;
-    String userPwOk;
-    String userPhone;
-    String userName;
+    private EditText etUserId;
+    private EditText etUserPw;
+    private EditText etUserPwCheck;
+    private EditText etUserName;
+    private EditText etUserPhone;
+    private Button btnIdCheck;
+    private boolean isIdCheck;
+    private Button btnPwCheck;
+    private Button btnJoin;
+    private Intent intent;
+    private Context context;
+    private String userId;
+    private String userPw;
+    private String userPwCheck;
+    private String userPhone;
+    private String userName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -53,51 +51,25 @@ public class JoinActivity extends Activity {
         context = this;
 
         //기입 항목
-        id = findViewById(R.id.tv_id);
-        pw = findViewById(R.id.tv_pw);
-        pwOk = findViewById(R.id.tv_pw_ok);
-        name = findViewById(R.id.tv_name);
-        phone = findViewById(R.id.tv_phone);
-        idCheck = findViewById(R.id.btn_id);
-        pwCheck = findViewById(R.id.pw_check);
-        submit = findViewById(R.id.sign_up_button);
-
+        etUserId = findViewById(R.id.tv_id);
+        etUserPw = findViewById(R.id.tv_pw);
+        etUserPwCheck = findViewById(R.id.tv_pw_ok);
+        etUserName = findViewById(R.id.tv_name);
+        etUserPhone = findViewById(R.id.tv_phone);
+        btnIdCheck = findViewById(R.id.btn_id);
+        btnPwCheck = findViewById(R.id.pw_check);
+        btnJoin = findViewById(R.id.sign_up_button);
 
         //아이디 중복 확인 버튼
-        idCheck.setOnClickListener(view -> {
-            userId = id.getText().toString();
+        btnIdCheck.setOnClickListener(view -> {
+            userId = etUserId.getText().toString();
             if (idCheckValidation(userId)) {
-                IdCheckModel model = new IdCheckModel(userId);
-                RetrofitApiManager.getInstance().requestIdCheckData(model, new RetrofitInterface() {
-                    @Override
-                    public void onResponse(Response response) {
-                        if (response.isSuccessful()) {
-                            IdCheckResponse idCheckResponse = (IdCheckResponse) response.body();
-                            if (idCheckResponse != null) {
-                                String idErrorMsg = idCheckResponse.getResultInfo().getErrorMsg();
-                                if (idCheckResponse.getResultInfo().isResult()) {
-                                    Toast.makeText(context, idErrorMsg, Toast.LENGTH_SHORT).show();
-                                    isIdCheck = idCheckResponse.getResultInfo().isResult();
-                                } else {
-                                    id.setText("");
-                                    Toast.makeText(context, idErrorMsg, Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                GLog.e("errorMsg : " + idCheckResponse.getResultInfo().getErrorMsg());
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Throwable t) {
-                        GLog.d("idCheckResponse :" + t.toString());
-                    }
-                });
+                requestIdCheck();
             }
         });
 
 
-        id.addTextChangedListener(new TextWatcher() {
+        etUserId.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
 
@@ -105,18 +77,9 @@ public class JoinActivity extends Activity {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
-                GLog.d("start :" + start + " before : " + before + " count : " + count);
-                String input_id = id.getText().toString();
+                String inputId = etUserId.getText().toString();
 
-                if (input_id != null) {
-                    if (input_id.equals(userId)) {
-                        isIdCheck = true;
-                    } else {
-                        isIdCheck = false;
-                    }
-                } else {
-                    Toast.makeText(context, "아이디를 입력해주세요", Toast.LENGTH_SHORT).show();
-                }
+                isIdCheck = TextUtils.equals(inputId, userId);
             }
 
             @Override
@@ -126,81 +89,56 @@ public class JoinActivity extends Activity {
         });
 
         //비밀번호 확인 버튼
-        pwCheck.setOnClickListener(view -> {
-            userPw = pw.getText().toString();
-            userPwOk = pwOk.getText().toString();
-            if (pwCheckValidation(userPw, userPwOk)) {
-                pwCheck.setText("일치");
-                Toast.makeText(context, "비밀번호가 일치합니다.", Toast.LENGTH_SHORT).show();
+        btnPwCheck.setOnClickListener(view -> {
+            userPw = etUserPw.getText().toString();
+            userPwCheck = etUserPwCheck.getText().toString();
+            if (pwCheckValidation(userPw, userPwCheck)) {
+                btnPwCheck.setText("일치");
+                AppUtil.showToast(context, getString(R.string.msg_pw));
             } else {
-                pwCheck.setText("확인");
-                pw.setText("");
-                pwOk.setText("");
-                Toast.makeText(context, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                btnPwCheck.setText("확인");
+                etUserPw.setText("");
+                etUserPwCheck.setText("");
+                AppUtil.showToast(context, getString(R.string.msg_pw_check));
             }
         });
 
         //전화번호 하이픈
-        phone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        etUserPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
 
         //회원가입 완료 버튼
-        submit.setOnClickListener(view -> {
-            userId = id.getText().toString();
-            userPw = pw.getText().toString();
-            userPhone = phone.getText().toString();
-            userName = name.getText().toString();
-
-            idCheckValidation(userId);
-            if (isIdCheck) {
-                if (TextUtils.equals(pwCheck.getText().toString(), "일치")) {
-                    userPw = HashUtils.getSHA256Encrypt(userPw);
-                    if (userPhone.length() == 13) {
-                        JoinModel model = new JoinModel(userId, userPw, userName, userPhone);
-                        RetrofitApiManager.getInstance().requestJoinData(model, new RetrofitInterface() {
-                            @Override
-                            public void onResponse(Response response) {
-                                if (response.isSuccessful()) {
-                                    JoinResponse joinResponse = (JoinResponse) response.body();
-                                    if (joinResponse != null) {
-                                        if (joinResponse.getResultInfo().isResult()) {
-                                            joinDialog();
-                                            Toast.makeText(context, "회원가입을 완료했습니다.", Toast.LENGTH_SHORT).show();
-                                        } else {
-                                            Toast.makeText(context, joinResponse.getResultInfo().getErrorMsg(), Toast.LENGTH_SHORT).show();
-                                        }
-                                    } else {
-                                        GLog.e("errorMsg : " + joinResponse.getResultInfo().getErrorMsg());
-                                    }
-                                }
-                            }
-
-                            @Override
-                            public void onFailure(Throwable t) {
-                                GLog.d("joinResponse :" + t.toString());
-                            }
-                        });
+        btnJoin.setOnClickListener(view -> {
+            userId = etUserId.getText().toString();
+            userPw = etUserPw.getText().toString();
+            userName = etUserName.getText().toString();
+            userPhone = etUserPhone.getText().toString();
+            if (idCheckValidation(userId)) {
+                if (isIdCheck) {
+                    if (TextUtils.equals(btnPwCheck.getText().toString(), "일치")) {
+                        userPw = HashUtils.getSHA256Encrypt(userPw);
+                        if (userPhone.length() == 13) {
+                            requestJoin();
+                        } else {
+                            AppUtil.showToast(context, getString(R.string.msg_phone_check));
+                        }
                     } else {
-                        Toast.makeText(context, "전화번호를 정확히 입력해주세요.", Toast.LENGTH_SHORT).show();
+                        AppUtil.showToast(context, getString(R.string.msg_pw_check));
                     }
                 } else {
-                    Toast.makeText(context, "비밀번호 일치 확인해주세요.", Toast.LENGTH_SHORT).show();
+                    AppUtil.showToast(context, getString(R.string.msg_id_check));
                 }
             } else {
-                Toast.makeText(context, "아이디 중복체크 해주세요.", Toast.LENGTH_SHORT).show();
+                GLog.e("userId : " + userId);
             }
         });
 
     }
 
-    private boolean pwCheckValidation(String userPw, String userPwOk) {
-        if (TextUtils.isEmpty(userPw) || TextUtils.isEmpty(userPwOk)) {
-            Toast.makeText(context, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
-            return false;
-        }
 
-        if (!TextUtils.equals(userPw, userPwOk)) {
-            Toast.makeText(context, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+    private boolean pwCheckValidation(String userPw, String userPwCheck) {
+        if (TextUtils.isEmpty(userPw) || TextUtils.isEmpty(userPwCheck)) {
+            AppUtil.showToast(context, getString(R.string.msg_input_pw));
             return false;
         }
         return true;
@@ -208,7 +146,7 @@ public class JoinActivity extends Activity {
 
     private boolean idCheckValidation(String userId) {
         if (TextUtils.isEmpty(userId)) {
-            Toast.makeText(context, "아이디를 입력해주세요", Toast.LENGTH_SHORT).show();
+            AppUtil.showToast(context, getString(R.string.msg_input_id));
             return false;
         }
         return true;
@@ -237,4 +175,75 @@ public class JoinActivity extends Activity {
         finish();
     }
 
+    private void requestIdCheck() {
+        CommonRequest model = new CommonRequest();
+        model.setId(userId);
+        RetrofitApiManager.getInstance().requestIdCheck(model, new RetrofitInterface() {
+            @Override
+            public void onResponse(Response response) {
+                if (response.isSuccessful()) {
+                    CommonResponse commonResponse = (CommonResponse) response.body();
+                    if (commonResponse != null) {
+                        CommonResponse.ResultInfo resultInfo = commonResponse.getResultInfo();
+                        if (resultInfo != null) {
+                            String idErrorMsg = resultInfo.getErrorMsg();
+                            if (resultInfo.isResult()) {
+                                AppUtil.showToast(context, idErrorMsg);
+                                isIdCheck = resultInfo.isResult();
+                            } else {
+                                etUserId.setText("");
+                                AppUtil.showToast(context, idErrorMsg);
+                            }
+                        } else {
+                            GLog.e("errorMsg : " + resultInfo.getErrorMsg());
+                        }
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                GLog.d("idCheckResponse :" + t.toString());
+            }
+        });
+    }
+
+    private void requestJoin() {
+        CommonRequest model = new CommonRequest();
+        model.setId(userId);
+        model.setPw(userPw);
+        model.setName(userName);
+        model.setPhone(userPhone);
+        RetrofitApiManager.getInstance().requestJoin(model, new RetrofitInterface() {
+            @Override
+            public void onResponse(Response response) {
+                if (response.isSuccessful()) {
+                    CommonResponse commonResponse = (CommonResponse) response.body();
+                    if (commonResponse != null) {
+                        CommonResponse.ResultInfo resultInfo = commonResponse.getResultInfo();
+                        if (resultInfo != null) {
+                            String errMsg = resultInfo.getErrorMsg();
+                            if (resultInfo.isResult()) {
+                                joinDialog();
+                                AppUtil.showToast(context, errMsg);
+                            } else {
+                                AppUtil.showToast(context, errMsg);
+                            }
+                        } else {
+                            GLog.e("resultInfo is null");
+                        }
+                    } else {
+                        GLog.e("commonResponse is null");
+                    }
+                } else {
+                    GLog.e("Response is not Successful");
+                }
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                GLog.d("joinResponse :" + t.toString());
+            }
+        });
+    }
 }

@@ -108,7 +108,7 @@ public class AlertDialogActivity extends AppCompatActivity {
                         selectedItems.clear();
                         selectedItems.add(items[position]);
                     }).setPositiveButton("OK", (dialogInterface, i) -> Toast.makeText(AlertDialogActivity.this, "선택된 항목 : " + selectedItems.get(0), Toast.LENGTH_SHORT).show())
-                    .setNegativeButton("CANCLE", (dialogInterface, i) -> Toast.makeText(AlertDialogActivity.this, "선택이 취소되었습니다.", Toast.LENGTH_SHORT).show()).show();
+                    .setNegativeButton("CANCEL", (dialogInterface, i) -> Toast.makeText(AlertDialogActivity.this, "선택이 취소되었습니다.", Toast.LENGTH_SHORT).show()).show();
         });
 
 

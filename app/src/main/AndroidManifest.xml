@@ -60,7 +60,6 @@
         <activity android:name=".retrofit.RetrofitActivity" />
         <activity android:name=".permission.PermissionActivity" />
         <activity android:name=".recyclerview.RecyclerViewActivity" />
-        <activity android:name=".login.LoginSuccessActivity" />
         <activity android:name=".dialogtest.AlertDialogActivity" />
         <activity android:name=".encryption.EncryptionActivity" />
 

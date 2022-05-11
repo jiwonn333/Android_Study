@@ -64,6 +64,12 @@
             android:text="로그인"
             tools:ignore="MissingConstraints" />
 
+        <Button
+            android:id="@+id/btn_join"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:text="회원가입"
+            tools:ignore="MissingConstraints" />
     </LinearLayout>
 
     <Button

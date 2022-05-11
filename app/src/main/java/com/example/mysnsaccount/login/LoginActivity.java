@@ -5,17 +5,21 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.example.mysnsaccount.R;
+import com.example.mysnsaccount.dkiapi.CommonResponse;
 import com.example.mysnsaccount.dkiapi.LoginResponse;
 import com.example.mysnsaccount.retrofit.RetrofitApiManager;
 import com.example.mysnsaccount.retrofit.RetrofitInterface;
+import com.example.mysnsaccount.retrofit.model.CommonRequest;
+import com.example.mysnsaccount.util.AppUtil;
+import com.example.mysnsaccount.util.Constant;
 import com.example.mysnsaccount.util.GLog;
 import com.example.mysnsaccount.util.HashUtils;
 import com.example.mysnsaccount.util.UserPreference;
@@ -30,24 +34,23 @@ import retrofit2.Response;
 
 public class LoginActivity extends Activity {
     private static final boolean REQUEST_GET = false;
-    Button btnKakaoLogin;
-    Button btnLogin;
-    EditText etUserId;
-    EditText etUserPw;
-    String userId;
-    String userPw;
-    String getUserId;
-    String getUserPw;
-    CheckBox checkSaveId;
-    CheckBox checkAutoLogin;
-    Intent intent;
-    boolean validation;
-    boolean saveIdCheck;
-    boolean autoLoginCheck;
-    boolean iskakaoLogin;
-    Context context;
-    String loginUserName;
-    String loginUserPhone;
+    private Button btnKakaoLogin;
+    private Button btnLogin;
+    private Button btnJoin;
+    private EditText etUserId;
+    private EditText etUserPw;
+    private CheckBox checkSaveId;
+    private CheckBox checkAutoLogin;
+    private Intent intent;
+    private boolean validation;
+    private boolean saveIdCheck;
+    private boolean autoLoginCheck;
+    private boolean iskakaoLogin;
+    private Context context;
+    private String userId;
+    private String userPw;
+    private String userName;
+    private String userPhone;
 
 
     @Override
@@ -58,6 +61,7 @@ public class LoginActivity extends Activity {
 
         btnKakaoLogin = findViewById(R.id.btn_kakao_login);
         btnLogin = findViewById(R.id.btn_login);
+        btnJoin = findViewById(R.id.btn_join);
         etUserId = findViewById(R.id.user_id);
         etUserPw = findViewById(R.id.user_pw);
         checkSaveId = findViewById(R.id.ck_id);
@@ -67,7 +71,6 @@ public class LoginActivity extends Activity {
         saveIdCheck = UserPreference.getSaveIdCheck(context);
         autoLoginCheck = UserPreference.getAutoLoginCheck(context);
         iskakaoLogin = UserPreference.getKakaoLoginSuccess(context);
-
 
         // 아이디 저장 체크박스가 체크되어있으면 실행, 아니면 false
         checkSaveId.setChecked(saveIdCheck);
@@ -86,19 +89,23 @@ public class LoginActivity extends Activity {
             }
         }
 
-
         btnLogin.setOnClickListener(view -> {
-            getUserId = etUserId.getText().toString();
-            getUserPw = etUserPw.getText().toString();
-
-            if (!TextUtils.isEmpty(getUserPw)) {
-                getUserPw = HashUtils.getSHA256Encrypt(getUserPw);
+            userId = etUserId.getText().toString();
+            userPw = etUserPw.getText().toString();
+            if (!TextUtils.isEmpty(userPw)) {
+                userPw = HashUtils.getSHA256Encrypt(userPw);
             }
-            validation = loginCheckValidation(getUserId, getUserPw);
+            validation = loginCheckValidation(userId, userPw);
             if (validation) {
                 requestService();
-            } else {
+            }
+        });
 
+        btnJoin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                intent = new Intent(context, JoinActivity.class);
+                startActivityForResult(intent, Constant.REQUEST_LOGIN_CODE);
             }
         });
 
@@ -109,17 +116,14 @@ public class LoginActivity extends Activity {
                 UserApiClient.getInstance().loginWithKakaoTalk(context, (oAuthToken, throwable) -> {
                     if (throwable != null) {
                         GLog.d("카카오톡으로 로그인 실패");
-
                         if (throwable instanceof ClientError && (((ClientError) throwable).getReason()) == ClientErrorCause.Cancelled) {
                             return null;
                         }
-
                         UserApiClient.getInstance().loginWithKakaoAccount(context, callback);
                     } else if (oAuthToken != null) {
                         GLog.d("카카오톡으로 로그인 성공");
                         UserPreference.setKakaoLoginSuccess(context, true);
                         startIntent();
-
                     }
                     return null;
                 });
@@ -144,14 +148,12 @@ public class LoginActivity extends Activity {
 
 
     private boolean loginCheckValidation(String userId, String userPw) {
-
         if (TextUtils.isEmpty(userId)) {
-            Toast.makeText(context, "아이디를 입력해주세요", Toast.LENGTH_SHORT).show();
+            AppUtil.showToast(context, getString(R.string.msg_input_id));
             return false;
         }
-
         if (TextUtils.isEmpty(userPw)) {
-            Toast.makeText(context, "비밀번호를 입력해주세요", Toast.LENGTH_SHORT).show();
+            AppUtil.showToast(context, getString(R.string.msg_input_pw));
             return false;
         }
         return true;
@@ -160,7 +162,7 @@ public class LoginActivity extends Activity {
     private void requestService() {
         if (REQUEST_GET) {
             //GET
-            RetrofitApiManager.getInstance().requestDkiUserCall(getUserId, getUserPw, new RetrofitInterface() {
+            RetrofitApiManager.getInstance().requestUserInfo(userId, userPw, new RetrofitInterface() {
                 @Override
                 public void onResponse(Response response) {
                     GLog.d("response : " + response);
@@ -174,12 +176,15 @@ public class LoginActivity extends Activity {
 
                 @Override
                 public void onFailure(Throwable t) {
-                    GLog.d("dkiUserResponse :" + t.toString());
+                    GLog.d(t.getMessage());
                 }
             });
         } else {
             //POST
-            RetrofitApiManager.getInstance().requestLoginDataCall(getUserId, getUserPw, new RetrofitInterface() {
+            CommonRequest model = new CommonRequest();
+            model.setId(userId);
+            model.setPw(userPw);
+            RetrofitApiManager.getInstance().requestLoginUserInfo(model, new RetrofitInterface() {
                 @Override
                 public void onResponse(Response response) {
                     if (response.isSuccessful()) {
@@ -192,7 +197,7 @@ public class LoginActivity extends Activity {
 
                 @Override
                 public void onFailure(Throwable t) {
-                    GLog.d("dkiUserResponse :" + t.toString());
+                    GLog.d("loginResponse :" + t.toString());
                 }
             });
         }
@@ -200,29 +205,40 @@ public class LoginActivity extends Activity {
 
     private void startLogin(LoginResponse loginResponse) {
         if (loginResponse != null) {
-            if (loginResponse.getResultInfo().getResult()) {
-                UserPreference.setUserId(context, getUserId);
-                UserPreference.setUserPassword(context, getUserPw);
-                UserPreference.setSaveIdCheck(context, checkSaveId.isChecked());
-                UserPreference.setAutoLoginCheck(context, checkAutoLogin.isChecked());
-                UserPreference.setKakaoLoginSuccess(context, false);
-                userId = loginResponse.getUserInfo().getId();
-                loginUserName = loginResponse.getUserInfo().getName();
-                loginUserPhone = loginResponse.getUserInfo().getPhone();
-                if (autoLoginCheck) Toast.makeText(context, "자동 로그인 성공", Toast.LENGTH_SHORT).show();
-                startIntent();
+            LoginResponse.UserInfo userInfo = loginResponse.getUserInfo();
+            CommonResponse.ResultInfo resultInfo = loginResponse.getResultInfo();
+            if (resultInfo != null) {
+                String errMsg = resultInfo.getErrorMsg();
+                if (resultInfo.isResult()) {
+                    userId = userInfo.getId();
+                    userName = userInfo.getName();
+                    userPhone = userInfo.getPhone();
+                    UserPreference.setUserId(context, userId);
+                    UserPreference.setUserPassword(context, userPw);
+                    UserPreference.setSaveIdCheck(context, checkSaveId.isChecked());
+                    UserPreference.setAutoLoginCheck(context, checkAutoLogin.isChecked());
+                    UserPreference.setKakaoLoginSuccess(context, false);
+                    if (autoLoginCheck) {
+                        AppUtil.showToast(context, getString(R.string.msg_auto_login_success));
+                    }
+                    startIntent();
+                } else {
+                    GLog.e("errMsg : " + errMsg);
+                }
+                AppUtil.showToast(context, errMsg);
+            } else {
+                GLog.e("ResultInfo is null");
             }
-            Toast.makeText(context, loginResponse.getResultInfo().getErrorMsg(), Toast.LENGTH_SHORT).show();
         } else {
-            GLog.d("서버 통신 원활하지 않습니다.");
+            GLog.e("loginResponse is null");
         }
     }
 
     private void startIntent() {
         intent = new Intent();
         intent.putExtra("userId", userId);
-        intent.putExtra("userName", loginUserName);
-        intent.putExtra("userPhone", loginUserPhone);
+        intent.putExtra("userName", userName);
+        intent.putExtra("userPhone", userPhone);
         setResult(RESULT_OK, intent);
         finish();
     }

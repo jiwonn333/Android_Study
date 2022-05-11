@@ -2,7 +2,7 @@ package com.example.mysnsaccount.dkiapi;
 
 import com.google.gson.annotations.SerializedName;
 
-public class JoinResponse {
+public class CommonResponse {
     @SerializedName("resultInfo")
     private ResultInfo resultInfo;
 
@@ -12,7 +12,7 @@ public class JoinResponse {
 
     public class ResultInfo {
         private boolean result;
-        private String errorCode;
+        private String errCode;
         private String errorMsg;
 
         public boolean isResult() {
@@ -23,12 +23,12 @@ public class JoinResponse {
             this.result = result;
         }
 
-        public String getErrorCode() {
-            return errorCode;
+        public String getErrCode() {
+            return errCode;
         }
 
-        public void setErrorCode(String errorCode) {
-            this.errorCode = errorCode;
+        public void setErrCode(String errCode) {
+            this.errCode = errCode;
         }
 
         public String getErrorMsg() {
@@ -39,4 +39,5 @@ public class JoinResponse {
             this.errorMsg = errorMsg;
         }
     }
+
 }

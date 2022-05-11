@@ -13,7 +13,6 @@ import com.example.mysnsaccount.R;
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.CustomList;
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.Data;
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
-import com.example.mysnsaccount.userinfo.UserInfoResponse;
 import com.example.mysnsaccount.util.GLog;
 
 import java.util.List;
@@ -63,29 +62,6 @@ public class RetrofitActivity extends AppCompatActivity {
                 GLog.d("결과 : 실패!");
             }
         });
-
-        RetrofitApiManager.getInstance().requestUserInfoCall(new RetrofitInterface() {
-            @Override
-            public void onResponse(Response response) {
-                GLog.d("response : " + response);
-                if (response.isSuccessful()) {
-                    UserInfoResponse userInfoResponse = (UserInfoResponse) response.body();
-                    if (userInfoResponse != null) {
-                        GLog.d("userInfoResponse :" + userInfoResponse.getId());
-                    } else {
-                        GLog.d("userInfoResponse is null");
-                    }
-                } else {
-                    GLog.d("Response is not successful");
-                }
-            }
-
-            @Override
-            public void onFailure(Throwable t) {
-                GLog.e("onFailure : " + t.toString());
-            }
-        });
-
     }
 
 }

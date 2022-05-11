@@ -2,20 +2,12 @@ package com.example.mysnsaccount.dkiapi;
 
 import com.google.gson.annotations.SerializedName;
 
-public class LoginResponse {
-    @SerializedName("resultInfo")
-    private ResultInfo resultInfo;
+public class LoginResponse extends CommonResponse {
+
 
     @SerializedName("userInfo")
     private UserInfo userInfo;
 
-    public ResultInfo getResultInfo() {
-        return resultInfo;
-    }
-
-    public void setResultInfo(ResultInfo resultInfo) {
-        this.resultInfo = resultInfo;
-    }
 
     public UserInfo getUserInfo() {
         return userInfo;
@@ -23,38 +15,6 @@ public class LoginResponse {
 
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
-    }
-
-    public class ResultInfo {
-        private boolean result;
-
-        private String errorCode;
-
-        private String errorMsg;
-
-        public void setResult(boolean result) {
-            this.result = result;
-        }
-
-        public boolean getResult() {
-            return this.result;
-        }
-
-        public void setErrorCode(String errorCode) {
-            this.errorCode = errorCode;
-        }
-
-        public String getErrorCode() {
-            return this.errorCode;
-        }
-
-        public void setErrorMsg(String errorMsg) {
-            this.errorMsg = errorMsg;
-        }
-
-        public String getErrorMsg() {
-            return this.errorMsg;
-        }
     }
 
     public class UserInfo {

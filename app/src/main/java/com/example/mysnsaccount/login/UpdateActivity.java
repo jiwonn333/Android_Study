@@ -9,37 +9,37 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.example.mysnsaccount.R;
-import com.example.mysnsaccount.dkiapi.UpdateResponse;
+import com.example.mysnsaccount.dkiapi.CommonResponse;
 import com.example.mysnsaccount.retrofit.RetrofitApiManager;
 import com.example.mysnsaccount.retrofit.RetrofitInterface;
-import com.example.mysnsaccount.retrofit.model.UpdateModel;
+import com.example.mysnsaccount.retrofit.model.CommonRequest;
+import com.example.mysnsaccount.util.AppUtil;
 import com.example.mysnsaccount.util.GLog;
 import com.example.mysnsaccount.util.HashUtils;
-import com.example.mysnsaccount.util.UserPreference;
 
 import retrofit2.Response;
 
 public class UpdateActivity extends Activity {
-    Context context;
-    EditText id;
-    EditText pw;
-    EditText pwOk;
-    EditText name;
-    EditText phone;
-    Button pwCheck;
-    Button update;
-    Button cancel;
-    String userId;
-    String userName;
-    String userPhone;
-    String userPw;
-    String userPwOk;
-    Intent intent;
+    private Context context;
+    private EditText etUserId;
+    private EditText etUserPw;
+    private EditText etUserPwCheck;
+    private EditText etUserName;
+    private EditText etUserPhone;
+    private Button btnPwCheck;
+    private Button btnUpdate;
+    private Button btnCancel;
+    private String userId;
+    private String userName;
+    private String userPhone;
+    private String userPw;
+    private String userPwCheck;
+    private Intent intent;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -48,66 +48,82 @@ public class UpdateActivity extends Activity {
         context = this;
 
         //update
-        id = findViewById(R.id.tv_id);
-        update = findViewById(R.id.update_btn);
-        cancel = findViewById(R.id.update_cancel_btn);
-        pw = findViewById(R.id.tv_pw);
-        pwOk = findViewById(R.id.tv_pw_ok);
-        name = findViewById(R.id.tv_name);
-        phone = findViewById(R.id.tv_phone);
-        pwCheck = findViewById(R.id.pw_check);
+        etUserId = findViewById(R.id.tv_id);
+        btnUpdate = findViewById(R.id.update_btn);
+        btnCancel = findViewById(R.id.update_cancel_btn);
+        etUserPw = findViewById(R.id.tv_pw);
+        etUserPwCheck = findViewById(R.id.tv_pw_ok);
+        etUserName = findViewById(R.id.tv_name);
+        etUserPhone = findViewById(R.id.tv_phone);
+        btnPwCheck = findViewById(R.id.pw_check);
 
-        userId = UserPreference.getUserId(context);
-        id.setText(userId);
+        intent = getIntent();
+        if (intent != null) {
+            userId = intent.getStringExtra("userId");
+            userName = intent.getStringExtra("userName");
+            userPhone = intent.getStringExtra("userPhone");
+        }
+        etUserId.setText(userId);
+        etUserName.setText(userName);
+        etUserPhone.setText(userPhone);
 
-
-        pwCheck.setOnClickListener(new View.OnClickListener() {
+        btnPwCheck.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userPw = pw.getText().toString();
-                userPwOk = pwOk.getText().toString();
-                if (TextUtils.equals(userPw, userPwOk)) {
-                    pwCheck.setText("일치");
-                    Toast.makeText(context, "비밀번호가 일치합니다.", Toast.LENGTH_SHORT).show();
+                userPw = etUserPw.getText().toString();
+                userPwCheck = etUserPwCheck.getText().toString();
+                if (TextUtils.equals(userPw, userPwCheck)) {
+                    btnPwCheck.setText("일치");
+                    AppUtil.showToast(context, getString(R.string.msg_pw));
                 } else {
-                    pwCheck.setText("확인");
-                    pw.setText("");
-                    pwOk.setText("");
-                    Toast.makeText(context, "비밀번호가 일치하지 않습니다.", Toast.LENGTH_SHORT).show();
+                    btnPwCheck.setText("확인");
+                    etUserPw.setText("");
+                    etUserPwCheck.setText("");
+                    AppUtil.showToast(context, getString(R.string.msg_pw_check));
                 }
             }
         });
 
         //전화번호 하이픈
-        phone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
+        etUserPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
 
 
-        update.setOnClickListener(new View.OnClickListener() {
+        btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                userPw = pw.getText().toString();
-                userPhone = phone.getText().toString();
-                userName = name.getText().toString();
-                if (TextUtils.equals(pwCheck.getText(), "일치")) {
+                userPw = etUserPw.getText().toString();
+                userPhone = etUserPhone.getText().toString();
+                userName = etUserName.getText().toString();
+                if (TextUtils.equals(btnPwCheck.getText(), "일치")) {
                     userPw = HashUtils.getSHA256Encrypt(userPw);
                     if (userPhone.length() == 13) {
-                        UpdateModel updateModel = new UpdateModel(userId, userPw, userName, userPhone);
-                        RetrofitApiManager.getInstance().requestUpdateData(updateModel, new RetrofitInterface() {
+                        CommonRequest model = new CommonRequest();
+                        model.setId(userId);
+                        model.setPw(userPw);
+                        model.setName(userName);
+                        model.setPhone(userPhone);
+                        RetrofitApiManager.getInstance().requestUpdateUserInfo(model, new RetrofitInterface() {
                             @Override
                             public void onResponse(Response response) {
                                 if (response.isSuccessful()) {
-                                    UpdateResponse updateResponse = (UpdateResponse) response.body();
-                                    String errMsg = updateResponse.getResultInfo().getErrorMsg();
-                                    if (updateResponse != null) {
-                                        if (updateResponse.getResultInfo().isResult()) {
-                                            Toast.makeText(context, errMsg, Toast.LENGTH_SHORT).show();
-                                            startIntent();
+                                    CommonResponse commonResponse = (CommonResponse) response.body();
+                                    if (commonResponse != null) {
+                                        CommonResponse.ResultInfo resultInfo = commonResponse.getResultInfo();
+                                        if (resultInfo != null) {
+                                            String errMsg = resultInfo.getErrorMsg();
+                                            if (resultInfo.isResult()) {
+                                                AppUtil.showToast(context, errMsg);
+                                                startIntent();
+                                            } else {
+                                                AppUtil.showToast(context, errMsg);
+                                            }
                                         } else {
-                                            Toast.makeText(context, errMsg, Toast.LENGTH_SHORT).show();
+                                            GLog.e("resultInfo is null");
                                         }
                                     } else {
                                         GLog.e("updateResponse is null");
                                     }
+
                                 } else {
                                     GLog.e("Response is not Success");
                                 }
@@ -119,15 +135,15 @@ public class UpdateActivity extends Activity {
                             }
                         });
                     } else {
-                        Toast.makeText(context, "전화번호를 정확히 입력해주세요.", Toast.LENGTH_SHORT).show();
+                        AppUtil.showToast(context, getString(R.string.msg_phone_check));
                     }
                 } else {
-                    Toast.makeText(context, "비밀번호 확인 해주세요.", Toast.LENGTH_SHORT).show();
+                    AppUtil.showToast(context, getString(R.string.msg_pw_check));
                 }
             }
         });
 
-        cancel.setOnClickListener(new View.OnClickListener() {
+        btnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 finish();
@@ -135,6 +151,22 @@ public class UpdateActivity extends Activity {
         });
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        super.onActivityResult(requestCode, resultCode, intent);
+
+        if (requestCode == RESULT_OK) {
+            userId = intent.getStringExtra("userId");
+            userName = intent.getStringExtra("userName");
+            userPhone = intent.getStringExtra("userPhone");
+
+        } else {
+            GLog.d("회원정보 수정 오류");
+        }
+
+    }
+
 
     private void startIntent() {
         intent = new Intent();
