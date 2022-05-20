@@ -192,6 +192,8 @@ public class MainActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         super.onActivityResult(requestCode, resultCode, intent);
+        GLog.d("requestCode : " + requestCode);
+        GLog.d("resultCode : " + resultCode);
         if (requestCode == Constant.REQUEST_LOGIN_CODE) {
             isKakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
             if (resultCode == RESULT_OK) {
@@ -203,18 +205,17 @@ public class MainActivity extends Activity {
                 } else {
                     setLoginUserInfo();
                 }
-            } else {
-                GLog.d("주고받기 오류");
-            }
-        } else if (requestCode == Constant.REQUEST_JOIN_CODE) {
-            if (resultCode == RESULT_OK) {
+            } else if (resultCode == RESULT_FIRST_USER) {
                 intent = new Intent(context, LoginActivity.class);
                 startActivityForResult(intent, Constant.REQUEST_LOGIN_CODE);
+            } else {
+                GLog.d("주고받기 오류");
             }
         } else {
             GLog.d("회원가입 오류");
         }
     }
+
 
     private void setLoginUserInfo() {
         isKakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
@@ -264,7 +265,7 @@ public class MainActivity extends Activity {
             case Constant.LOGIN:
                 loginProfileGroup.setVisibility(View.VISIBLE);
                 loginInfoGroup.setVisibility(View.VISIBLE);
-                ivUserProfile.setImageResource(R.drawable.login_success);
+                ivUserProfile.setImageResource(R.drawable.baseline_person_24);
                 tvUserName.setText(userName);
                 tvUserPhone.setText(userPhone);
                 tvUserId.setText(userId);
@@ -504,4 +505,5 @@ public class MainActivity extends Activity {
             }
         });
     }
+
 }

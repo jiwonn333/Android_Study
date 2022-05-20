@@ -1,0 +1,42 @@
+@startuml
+class MainActivity {
+- Context context
+- RecyclerView recyclerView
+- RecyclerViewAdapter recyclerViewAdapter
+- GridLayoutManager gridLayoutManager
+- ConstraintLayout constraintLayout
+- ImageView ivUserProfile
+- TextView tvUserId
+- TextView tvUserName
+- TextView tvUserPhone
+- ImageView ivLogin
+- ImageView ivLogout
+- Intent intent
+- boolean isKakaoLoginSuccess
+- Group loginProfileGroup
+- Group loginInfoGroup
+- Group loginBtnGroup
+- Group logoutBtnGroup
+- String userName
+- String userPhone
+- String userId
+- String userPw
+- String userProfileUrl
+- ArrayList<RecyclerViewItem> itemLists
+# void onCreate(Bundle)
+# void onActivityResult(int,int,Intent)
+- void setLoginUserInfo()
+- void setShowLoginUi(int)
+~ boolean checkPermission()
+- boolean hasPermissions(String[])
++ void onRequestPermissionsResult(int,String[],int[])
++ void setPermissionDialog(String)
+- void callCamera()
+- void logout()
+- void requestDeleteUserInfo()
+- void requestLoginUserInfo()
+}
+
+
+Activity <|-- MainActivity
+@enduml

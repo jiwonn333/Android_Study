@@ -62,8 +62,8 @@ public class LoginActivity extends Activity {
         btnKakaoLogin = findViewById(R.id.btn_kakao_login);
         btnLogin = findViewById(R.id.btn_login);
         btnJoin = findViewById(R.id.btn_join);
-        etUserId = findViewById(R.id.user_id);
-        etUserPw = findViewById(R.id.user_pw);
+        etUserId = findViewById(R.id.tv_id);
+        etUserPw = findViewById(R.id.tv_pw);
         checkSaveId = findViewById(R.id.ck_id);
         checkAutoLogin = findViewById(R.id.ck_autologin);
         userId = UserPreference.getUserId(context);
@@ -106,6 +106,7 @@ public class LoginActivity extends Activity {
             public void onClick(View view) {
                 intent = new Intent(context, JoinActivity.class);
                 startActivityForResult(intent, Constant.REQUEST_LOGIN_CODE);
+//                finish();
             }
         });
 
@@ -241,6 +242,17 @@ public class LoginActivity extends Activity {
         intent.putExtra("userPhone", userPhone);
         setResult(RESULT_OK, intent);
         finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        GLog.d("resultCode : " + resultCode);
+        if (resultCode == RESULT_FIRST_USER) {
+
+        } else {
+            finish();
+        }
     }
 }
 

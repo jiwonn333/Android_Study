@@ -14,7 +14,7 @@
     <string name="msg_input_id">아이디를 입력해주세요.</string>
     <string name="msg_input_pw">비밀번호를 입력해주세요.</string>
     <string name="msg_pw">비밀번호가 일치합니다.</string>
-    <string name="msg_pw_check">비밀번호가 일치 확인해주세요.</string>
+    <string name="msg_pw_check">비밀번호 일치 확인해주세요.</string>
     <string name="msg_phone_check">전화번호를 정확히 입력해주세요.</string>
     <string name="msg_id_check">아이디 중복체크 해주세요.</string>
 

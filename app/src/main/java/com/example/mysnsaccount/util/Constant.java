@@ -7,7 +7,7 @@ public class Constant {
     public static final int REQUEST_JOIN_CODE = 102;
     public static final int PERMISSION_REQUEST_CODE = 22;
     public static final int PERMISSIONS_REQUEST_CAMERA = 1001;
-    public static final String USER_INFO_URL = "http://10.112.58.128:8080/";
+    public static final String USER_INFO_URL = "http://10.112.58.190/";
 
     public static final int LOGIN_DEFAULT = 0;
     public static final int LOGIN = 1;

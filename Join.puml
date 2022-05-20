@@ -1,0 +1,30 @@
+@startuml
+class JoinActivity {
+- EditText etUserId
+- EditText etUserPw
+- EditText etUserPwCheck
+- EditText etUserName
+- EditText etUserPhone
+- Button btnIdCheck
+- boolean isIdCheck
+- Button btnPwCheck
+- Button btnJoin
+- Intent intent
+- Context context
+- String userId
+- String userPw
+- String userPwCheck
+- String userPhone
+- String userName
+# void onCreate(Bundle)
+- boolean pwCheckValidation(String,String)
+- boolean idCheckValidation(String)
+- void joinDialog()
+- void startIntent()
+- void requestIdCheck()
+- void requestJoin()
+}
+
+
+Activity <|-- JoinActivity
+@enduml

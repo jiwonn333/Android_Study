@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
         app:layout_constraintBottom_toTopOf="@id/main_recycler_view"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -85,7 +86,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/update"
+            android:src="@drawable/baseline_manage_accounts_24"
             app:layout_constraintBottom_toTopOf="@id/tv_login"
             app:layout_constraintEnd_toStartOf="@id/tv_login"
             app:layout_constraintTop_toTopOf="parent" />
@@ -106,7 +107,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/logout"
+            android:src="@drawable/ic_baseline_login_24"
             app:layout_constraintBottom_toTopOf="@id/tv_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -126,7 +127,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginRight="15dp"
-            android:src="@drawable/ic_baseline_login_24"
+            android:src="@drawable/baseline_logout_24"
             app:layout_constraintBottom_toTopOf="@id/tv_login"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

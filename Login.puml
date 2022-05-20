@@ -1,0 +1,31 @@
+@startuml
+class LoginActivity {
+- {static} boolean REQUEST_GET
+- Button btnKakaoLogin
+- Button btnLogin
+- Button btnJoin
+- EditText etUserId
+- EditText etUserPw
+- CheckBox checkSaveId
+- CheckBox checkAutoLogin
+- Intent intent
+- boolean validation
+- boolean saveIdCheck
+- boolean autoLoginCheck
+- boolean iskakaoLogin
+- Context context
+- String userId
+- String userPw
+- String userName
+- String userPhone
+- Function2 callback
+# void onCreate(Bundle)
+- boolean loginCheckValidation(String,String)
+- void requestService()
+- void startLogin(LoginResponse)
+- void startIntent()
+}
+
+
+Activity <|-- LoginActivity
+@enduml

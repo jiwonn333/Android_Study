@@ -1,0 +1,25 @@
+@startuml
+class UpdateActivity {
+- Context context
+- EditText etUserId
+- EditText etUserPw
+- EditText etUserPwCheck
+- EditText etUserName
+- EditText etUserPhone
+- Button btnPwCheck
+- Button btnUpdate
+- Button btnCancel
+- String userId
+- String userName
+- String userPhone
+- String userPw
+- String userPwCheck
+- Intent intent
+# void onCreate(Bundle)
+# void onActivityResult(int,int,Intent)
+- void startIntent()
+}
+
+
+Activity <|-- UpdateActivity
+@enduml

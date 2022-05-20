@@ -94,7 +94,6 @@ public class JoinActivity extends Activity {
             userPwCheck = etUserPwCheck.getText().toString();
             if (pwCheckValidation(userPw, userPwCheck)) {
                 btnPwCheck.setText("일치");
-                AppUtil.showToast(context, getString(R.string.msg_pw));
             } else {
                 btnPwCheck.setText("확인");
                 etUserPw.setText("");
@@ -141,6 +140,11 @@ public class JoinActivity extends Activity {
             AppUtil.showToast(context, getString(R.string.msg_input_pw));
             return false;
         }
+
+        if (!TextUtils.equals(userPw, userPwCheck)) {
+            AppUtil.showToast(context, getString(R.string.msg_pw));
+            return false;
+        }
         return true;
     }
 
@@ -158,20 +162,25 @@ public class JoinActivity extends Activity {
                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        startIntent();
+                        startIntent(true);
                     }
                 })
                 .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
+                        startIntent(false);
                     }
                 }).show();
     }
 
-    private void startIntent() {
+    private void startIntent(boolean isCheck) {
+
         intent = new Intent();
-        setResult(RESULT_OK, intent);
+        if (isCheck) {
+            setResult(RESULT_FIRST_USER, intent);
+        } else {
+            setResult(RESULT_CANCELED, intent);
+        }
         finish();
     }
 
@@ -189,7 +198,9 @@ public class JoinActivity extends Activity {
                             String idErrorMsg = resultInfo.getErrorMsg();
                             if (resultInfo.isResult()) {
                                 AppUtil.showToast(context, idErrorMsg);
+                                GLog.d();
                                 isIdCheck = resultInfo.isResult();
+
                             } else {
                                 etUserId.setText("");
                                 AppUtil.showToast(context, idErrorMsg);
