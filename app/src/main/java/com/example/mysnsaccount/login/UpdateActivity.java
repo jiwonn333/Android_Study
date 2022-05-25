@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,6 +22,7 @@ import com.example.mysnsaccount.retrofit.model.CommonRequest;
 import com.example.mysnsaccount.util.AppUtil;
 import com.example.mysnsaccount.util.GLog;
 import com.example.mysnsaccount.util.HashUtils;
+import com.example.mysnsaccount.util.UserPreference;
 
 import retrofit2.Response;
 
@@ -38,6 +41,7 @@ public class UpdateActivity extends Activity {
     private String userPhone;
     private String userPw;
     private String userPwCheck;
+    private String userHashPw;
     private Intent intent;
 
 
@@ -56,6 +60,7 @@ public class UpdateActivity extends Activity {
         etUserName = findViewById(R.id.tv_name);
         etUserPhone = findViewById(R.id.tv_phone);
         btnPwCheck = findViewById(R.id.pw_check);
+        userHashPw = UserPreference.getUserPassword(context);
 
         intent = getIntent();
         if (intent != null) {
@@ -84,9 +89,11 @@ public class UpdateActivity extends Activity {
             }
         });
 
+        etUserPw.addTextChangedListener(textWatcher);
+        etUserPwCheck.addTextChangedListener(textWatcher);
+
         //전화번호 하이픈
         etUserPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-
 
         btnUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +119,10 @@ public class UpdateActivity extends Activity {
                                         if (resultInfo != null) {
                                             String errMsg = resultInfo.getErrorMsg();
                                             if (resultInfo.isResult()) {
+                                                if (!TextUtils.equals(userPw, userHashPw)) {
+                                                    UserPreference.setSaveIdCheck(context, false);
+                                                    UserPreference.setAutoLoginCheck(context, false);
+                                                }
                                                 AppUtil.showToast(context, errMsg);
                                                 startIntent();
                                             } else {
@@ -176,4 +187,25 @@ public class UpdateActivity extends Activity {
         setResult(RESULT_OK, intent);
         finish();
     }
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            String inputPw = etUserPw.getText().toString();
+            String inputPwCheck = etUserPwCheck.getText().toString();
+            if (!TextUtils.equals(inputPw, inputPwCheck)) {
+                btnPwCheck.setText("확인");
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
 }

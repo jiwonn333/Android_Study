@@ -68,7 +68,6 @@ public class JoinActivity extends Activity {
             }
         });
 
-
         etUserId.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
@@ -78,7 +77,6 @@ public class JoinActivity extends Activity {
             @Override
             public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 String inputId = etUserId.getText().toString();
-
                 isIdCheck = TextUtils.equals(inputId, userId);
             }
 
@@ -88,12 +86,14 @@ public class JoinActivity extends Activity {
             }
         });
 
+
         //비밀번호 확인 버튼
         btnPwCheck.setOnClickListener(view -> {
             userPw = etUserPw.getText().toString();
             userPwCheck = etUserPwCheck.getText().toString();
             if (pwCheckValidation(userPw, userPwCheck)) {
                 btnPwCheck.setText("일치");
+                AppUtil.showToast(context, getString(R.string.msg_pw));
             } else {
                 btnPwCheck.setText("확인");
                 etUserPw.setText("");
@@ -102,9 +102,12 @@ public class JoinActivity extends Activity {
             }
         });
 
+        etUserPw.addTextChangedListener(textWatcher);
+        etUserPwCheck.addTextChangedListener(textWatcher);
+
+
         //전화번호 하이픈
         etUserPhone.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
-
 
         //회원가입 완료 버튼
         btnJoin.setOnClickListener(view -> {
@@ -142,7 +145,7 @@ public class JoinActivity extends Activity {
         }
 
         if (!TextUtils.equals(userPw, userPwCheck)) {
-            AppUtil.showToast(context, getString(R.string.msg_pw));
+            AppUtil.showToast(context, getString(R.string.msg_pw_check));
             return false;
         }
         return true;
@@ -257,4 +260,27 @@ public class JoinActivity extends Activity {
             }
         });
     }
+
+    // 같은처리
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            String inputPw = etUserPw.getText().toString();
+            String inputPwCheck = etUserPwCheck.getText().toString();
+            if (!TextUtils.equals(inputPw, inputPwCheck)) {
+                btnPwCheck.setText("확인");
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+
+        }
+    };
+
 }

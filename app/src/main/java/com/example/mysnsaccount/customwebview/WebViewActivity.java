@@ -23,7 +23,7 @@ public class WebViewActivity extends AppCompatActivity {
         WebViewManager manager = new WebViewManager(WebViewActivity.this, myWebView);
         manager.setSettings();
         manager.setJavascriptInterface("DKITec");
-        manager.loadUrl("file:///android_asset/www/sample.html");
-
+//        manager.loadUrl("file:///android_asset/www/sample.html");
+        manager.loadUrl("http://10.112.58.190/");
     }
 }
