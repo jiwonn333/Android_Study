@@ -239,6 +239,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
                                 model.setContent(todoInfo.getContent());
                                 model.setContent(todoInfo.getContent());
                                 model.setCreateDate(todoInfo.getCreateDate());
+                                model.setNum(todoInfo.getNum());
                                 updateItem(model);
                             }
                             AppUtil.showToast(context, resultInfo.getErrorMsg());

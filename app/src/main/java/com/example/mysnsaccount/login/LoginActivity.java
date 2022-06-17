@@ -91,7 +91,6 @@ public class LoginActivity extends Activity {
                 requestService();
                 // 로그인 되어있을 시
                 UserPreference.setLoginCheck(context, true);
-                isLoginCheck = UserPreference.getLoginCheck(context);
             }
         }
 

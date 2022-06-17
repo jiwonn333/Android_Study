@@ -75,6 +75,7 @@ public class MainActivity extends Activity {
     private String userPw;
     private String userProfileUrl;
 
+
     private ArrayList<RecyclerViewItem> itemLists = new ArrayList<RecyclerViewItem>() {{
         add(new RecyclerViewItem(R.drawable.ic_baseline_web_24, "WebView"));
         add(new RecyclerViewItem(R.drawable.ic_baseline_web_login, "WebViewLogin"));
