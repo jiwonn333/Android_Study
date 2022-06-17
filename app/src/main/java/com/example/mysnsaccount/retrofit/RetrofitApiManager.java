@@ -3,11 +3,14 @@ package com.example.mysnsaccount.retrofit;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 
-import com.example.mysnsaccount.dkiapi.CommonResponse;
-import com.example.mysnsaccount.dkiapi.LoginResponse;
+import com.example.mysnsaccount.api.CommonResponse;
+import com.example.mysnsaccount.api.LoginResponse;
+import com.example.mysnsaccount.api.todo.edit.TodoResponse;
+import com.example.mysnsaccount.api.todo.get.TodoListResponse;
 import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
 import com.example.mysnsaccount.retrofit.model.CommonRequest;
+import com.example.mysnsaccount.retrofit.model.TodoRequest;
 import com.example.mysnsaccount.util.Constant;
 import com.example.mysnsaccount.util.GLog;
 import com.google.gson.Gson;
@@ -62,6 +65,19 @@ public class RetrofitApiManager {
                 .build();
     }
 
+    public static Retrofit UserInfoBuild1() {
+
+        Gson gson = new GsonBuilder()
+                .setLenient()
+                .create();
+
+        return new Retrofit.Builder()
+                .client(getUnsafeOkHttpClient().build()) //OkHttp 사용해서 로그 보기
+                .baseUrl(Constant.USER_INFO_URL)
+                .addConverterFactory(GsonConverterFactory.create(gson)) //Gson 처리시
+                .build();
+    }
+
     public static Retrofit UserInfoBuild() {
 
         Gson gson = new GsonBuilder()
@@ -75,18 +91,6 @@ public class RetrofitApiManager {
                 .build();
     }
 
-    public static Retrofit DkiUserBuild() {
-
-        Gson gson = new GsonBuilder()
-                .setLenient()
-                .create();
-
-        return new Retrofit.Builder()
-                .client(getUnsafeOkHttpClient().build()) //OkHttp 사용해서 로그 보기
-                .baseUrl(Constant.USER_INFO_URL)
-                .addConverterFactory(GsonConverterFactory.create(gson)) //Gson 처리시
-                .build();
-    }
 
 //    public static Retrofit WearableCallBuild() {
 //
@@ -245,7 +249,7 @@ public class RetrofitApiManager {
     }
 
     public void requestUserInfo(String id, String pw, RetrofitInterface retrofitInterface) {
-        DkiUserBuild().create(RetrofitApiService.class).getLoginUserInfo(id, pw).enqueue(new Callback<LoginResponse>() {
+        UserInfoBuild().create(RetrofitApiService.class).getLoginUserInfo(id, pw).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 retrofitInterface.onResponse(response);
@@ -260,7 +264,7 @@ public class RetrofitApiManager {
 
     //login
     public void requestLoginUserInfo(CommonRequest model, RetrofitInterface retrofitInterface) {
-        DkiUserBuild().create(RetrofitApiService.class).getLoginUserInfo(model).enqueue(new Callback<LoginResponse>() {
+        UserInfoBuild().create(RetrofitApiService.class).getLoginUserInfo(model).enqueue(new Callback<LoginResponse>() {
             @Override
             public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
                 if (retrofitInterface != null) retrofitInterface.onResponse(response);
@@ -274,7 +278,7 @@ public class RetrofitApiManager {
     }
 
     public void requestJoin(CommonRequest model, RetrofitInterface retrofitInterface) {
-        DkiUserBuild().create(RetrofitApiService.class).getJoin(model).enqueue(new Callback<CommonResponse>() {
+        UserInfoBuild().create(RetrofitApiService.class).getJoin(model).enqueue(new Callback<CommonResponse>() {
             @Override
             public void onResponse(Call<CommonResponse> call, Response<CommonResponse> response) {
                 if (retrofitInterface != null) retrofitInterface.onResponse(response);
@@ -288,7 +292,7 @@ public class RetrofitApiManager {
     }
 
     public void requestIdCheck(CommonRequest model, RetrofitInterface retrofitInterface) {
-        DkiUserBuild().create(RetrofitApiService.class).getIdCheck(model).enqueue(new Callback<CommonResponse>() {
+        UserInfoBuild().create(RetrofitApiService.class).getIdCheck(model).enqueue(new Callback<CommonResponse>() {
             @Override
             public void onResponse(Call<CommonResponse> call, Response<CommonResponse> response) {
                 if (retrofitInterface != null) retrofitInterface.onResponse(response);
@@ -301,8 +305,8 @@ public class RetrofitApiManager {
         });
     }
 
-    public void requestDeleteUserInfo(CommonRequest model, RetrofitInterface retrofitInterface) {
-        DkiUserBuild().create(RetrofitApiService.class).getIdDelete(model).enqueue(new Callback<CommonResponse>() {
+    public void requestDeleteUserInfo(String id, RetrofitInterface retrofitInterface) {
+        UserInfoBuild().create(RetrofitApiService.class).getIdDelete(id).enqueue(new Callback<CommonResponse>() {
             @Override
             public void onResponse(Call<CommonResponse> call, Response<CommonResponse> response) {
                 if (retrofitInterface != null) retrofitInterface.onResponse(response);
@@ -316,7 +320,7 @@ public class RetrofitApiManager {
     }
 
     public void requestUpdateUserInfo(CommonRequest model, RetrofitInterface retrofitInterface) {
-        DkiUserBuild().create(RetrofitApiService.class).getUpdateUserInfo(model).enqueue(new Callback<CommonResponse>() {
+        UserInfoBuild().create(RetrofitApiService.class).getUpdateUserInfo(model).enqueue(new Callback<CommonResponse>() {
             @Override
             public void onResponse(Call<CommonResponse> call, Response<CommonResponse> response) {
                 if (retrofitInterface != null) retrofitInterface.onResponse(response);
@@ -330,32 +334,62 @@ public class RetrofitApiManager {
     }
 
 
-//    public void requestWearableCall(RetrofitInterface retrofitInterface) {
-//        WearableCallBuild().create(RetrofitApiService.class).getWearableCall("registpush", "01029172714", "fcm", "abc1235defg", "ktwearablecall").enqueue(new Callback<WearableResponse>() {
-//            @Override
-//            public void onResponse(Call<WearableResponse> call, Response<WearableResponse> response) {
-//                retrofitInterface.onResponse(response);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<WearableResponse> call, Throwable t) {
-//                retrofitInterface.onFailure(t);
-//            }
-//        });
-//    }
-//
-//    public void requestOnenumberCall(RetrofitInterface retrofitInterface) {
-//        WearableCallBuild().create(RetrofitApiService.class).getOnenumberCall("availabledevice", "01032039810", "01027968228").enqueue(new Callback<OnenumberResponse>() {
-//            @Override
-//            public void onResponse(Call<OnenumberResponse> call, Response<OnenumberResponse> response) {
-//                retrofitInterface.onResponse(response);
-//            }
-//
-//            @Override
-//            public void onFailure(Call<OnenumberResponse> call, Throwable t) {
-//                retrofitInterface.onFailure(t);
-//            }
-//        });
-//    }
+    public void requestListTodo(TodoRequest todoModel, RetrofitInterface retrofitInterface) {
+        UserInfoBuild().create(RetrofitApiService.class).getListTodo(todoModel).enqueue(new Callback<TodoListResponse>() {
+            @Override
+            public void onResponse(Call<TodoListResponse> call, Response<TodoListResponse> response) {
+                if (retrofitInterface != null) retrofitInterface.onResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<TodoListResponse> call, Throwable t) {
+                if (retrofitInterface != null) retrofitInterface.onFailure(t);
+            }
+        });
+    }
+
+
+    public void requestInsertTodo(TodoRequest todoModel, RetrofitInterface retrofitInterface) {
+        UserInfoBuild().create(RetrofitApiService.class).insertTodo(todoModel).enqueue(new Callback<TodoResponse>() {
+            @Override
+            public void onResponse(Call<TodoResponse> call, Response<TodoResponse> response) {
+                if (retrofitInterface != null) retrofitInterface.onResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<TodoResponse> call, Throwable t) {
+                if (retrofitInterface != null) retrofitInterface.onFailure(t);
+            }
+        });
+    }
+
+    public void requestDeleteTodo(int num, String id, RetrofitInterface retrofitInterface) {
+        UserInfoBuild().create(RetrofitApiService.class).todoDelete(num, id).enqueue(new Callback<TodoListResponse>() {
+            @Override
+            public void onResponse(Call<TodoListResponse> call, Response<TodoListResponse> response) {
+                if (retrofitInterface != null) retrofitInterface.onResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<TodoListResponse> call, Throwable t) {
+                if (retrofitInterface != null) retrofitInterface.onFailure(t);
+            }
+        });
+    }
+
+    public void requestUpdateTodo(TodoRequest todoModel, RetrofitInterface retrofitInterface) {
+        UserInfoBuild().create(RetrofitApiService.class).updateTodo(todoModel).enqueue(new Callback<TodoResponse>() {
+            @Override
+            public void onResponse(Call<TodoResponse> call, Response<TodoResponse> response) {
+                if (retrofitInterface != null) retrofitInterface.onResponse(response);
+            }
+
+            @Override
+            public void onFailure(Call<TodoResponse> call, Throwable t) {
+                if (retrofitInterface != null) retrofitInterface.onFailure(t);
+            }
+        });
+    }
+
 
 }

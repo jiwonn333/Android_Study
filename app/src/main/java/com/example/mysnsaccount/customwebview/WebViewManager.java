@@ -1,5 +1,6 @@
 package com.example.mysnsaccount.customwebview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.text.TextUtils;
 import android.webkit.WebView;
@@ -26,6 +27,7 @@ public class WebViewManager {
         myWebView.setWebChromeClient(new MyWebChromeClient());
     }
 
+    @SuppressLint("SetJavaScriptEnabled")
     public void setSettings() {
         //js 활성화 여부
         myWebView.getSettings().setJavaScriptEnabled(true);
@@ -50,6 +52,8 @@ public class WebViewManager {
 
         //컨텐츠가 웹뷰보다 클 경우 스크린 크기에 맞게 조정
         myWebView.getSettings().setLoadWithOverviewMode(true);
+
+        WebView.setWebContentsDebuggingEnabled(true);
     }
 
 
@@ -103,4 +107,5 @@ public class WebViewManager {
     public void setLoadWithOverviewMode(boolean isEnable) {
         myWebView.getSettings().setLoadWithOverviewMode(isEnable);
     }
+
 }

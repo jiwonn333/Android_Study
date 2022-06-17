@@ -80,7 +80,7 @@ public class AlertDialogActivity extends AppCompatActivity {
 
             builder.setTitle("체크박스 추가 예제")
                     .setMultiChoiceItems(R.array.LAN, null, (dialogInterface, position, isChecked) -> {
-                        if (isChecked == true) {
+                        if (isChecked) {
                             selectedItems.add(items[position]);
                         } else {
                             selectedItems.remove(items[position]);

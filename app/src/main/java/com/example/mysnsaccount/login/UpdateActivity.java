@@ -15,7 +15,7 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 
 import com.example.mysnsaccount.R;
-import com.example.mysnsaccount.dkiapi.CommonResponse;
+import com.example.mysnsaccount.api.CommonResponse;
 import com.example.mysnsaccount.retrofit.RetrofitApiManager;
 import com.example.mysnsaccount.retrofit.RetrofitInterface;
 import com.example.mysnsaccount.retrofit.model.CommonRequest;

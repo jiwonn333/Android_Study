@@ -8,7 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.mysnsaccount.R;
 
-public class WebViewActivity extends AppCompatActivity {
+public class WebViewLoginActivity extends AppCompatActivity {
     //웹뷰 객체 생성
     private WebView myWebView;
 
@@ -20,9 +20,9 @@ public class WebViewActivity extends AppCompatActivity {
         //웹뷰 객체
         myWebView = findViewById(R.id.webview);
 
-        WebViewManager manager = new WebViewManager(WebViewActivity.this, myWebView);
+        WebViewManager manager = new WebViewManager(WebViewLoginActivity.this, myWebView);
         manager.setSettings();
         manager.setJavascriptInterface("DKITec");
-        manager.loadUrl("file:///android_asset/www/sample.html");
+        manager.loadUrl("http://10.112.58.190/web/signup/");
     }
 }

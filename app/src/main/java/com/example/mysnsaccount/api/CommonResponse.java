@@ -1,4 +1,4 @@
-package com.example.mysnsaccount.dkiapi;
+package com.example.mysnsaccount.api;
 
 import com.google.gson.annotations.SerializedName;
 

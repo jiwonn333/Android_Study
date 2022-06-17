@@ -7,17 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mysnsaccount.R;
 import com.example.mysnsaccount.customwebview.WebViewActivity;
+import com.example.mysnsaccount.customwebview.WebViewLoginActivity;
 import com.example.mysnsaccount.dialogtest.AlertDialogActivity;
 import com.example.mysnsaccount.encryption.EncryptionActivity;
 import com.example.mysnsaccount.recyclerview.RecyclerViewActivity;
 import com.example.mysnsaccount.retrofit.RetrofitActivity;
+import com.example.mysnsaccount.todo.TodoActivity;
 import com.example.mysnsaccount.util.GLog;
+import com.example.mysnsaccount.util.UserPreference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +101,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         startActivity(position);
 
                     } catch (Exception e) {
-                        GLog.d("실패다");
+                        GLog.d("실패다" + e.getMessage());
 
                     }
                 }
@@ -111,23 +115,35 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                     context.startActivity(new Intent(context, WebViewActivity.class));
                     break;
                 case 1:
-                    context.startActivity(new Intent(context, RetrofitActivity.class));
+                    context.startActivity(new Intent(context, WebViewLoginActivity.class));
                     break;
                 case 2:
-                case 5:
+                    context.startActivity(new Intent(context, RetrofitActivity.class));
+                    break;
+                case 3:
+                case 6:
                     if (itemClickListener != null) {
                         itemClickListener.onItemClick(itemView, position);
                     }
                     break;
-                case 3:
+                case 4:
                     context.startActivity(new Intent(context, RecyclerViewActivity.class));
                     break;
-                case 4:
+                case 5:
                     context.startActivity(new Intent(context, AlertDialogActivity.class));
                     break;
-                case 6:
+                case 7:
                     context.startActivity(new Intent(context, EncryptionActivity.class));
                     break;
+                case 8:
+                    boolean isLoginCheck = UserPreference.getLoginCheck(context);
+                    GLog.d("isLoginCheck : " + isLoginCheck);
+                    if (isLoginCheck) {
+                        context.startActivity(new Intent(context, TodoActivity.class));
+                    } else {
+                        Toast.makeText(context, "로그인 이용 후 가능한 페이지 입니다.", Toast.LENGTH_SHORT).show();
+                        break;
+                    }
                 default:
                     GLog.d("모두 해당 안됨");
                     break;

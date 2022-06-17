@@ -1,10 +1,13 @@
 package com.example.mysnsaccount.retrofit;
 
-import com.example.mysnsaccount.dkiapi.CommonResponse;
-import com.example.mysnsaccount.dkiapi.LoginResponse;
+import com.example.mysnsaccount.api.CommonResponse;
+import com.example.mysnsaccount.api.LoginResponse;
+import com.example.mysnsaccount.api.todo.edit.TodoResponse;
+import com.example.mysnsaccount.api.todo.get.TodoListResponse;
 import com.example.mysnsaccount.model.recyclerviewthumbnailmodel.RecyclerViewModel;
 import com.example.mysnsaccount.model.retrofitthumbnailmdoel.RetrofitModel;
 import com.example.mysnsaccount.retrofit.model.CommonRequest;
+import com.example.mysnsaccount.retrofit.model.TodoRequest;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -39,8 +42,28 @@ public interface RetrofitApiService {
     @PUT("member")
     Call<CommonResponse> getUpdateUserInfo(@Body CommonRequest model);
 
-    @HTTP(method = "DELETE", hasBody = true, path = "member")
-    Call<CommonResponse> getIdDelete(@Body CommonRequest model);
+    @HTTP(method = "DELETE", path = "member")
+    Call<CommonResponse> getIdDelete(@Query("id") String id);
+
+
+    // TodoList
+    // 할 일 목록 전체 조회
+    @POST("todo/list")
+    Call<TodoListResponse> getListTodo(@Body TodoRequest model);
+
+    // insert
+    @POST("todo")
+    Call<TodoResponse> insertTodo(@Body TodoRequest model);
+
+
+    // delete
+    @HTTP(method = "DELETE", path = "todo")
+    Call<TodoListResponse> todoDelete(@Query("num") int num,
+                                      @Query("id") String id);
+
+    // update
+    @PUT("todo/detail")
+    Call<TodoResponse> updateTodo(@Body TodoRequest model);
 
 
 }

@@ -13,8 +13,8 @@ import android.widget.EditText;
 import androidx.annotation.Nullable;
 
 import com.example.mysnsaccount.R;
-import com.example.mysnsaccount.dkiapi.CommonResponse;
-import com.example.mysnsaccount.dkiapi.LoginResponse;
+import com.example.mysnsaccount.api.CommonResponse;
+import com.example.mysnsaccount.api.LoginResponse;
 import com.example.mysnsaccount.retrofit.RetrofitApiManager;
 import com.example.mysnsaccount.retrofit.RetrofitInterface;
 import com.example.mysnsaccount.retrofit.model.CommonRequest;
@@ -51,6 +51,7 @@ public class LoginActivity extends Activity {
     private String userPw;
     private String userName;
     private String userPhone;
+    private boolean isLoginCheck;
 
 
     @Override
@@ -71,6 +72,8 @@ public class LoginActivity extends Activity {
         saveIdCheck = UserPreference.getSaveIdCheck(context);
         autoLoginCheck = UserPreference.getAutoLoginCheck(context);
         iskakaoLogin = UserPreference.getKakaoLoginSuccess(context);
+        UserPreference.setLoginCheck(context, false);
+        isLoginCheck = UserPreference.getLoginCheck(context);
 
         // 아이디 저장 체크박스가 체크되어있으면 실행, 아니면 false
         checkSaveId.setChecked(saveIdCheck);
@@ -86,6 +89,9 @@ public class LoginActivity extends Activity {
         if (autoLoginCheck) {
             if (loginCheckValidation(userId, userPw)) {
                 requestService();
+                // 로그인 되어있을 시
+                UserPreference.setLoginCheck(context, true);
+                isLoginCheck = UserPreference.getLoginCheck(context);
             }
         }
 
@@ -219,6 +225,8 @@ public class LoginActivity extends Activity {
                     UserPreference.setSaveIdCheck(context, checkSaveId.isChecked());
                     UserPreference.setAutoLoginCheck(context, checkAutoLogin.isChecked());
                     UserPreference.setKakaoLoginSuccess(context, false);
+                    UserPreference.setLoginCheck(context, true);
+                    GLog.d("로그인 했을 때 isLoginCheck : " + UserPreference.getLoginCheck(context));
                     if (autoLoginCheck) {
                         AppUtil.showToast(context, getString(R.string.msg_auto_login_success));
                     }

@@ -78,6 +78,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                 int position = getBindingAdapterPosition();
 
                 GLog.d("adapter position " + position);
+
+
                 if (position != RecyclerView.NO_POSITION) {
                     //customLists.get(position).getRatingToastMessage(rating.getContext()); //클릭시 토스트메세지 띄우기
                     // 클릭시 rating값 1씩 증가

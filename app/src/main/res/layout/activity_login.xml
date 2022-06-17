@@ -50,6 +50,7 @@
 
         <EditText
             android:id="@+id/tv_pw"
+            android:inputType="textPassword"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:hint="PW를 입력하세요" />

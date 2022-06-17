@@ -146,4 +146,19 @@ public class UserPreference {
         editor.commit();
     }
 
+    public static boolean getLoginCheck(Context context) {
+        SharedPreferences pref = getPreferences(context);
+        SharedPreferences.Editor editor = pref.edit();
+
+        boolean getLoginCheck = pref.getBoolean("isLoginCheck", DEFAULT_VALUE_BOOLEAN);
+        return getLoginCheck;
+    }
+
+    public static void setLoginCheck(Context context, boolean isChecked) {
+        SharedPreferences pref = getPreferences(context);
+        SharedPreferences.Editor editor = pref.edit();
+
+        editor.putBoolean("isLoginCheck", isChecked);
+        editor.commit();
+    }
 }

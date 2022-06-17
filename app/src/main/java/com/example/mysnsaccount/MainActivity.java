@@ -27,8 +27,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.mysnsaccount.dkiapi.CommonResponse;
-import com.example.mysnsaccount.dkiapi.LoginResponse;
+import com.example.mysnsaccount.api.CommonResponse;
+import com.example.mysnsaccount.api.LoginResponse;
 import com.example.mysnsaccount.login.LoginActivity;
 import com.example.mysnsaccount.login.UpdateActivity;
 import com.example.mysnsaccount.model.recycerviewicon.RecyclerViewAdapter;
@@ -64,6 +64,7 @@ public class MainActivity extends Activity {
 
     private Intent intent;
     private boolean isKakaoLoginSuccess;
+    private boolean isLoginCheck;
     private Group loginProfileGroup;
     private Group loginInfoGroup;
     private Group loginBtnGroup;
@@ -76,15 +77,18 @@ public class MainActivity extends Activity {
 
     private ArrayList<RecyclerViewItem> itemLists = new ArrayList<RecyclerViewItem>() {{
         add(new RecyclerViewItem(R.drawable.ic_baseline_web_24, "WebView"));
+        add(new RecyclerViewItem(R.drawable.ic_baseline_web_login, "WebViewLogin"));
         add(new RecyclerViewItem(R.drawable.ic_baseline_broadcast_on_home_24, "Retrofit"));
         add(new RecyclerViewItem(R.drawable.ic_baseline_security_24, "Permission"));
         add(new RecyclerViewItem(R.drawable.ic_baseline_cached_24, "RecyclerView"));
         add(new RecyclerViewItem(R.drawable.ic_baseline_alert_24, "Dialog"));
         add(new RecyclerViewItem(R.drawable.baseline_photo_camera_white_24, "Camera"));
-        add(new RecyclerViewItem(R.drawable.decode, "Encryption"));
+        add(new RecyclerViewItem(R.drawable.encryption_white_24dp, "Encryption"));
+        add(new RecyclerViewItem(R.drawable.todo_list, "TodoList"));
+        add(new RecyclerViewItem(R.drawable.todo_list, "WebTodoList"));
     }};
 
-    @SuppressLint("WrongViewCast")
+    @SuppressLint({"WrongViewCast", "NotifyDataSetChanged"})
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -151,6 +155,8 @@ public class MainActivity extends Activity {
 
         isKakaoLoginSuccess = UserPreference.getKakaoLoginSuccess(context);
         boolean isAutoChecked = UserPreference.getAutoLoginCheck(context);
+        UserPreference.setLoginCheck(context, false);
+        isLoginCheck = UserPreference.getLoginCheck(context);
 
 
         if (isKakaoLoginSuccess || isAutoChecked) {
@@ -177,6 +183,7 @@ public class MainActivity extends Activity {
             public void onClick(View view) {
                 intent = new Intent(context, LoginActivity.class);
                 startActivityForResult(intent, Constant.REQUEST_LOGIN_CODE);
+                GLog.d(" 로그아웃 / 나갔다 들어왔을 때 isLoginCheck : " + UserPreference.getLoginCheck(context));
             }
         });
 
@@ -410,6 +417,7 @@ public class MainActivity extends Activity {
                                     UserPreference.setClear(context);
                                     setShowLoginUi(Constant.LOGIN_DEFAULT);
                                     AppUtil.showToast(context, getString(R.string.msg_logout_success));
+                                    GLog.d("isLoginCheck : " + UserPreference.getLoginCheck(context));
                                 }
                                 break;
                             case "탈퇴하기":
@@ -438,10 +446,8 @@ public class MainActivity extends Activity {
     }
 
     private void requestDeleteUserInfo() {
-        CommonRequest model = new CommonRequest();
         userId = UserPreference.getUserId(context);
-        model.setId(userId);
-        RetrofitApiManager.getInstance().requestDeleteUserInfo(model, new RetrofitInterface() {
+        RetrofitApiManager.getInstance().requestDeleteUserInfo(userId, new RetrofitInterface() {
             @Override
             public void onResponse(Response response) {
                 if (response.isSuccessful()) {
@@ -451,6 +457,7 @@ public class MainActivity extends Activity {
                         if (commonResponse.getResultInfo().isResult()) {
                             setShowLoginUi(Constant.LOGIN_DEFAULT);
                             UserPreference.setClear(context);
+                            GLog.d("isLoginCheck : " + UserPreference.getLoginCheck(context));
                             AppUtil.showToast(context, errMsg);
                         } else {
                             GLog.e("errMsg : " + errMsg);
@@ -474,6 +481,7 @@ public class MainActivity extends Activity {
         // 자동로그인 체크 되어있을 때 실행
         userId = UserPreference.getUserId(context);
         userPw = UserPreference.getUserPassword(context);
+        UserPreference.setLoginCheck(context, true);
         CommonRequest model = new CommonRequest();
         model.setId(userId);
         model.setPw(userPw);
@@ -488,6 +496,7 @@ public class MainActivity extends Activity {
                                 userName = loginResponse.getUserInfo().getName();
                                 userPhone = loginResponse.getUserInfo().getPhone();
                             }
+                            GLog.d("자동로그인 체크되어있을 때 isLoginCheck : " + UserPreference.getLoginCheck(context));
                             setShowLoginUi(Constant.LOGIN);
                         }
                         AppUtil.showToast(context, loginResponse.getResultInfo().getErrorMsg());

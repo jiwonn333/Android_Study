@@ -46,6 +46,7 @@ public class HashUtils {
         return hexUserPw;
     }
 
+
     //Base64 인코딩
     public static String getBase64Encrypt(String data) {
         return Base64.encodeToString(data.getBytes(), 0);
