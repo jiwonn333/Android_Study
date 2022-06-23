@@ -3,6 +3,7 @@ package com.example.mysnsaccount.todo;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.Group;
@@ -59,7 +59,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         holder.tvTitle.setText(items.get(position).getTitle());
         holder.tvContent.setText(items.get(position).getContent());
         holder.tvDate.setText(items.get(position).getCreateDate());
-
     }
 
     @Override
@@ -82,11 +81,24 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
         private ImageView btnExpand;
 
 
+        @SuppressLint("ClickableViewAccessibility")
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.tv_title);
             tvContent = itemView.findViewById(R.id.tv_content);
             tvDate = itemView.findViewById(R.id.tv_date);
+
+            // 상세 페이지 전환시 결과값 intent 로 넘기기
+            tvContent.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(context, TodoDetailActivity.class);
+                    intent.putExtra("title", tvTitle.getText().toString());
+                    intent.putExtra("date", tvDate.getText().toString());
+                    intent.putExtra("content", tvContent.getText().toString());
+                    context.startActivity(intent);
+                }
+            });
 
             Dialog dialog = new Dialog(context);
             dialog.setContentView(R.layout.activity_tododialog);
@@ -97,17 +109,13 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
             btnDelete = itemView.findViewById(R.id.btn_delete);
             btnExpand = itemView.findViewById(R.id.btn_expand);
 
-
             btnDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     curPos = getBindingAdapterPosition();
                     num = items.get(curPos).getNum();
                     userId = UserPreference.getUserId(context);
-
                     requestDeleteTodo(num, userId);
-                    items.remove(curPos);
-                    Toast.makeText(context, "삭제되었습니다.", Toast.LENGTH_SHORT).show();
                 }
             });
 
@@ -136,7 +144,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
                             requestUpdateTodo(model);
                             dialog.dismiss();
-                            Toast.makeText(context, "수정이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                         }
                     });
                     dialog.show();
@@ -149,6 +156,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
                 public void onClick(View view) {
                     Group layoutGroup = itemView.findViewById(R.id.layout_group);
                     int layoutGroupVisible = layoutGroup.getVisibility();
+
                     switch (layoutGroupVisible) {
                         case 0:
                             layoutGroup.setVisibility(View.GONE);
@@ -162,8 +170,11 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
                 }
             });
 
+
         }
+
     }
+
 
     @SuppressLint("NotifyDataSetChanged")
     public void setTodoList(ArrayList<TodoResponse.TodoInfo> list) {
@@ -203,6 +214,8 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
                                 AppUtil.showToast(context, resultInfo.getErrorMsg());
                                 notifyItemRemoved(curPos);
                                 notifyItemRangeChanged(curPos, getItemCount());
+                                items.remove(curPos);
+                                AppUtil.showToast(context, resultInfo.getErrorMsg());
                             }
                             AppUtil.showToast(context, resultInfo.getErrorMsg());
                         } else {
@@ -232,19 +245,24 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
                     if (todoResponse != null) {
                         TodoResponse.TodoInfo todoInfo = todoResponse.getTodoInfo();
                         TodoResponse.ResultInfo resultInfo = todoResponse.getResultInfo();
-                        if (todoInfo != null && resultInfo != null) {
-                            if (resultInfo.isResult()) {
-                                TodoResponse.TodoInfo model = new TodoResponse.TodoInfo();
-                                model.setTitle(todoInfo.getTitle());
-                                model.setContent(todoInfo.getContent());
-                                model.setContent(todoInfo.getContent());
-                                model.setCreateDate(todoInfo.getCreateDate());
-                                model.setNum(todoInfo.getNum());
-                                updateItem(model);
+                        if (resultInfo != null) {
+                            if (todoInfo != null) {
+                                if (resultInfo.isResult()) {
+                                    TodoResponse.TodoInfo model = new TodoResponse.TodoInfo();
+                                    model.setTitle(todoInfo.getTitle());
+                                    model.setContent(todoInfo.getContent());
+                                    model.setContent(todoInfo.getContent());
+                                    model.setCreateDate(todoInfo.getCreateDate());
+                                    model.setNum(todoInfo.getNum());
+                                    updateItem(model);
+                                }
+                                AppUtil.showToast(context, resultInfo.getErrorMsg());
+                            } else {
+                                AppUtil.showToast(context, resultInfo.getErrorMsg());
+                                GLog.e(resultInfo.getErrorMsg());
                             }
-                            AppUtil.showToast(context, resultInfo.getErrorMsg());
                         } else {
-                            GLog.e("todoInfo, resultInfo is null");
+                            GLog.e("resultInfo is null");
                         }
                     } else {
                         GLog.e("todoResponse is null");
@@ -256,11 +274,9 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
             @Override
             public void onFailure(Throwable t) {
-                GLog.e("update onfailure" + t.getMessage());
+                GLog.e("update onFailure" + t.getMessage());
             }
         });
 
     }
-
-
 }

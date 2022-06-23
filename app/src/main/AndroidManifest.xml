@@ -68,6 +68,7 @@
         <activity android:name=".todolist.TodoListActivity" />
         <activity android:name=".todo.TodoActivity" />
         <activity android:name=".WebTodoActivity" />
+        <activity android:name=".todo.TodoDetailActivity" />
 
     </application>
 

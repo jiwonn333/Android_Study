@@ -142,10 +142,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
                         context.startActivity(new Intent(context, TodoActivity.class));
                     } else {
                         Toast.makeText(context, "로그인 이용 후 가능한 페이지 입니다.", Toast.LENGTH_SHORT).show();
-                        break;
                     }
+                    break;
+//                case 9:
+//                    Toast.makeText(context, "아직 구현중인 페이지 입니다.", Toast.LENGTH_SHORT).show();
                 default:
                     GLog.d("모두 해당 안됨");
+                    Toast.makeText(context, "아직 구현중인 페이지 입니다.", Toast.LENGTH_SHORT).show();
                     break;
             }
         }

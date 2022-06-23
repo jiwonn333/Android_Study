@@ -4,10 +4,10 @@ import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -74,6 +74,7 @@ public class TodoActivity extends AppCompatActivity {
                 etContent = dialog.findViewById(R.id.et_content);
                 btnDialog = dialog.findViewById(R.id.dialog_btn);
 
+
                 // insert 통신
                 btnDialog.setOnClickListener(new View.OnClickListener() {
                     @SuppressLint("SimpleDateFormat")
@@ -84,22 +85,27 @@ public class TodoActivity extends AppCompatActivity {
                         title = etTitle.getText().toString();
                         content = etContent.getText().toString();
 
-                        // request 모델에 저장
-                        TodoRequest model = new TodoRequest();
-                        model.setId(userId);
-                        model.setTitle(title);
-                        model.setContent(content);
+                        if (!TextUtils.isEmpty(title)) {
+                            if (!TextUtils.isEmpty(content)) {
+                                // request 모델에 저장
+                                TodoRequest model = new TodoRequest();
+                                model.setId(userId);
+                                model.setTitle(title);
+                                model.setContent(content);
 
-                        // insert 통신
-                        requestInsertTodo(model);
+                                // insert 통신
+                                requestInsertTodo(model);
+                            } else {
+                                AppUtil.showToast(context, "내용을 입력해주세요.");
+                            }
+                        } else {
+                            AppUtil.showToast(context, "제목을 입력해주세요.");
+                        }
 
                         // 스크롤 부드럽게
                         recyclerView.smoothScrollToPosition(0);
                         dialog.dismiss();
-                        Toast.makeText(TodoActivity.this, "추가되었습니다.", Toast.LENGTH_SHORT).show();
-
                     }
-
                 });
                 dialog.show();
             }
@@ -117,19 +123,25 @@ public class TodoActivity extends AppCompatActivity {
                     if (todoResponse != null) {
                         TodoResponse.TodoInfo todoInfo = todoResponse.getTodoInfo();
                         TodoResponse.ResultInfo resultInfo = todoResponse.getResultInfo();
-                        if (todoInfo != null && resultInfo != null) {
-                            if (resultInfo.isResult()) {
-                                GLog.e("todo num : " + todoInfo.getNum());
-                                loadRecentDB();
+                        GLog.e("todoInfo : " + todoInfo);
+                        GLog.e("resultInfo : " + resultInfo);
+                        if (resultInfo != null) {
+                            if (todoInfo != null) {
+                                if (resultInfo.isResult()) {
+                                    AppUtil.showToast(context, resultInfo.getErrorMsg());
+                                    loadRecentDB();
+                                } else {
+                                    AppUtil.showToast(context, resultInfo.getErrorMsg());
+                                    GLog.e(resultInfo.getErrorMsg());
+                                }
                             } else {
                                 AppUtil.showToast(context, resultInfo.getErrorMsg());
                             }
                         } else {
-                            GLog.d("todoInfoList, resultInfo is null");
+                            GLog.e("resultInfo is null");
                         }
-
                     } else {
-                        AppUtil.showToast(context, "todoListResponse is null");
+                        GLog.e("todoListResponse is null");
                     }
                 } else {
                     GLog.e("insert Response is not successful");
@@ -164,7 +176,6 @@ public class TodoActivity extends AppCompatActivity {
                         if (todoInfoList != null && resultInfo != null) {
                             if (resultInfo.isResult()) {
                                 ArrayList<TodoResponse.TodoInfo> list = new ArrayList<>();
-                                // 공부
                                 for (TodoListResponse.TodoInfo todoInfo : todoInfoList) {
                                     TodoResponse.TodoInfo items = new TodoResponse.TodoInfo();
                                     items.setTitle(todoInfo.getTitle());
@@ -194,5 +205,4 @@ public class TodoActivity extends AppCompatActivity {
             }
         });
     }
-
 }

@@ -86,7 +86,7 @@ public class MainActivity extends Activity {
         add(new RecyclerViewItem(R.drawable.baseline_photo_camera_white_24, "Camera"));
         add(new RecyclerViewItem(R.drawable.encryption_white_24dp, "Encryption"));
         add(new RecyclerViewItem(R.drawable.todo_list, "TodoList"));
-        add(new RecyclerViewItem(R.drawable.todo_list, "WebTodoList"));
+        add(new RecyclerViewItem(R.drawable.todo_list_web, "WebTodoList"));
     }};
 
     @SuppressLint({"WrongViewCast", "NotifyDataSetChanged"})
