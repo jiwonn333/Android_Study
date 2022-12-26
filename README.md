@@ -1,2 +1,2 @@
-# Android_Mobile_OJT
+# Android_Mobile_Study
 
