@@ -6,3 +6,4 @@
 - Recyclerview
 - 암호화
 - 서버연동 TodoList
+- Permission
