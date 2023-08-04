@@ -22,7 +22,7 @@ public class WebViewActivity extends AppCompatActivity {
 
         WebViewManager manager = new WebViewManager(WebViewActivity.this, myWebView);
         manager.setSettings();
-        manager.setJavascriptInterface("DKITec");
+        manager.setJavascriptInterface("HappyJiwon");
         manager.loadUrl("file:///android_asset/www/sample.html");
     }
 }

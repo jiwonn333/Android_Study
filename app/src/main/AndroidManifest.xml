@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.mysnsaccount">
+
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission
         android:name="android.permission.READ_PHONE_STATE"
@@ -12,7 +13,6 @@
     <uses-feature
         android:name="android.hardware.camera"
         android:required="true" />
-
 
     <application
         android:name=".login.GlobalApplication"
@@ -29,7 +29,6 @@
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="@string/kakao_app_key" />
-
 
         <activity
             android:name=".MainActivity"
@@ -55,7 +54,6 @@
                     android:scheme="kakaobdec4dffc749223591bddcb598abc71f" />
             </intent-filter>
         </activity>
-
         <activity android:name=".login.LoginActivity" />
         <activity android:name=".login.JoinActivity" />
         <activity android:name=".login.UpdateActivity" />
@@ -65,11 +63,8 @@
         <activity android:name=".dialogtest.AlertDialogActivity" />
         <activity android:name=".encryption.EncryptionActivity" />
         <activity android:name=".customwebview.WebViewLoginActivity" />
-        <activity android:name=".todolist.TodoListActivity" />
         <activity android:name=".todo.TodoActivity" />
-        <activity android:name=".WebTodoActivity" />
         <activity android:name=".todo.TodoDetailActivity" />
-
     </application>
 
 </manifest>

@@ -1,6 +1,6 @@
 # Android_Mobile_Study
 
-- SNS Login
+- SNS Login (Kakao)
 - WebView
 - Retrofit
 - Recyclerview

@@ -22,7 +22,7 @@ public class WebViewLoginActivity extends AppCompatActivity {
 
         WebViewManager manager = new WebViewManager(WebViewLoginActivity.this, myWebView);
         manager.setSettings();
-        manager.setJavascriptInterface("DKITec");
+        manager.setJavascriptInterface("HappyJiwon");
         manager.loadUrl("http://10.112.58.190/web/signup/");
     }
 }
